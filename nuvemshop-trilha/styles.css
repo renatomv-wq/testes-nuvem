@@ -1,68 +1,117 @@
 /* ===========================================
-   NIMBUS DESIGN TOKENS (Nuvemshop)
+   NIMBUS DESIGN TOKENS (Nuvemshop) - Official
+   Based on: https://nimbus.nuvemshop.com.br/documentation/tokens/color
    =========================================== */
 :root {
-    /* Primary Colors */
-    --primary-50: #F0EEFA;
-    --primary-100: #D4CFF2;
-    --primary-200: #B5ADE8;
-    --primary-300: #968ADE;
-    --primary-400: #7D6FD6;
-    --primary-500: #5C4FD1;
-    --primary-600: #4A3FC7;
-    --primary-700: #3D34B3;
-    --primary-800: #31299E;
-    --primary-900: #1E1A74;
+    /* Primary Colors - Nimbus Official */
+    --primary-surface: #eef5ff;
+    --primary-surface-highlight: #96c1fc;
+    --primary-interactive: #0059d5;
+    --primary-interactive-hover: #00429f;
+    --primary-interactive-pressed: #00347d;
+    --primary-text-low: #00255a;
+    --primary-text-high: #000b19;
 
-    /* Success Colors */
-    --success-50: #E8F8F0;
-    --success-100: #C5EDD9;
-    --success-200: #9FE2C0;
-    --success-300: #78D7A7;
-    --success-400: #5BCE93;
-    --success-500: #00A650;
-    --success-600: #009548;
-    --success-700: #00823E;
-    --success-800: #007035;
-    --success-900: #005026;
+    /* Aliases for backwards compatibility */
+    --primary-50: #eef5ff;
+    --primary-100: #d6e7ff;
+    --primary-200: #96c1fc;
+    --primary-300: #5a9cfc;
+    --primary-400: #2b7ff5;
+    --primary-500: #0059d5;
+    --primary-600: #00429f;
+    --primary-700: #00347d;
+    --primary-800: #00255a;
+    --primary-900: #000b19;
 
-    /* Warning Colors */
-    --warning-50: #FFF8E6;
-    --warning-100: #FFEDBF;
-    --warning-200: #FFE195;
-    --warning-300: #FFD56B;
-    --warning-400: #FFCC4D;
-    --warning-500: #FFC300;
-    --warning-600: #FFB300;
-    --warning-700: #FF9F00;
-    --warning-800: #FF8C00;
-    --warning-900: #FF6D00;
+    /* Success Colors - Nimbus Official */
+    --success-surface: #defef2;
+    --success-surface-highlight: #7af7c7;
+    --success-interactive: #00c87b;
+    --success-interactive-hover: #00935b;
+    --success-interactive-pressed: #007447;
+    --success-text-low: #005333;
+    --success-text-high: #001910;
 
-    /* Danger Colors */
-    --danger-50: #FEEBEB;
-    --danger-100: #FCCCCC;
-    --danger-200: #F99A9A;
-    --danger-300: #F76767;
-    --danger-400: #F44040;
-    --danger-500: #E53935;
-    --danger-600: #D32F2F;
-    --danger-700: #C62828;
-    --danger-800: #B71C1C;
-    --danger-900: #8B1515;
+    /* Aliases */
+    --success-50: #defef2;
+    --success-100: #b0f5dc;
+    --success-200: #7af7c7;
+    --success-300: #40e8a4;
+    --success-400: #1ad88a;
+    --success-500: #00c87b;
+    --success-600: #00935b;
+    --success-700: #007447;
+    --success-800: #005333;
+    --success-900: #001910;
 
-    /* Neutral Colors */
-    --neutral-0: #FFFFFF;
-    --neutral-50: #F7F7F8;
-    --neutral-100: #EBEBED;
-    --neutral-200: #D4D4D9;
-    --neutral-300: #BDBDC4;
-    --neutral-400: #9191A0;
-    --neutral-500: #6E6E80;
-    --neutral-600: #53535F;
-    --neutral-700: #3D3D47;
-    --neutral-800: #28282F;
-    --neutral-850: #1E1E26;
-    --neutral-900: #14141F;
+    /* Warning Colors - Nimbus Official */
+    --warning-surface: #fef2de;
+    --warning-surface-highlight: #f7c77a;
+    --warning-interactive: #c87b00;
+    --warning-interactive-hover: #935b00;
+    --warning-interactive-pressed: #744700;
+    --warning-text-low: #533300;
+    --warning-text-high: #191000;
+
+    /* Aliases */
+    --warning-50: #fef2de;
+    --warning-100: #fce4bc;
+    --warning-200: #f7c77a;
+    --warning-300: #f0a940;
+    --warning-400: #e69316;
+    --warning-500: #c87b00;
+    --warning-600: #935b00;
+    --warning-700: #744700;
+    --warning-800: #533300;
+    --warning-900: #191000;
+
+    /* Danger Colors - Nimbus Official */
+    --danger-surface: #fedede;
+    --danger-surface-highlight: #f77a7c;
+    --danger-interactive: #c80003;
+    --danger-interactive-hover: #930002;
+    --danger-interactive-pressed: #740002;
+    --danger-text-low: #530001;
+    --danger-text-high: #190000;
+
+    /* Aliases */
+    --danger-50: #fedede;
+    --danger-100: #fcb8b9;
+    --danger-200: #f77a7c;
+    --danger-300: #f24446;
+    --danger-400: #e51d20;
+    --danger-500: #c80003;
+    --danger-600: #930002;
+    --danger-700: #740002;
+    --danger-800: #530001;
+    --danger-900: #190000;
+
+    /* Neutral Colors - Nimbus Official */
+    --neutral-background: #ffffff;
+    --neutral-surface: #f6f6f6;
+    --neutral-surface-disabled: #e7e7e7;
+    --neutral-surface-highlight: #d1d1d1;
+    --neutral-interactive: #b0b0b0;
+    --neutral-interactive-hover: #888888;
+    --neutral-interactive-pressed: #777777;
+    --neutral-text-disabled: #6d6d6d;
+    --neutral-text-low: #5d5d5d;
+    --neutral-text-high: #0a0a0a;
+
+    /* Aliases */
+    --neutral-0: #ffffff;
+    --neutral-50: #f6f6f6;
+    --neutral-100: #e7e7e7;
+    --neutral-200: #d1d1d1;
+    --neutral-300: #b0b0b0;
+    --neutral-400: #888888;
+    --neutral-500: #777777;
+    --neutral-600: #6d6d6d;
+    --neutral-700: #5d5d5d;
+    --neutral-800: #2a2a2a;
+    --neutral-850: #1a1a1a;
+    --neutral-900: #0a0a0a;
 
     /* Typography */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -146,13 +195,13 @@ img {
 }
 
 a {
-    color: var(--primary-500);
+    color: var(--primary-interactive);
     text-decoration: none;
     transition: color var(--transition-fast);
 }
 
 a:hover {
-    color: var(--primary-700);
+    color: var(--primary-interactive-hover);
 }
 
 /* ===========================================
@@ -189,6 +238,16 @@ a:hover {
     align-items: center;
 }
 
+.logo img {
+    height: 32px;
+    width: auto;
+}
+
+/* White logo for dark backgrounds */
+.logo-white {
+    filter: brightness(0) invert(1);
+}
+
 .nav {
     display: flex;
     gap: var(--space-8);
@@ -205,8 +264,8 @@ a:hover {
 
 .nav-link:hover,
 .nav-link.active {
-    color: var(--primary-500);
-    border-bottom-color: var(--primary-500);
+    color: var(--primary-interactive);
+    border-bottom-color: var(--primary-interactive);
 }
 
 .user-menu {
@@ -220,11 +279,11 @@ a:hover {
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-3);
-    background: var(--primary-50);
+    background: var(--primary-surface);
     border-radius: var(--radius-full);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
-    color: var(--primary-600);
+    color: var(--primary-interactive);
 }
 
 .progress-icon {
@@ -235,7 +294,7 @@ a:hover {
     width: 40px;
     height: 40px;
     border-radius: var(--radius-full);
-    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+    background: linear-gradient(135deg, var(--primary-interactive), var(--primary-interactive-pressed));
     color: white;
     display: flex;
     align-items: center;
@@ -263,15 +322,19 @@ a:hover {
 }
 
 .btn-primary {
-    background: var(--primary-500);
+    background: var(--primary-interactive);
     color: white;
 }
 
 .btn-primary:hover {
-    background: var(--primary-600);
+    background: var(--primary-interactive-hover);
     color: white;
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+    background: var(--primary-interactive-pressed);
 }
 
 .btn-secondary {
@@ -321,8 +384,8 @@ a:hover {
 }
 
 .badge-primary {
-    background: var(--primary-100);
-    color: var(--primary-700);
+    background: var(--primary-surface);
+    color: var(--primary-interactive);
 }
 
 /* ===========================================
@@ -353,7 +416,7 @@ a:hover {
 }
 
 .hero-title .highlight {
-    color: var(--primary-500);
+    color: var(--primary-interactive);
     position: relative;
 }
 
@@ -364,7 +427,7 @@ a:hover {
     left: 0;
     right: 0;
     height: 8px;
-    background: var(--primary-100);
+    background: var(--primary-surface);
     z-index: -1;
     border-radius: 2px;
 }
@@ -434,7 +497,7 @@ a:hover {
     display: block;
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
-    color: var(--primary-500);
+    color: var(--primary-interactive);
     line-height: 1;
 }
 
@@ -454,7 +517,7 @@ a:hover {
 
 .progress-mini-card .progress-fill-mini {
     height: 100%;
-    background: var(--primary-500);
+    background: var(--primary-interactive);
     border-radius: var(--radius-full);
 }
 
@@ -535,14 +598,14 @@ a:hover {
 }
 
 .webinar-card-compact:hover {
-    border-color: var(--primary-200);
+    border-color: var(--primary-surface-highlight);
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
 
 .webinar-card-compact.upcoming {
-    border-color: var(--primary-300);
-    background: linear-gradient(135deg, var(--primary-50) 0%, var(--neutral-0) 100%);
+    border-color: var(--primary-interactive);
+    background: linear-gradient(135deg, var(--primary-surface) 0%, var(--neutral-0) 100%);
     box-shadow: var(--shadow-sm);
 }
 
@@ -566,7 +629,7 @@ a:hover {
 }
 
 .webinar-card-compact.upcoming .date-day {
-    color: var(--primary-600);
+    color: var(--primary-interactive);
 }
 
 .webinar-date-compact .date-month {
@@ -673,8 +736,8 @@ a:hover {
 .module-tag {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
-    color: var(--primary-600);
-    background: var(--primary-50);
+    color: var(--primary-interactive);
+    background: var(--primary-surface);
     padding: var(--space-1) var(--space-3);
     border-radius: var(--radius-full);
 }
@@ -706,7 +769,7 @@ a:hover {
     transform: translate(-50%, -50%);
     width: 64px;
     height: 64px;
-    background: var(--primary-500);
+    background: var(--primary-interactive);
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
@@ -717,7 +780,7 @@ a:hover {
 }
 
 .play-button:hover {
-    background: var(--primary-600);
+    background: var(--primary-interactive-hover);
     transform: translate(-50%, -50%) scale(1.1);
 }
 
@@ -726,7 +789,7 @@ a:hover {
     bottom: 0;
     left: 0;
     height: 4px;
-    background: var(--primary-500);
+    background: var(--primary-interactive);
 }
 
 .lesson-info {
@@ -839,9 +902,9 @@ a:hover {
 }
 
 .connector-dot.active {
-    background: var(--primary-500);
+    background: var(--primary-interactive);
     color: white;
-    box-shadow: 0 0 0 4px var(--primary-100);
+    box-shadow: 0 0 0 4px var(--primary-surface);
 }
 
 .module-card.completed .connector-dot {
@@ -854,7 +917,7 @@ a:hover {
 }
 
 .module-card.in-progress .connector-line:first-child {
-    background: linear-gradient(180deg, var(--success-500) 0%, var(--primary-500) 100%);
+    background: linear-gradient(180deg, var(--success-interactive) 0%, var(--primary-interactive) 100%);
 }
 
 .module-content {
@@ -867,7 +930,7 @@ a:hover {
 }
 
 .module-card.in-progress .module-content {
-    border-color: var(--primary-200);
+    border-color: var(--primary-surface-highlight);
     box-shadow: var(--shadow-md);
 }
 
@@ -906,8 +969,8 @@ a:hover {
 }
 
 .status-badge.in-progress {
-    background: var(--primary-50);
-    color: var(--primary-600);
+    background: var(--primary-surface);
+    color: var(--primary-interactive);
 }
 
 .status-badge.locked {
@@ -972,12 +1035,12 @@ a:hover {
 }
 
 .lesson-item.current {
-    color: var(--primary-600);
+    color: var(--primary-interactive);
     font-weight: var(--font-weight-medium);
 }
 
 .lesson-item.current svg {
-    color: var(--primary-500);
+    color: var(--primary-interactive);
 }
 
 .lesson-dot {
@@ -1021,7 +1084,7 @@ a:hover {
     gap: var(--space-3);
     padding: var(--space-3);
     margin-top: var(--space-2);
-    background: linear-gradient(135deg, var(--warning-50) 0%, var(--primary-50) 100%);
+    background: linear-gradient(135deg, var(--warning-surface) 0%, var(--primary-surface) 100%);
     border: 1px dashed var(--warning-300);
     border-radius: var(--radius-md);
     cursor: pointer;
@@ -1029,8 +1092,8 @@ a:hover {
 }
 
 .activity-item:hover {
-    border-color: var(--primary-400);
-    background: linear-gradient(135deg, var(--warning-100) 0%, var(--primary-100) 100%);
+    border-color: var(--primary-interactive);
+    background: linear-gradient(135deg, var(--warning-surface-highlight) 0%, var(--primary-surface-highlight) 100%);
 }
 
 .activity-item.locked {
@@ -1134,7 +1197,7 @@ a:hover {
 
 .progress-fill {
     height: 100%;
-    background: var(--primary-500);
+    background: var(--primary-interactive);
     border-radius: var(--radius-full);
     transition: width var(--transition-slow);
 }
@@ -1167,7 +1230,7 @@ a:hover {
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-4);
-    background: linear-gradient(135deg, var(--warning-50) 0%, var(--primary-50) 100%);
+    background: linear-gradient(135deg, var(--warning-surface) 0%, var(--primary-surface) 100%);
     border-radius: var(--radius-md);
     margin-top: var(--space-4);
     border: 1px dashed var(--warning-300);
@@ -1210,7 +1273,7 @@ a:hover {
 .recorded-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-xl);
-    border-color: var(--primary-200);
+    border-color: var(--primary-surface-highlight);
 }
 
 .recorded-card:hover .play-overlay {
@@ -1347,7 +1410,7 @@ a:hover {
 
 .resource-card:hover {
     background: var(--neutral-0);
-    border-color: var(--primary-200);
+    border-color: var(--primary-surface-highlight);
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
@@ -1373,11 +1436,11 @@ a:hover {
 .resource-link {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    color: var(--primary-500);
+    color: var(--primary-interactive);
 }
 
 .resource-link:hover {
-    color: var(--primary-700);
+    color: var(--primary-interactive-hover);
 }
 
 /* ===========================================
@@ -1391,7 +1454,7 @@ a:hover {
     display: grid;
     grid-template-columns: 1fr 400px;
     gap: var(--space-12);
-    background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+    background: linear-gradient(135deg, var(--primary-interactive) 0%, var(--primary-interactive-pressed) 100%);
     border-radius: var(--radius-2xl);
     padding: var(--space-12);
     overflow: hidden;
@@ -1406,7 +1469,7 @@ a:hover {
 
 .help-content p {
     font-size: var(--font-size-lg);
-    color: var(--primary-100);
+    color: var(--primary-surface);
     margin-bottom: var(--space-8);
 }
 
@@ -1700,8 +1763,8 @@ a:hover {
 .video-module-tag {
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
-    color: var(--primary-400);
-    background: var(--primary-900);
+    color: var(--primary-surface-highlight);
+    background: var(--primary-text-high);
     padding: var(--space-1) var(--space-3);
     border-radius: var(--radius-full);
 }
@@ -1801,7 +1864,7 @@ a:hover {
 
 .progress-fill-mini {
     height: 100%;
-    background: var(--primary-500);
+    background: var(--primary-interactive);
     border-radius: var(--radius-full);
     transition: width var(--transition-normal);
 }
@@ -1828,7 +1891,7 @@ a:hover {
 }
 
 .playlist-item.active {
-    background: var(--primary-900);
+    background: var(--primary-text-high);
 }
 
 .playlist-item.completed .playlist-item-status {
@@ -1846,7 +1909,7 @@ a:hover {
 }
 
 .playlist-item-status.playing {
-    color: var(--primary-400);
+    color: var(--primary-surface-highlight);
 }
 
 .playlist-number {
@@ -1914,7 +1977,7 @@ a:hover {
 }
 
 .resource-download svg {
-    color: var(--primary-400);
+    color: var(--primary-surface-highlight);
     flex-shrink: 0;
 }
 
