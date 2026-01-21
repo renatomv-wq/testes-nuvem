@@ -15,9 +15,11 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <svg width="140" height="32" viewBox="0 0 140 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 28c-6.627 0-12-5.373-12-12S9.373 4 16 4s12 5.373 12 12-5.373 12-12 12z" fill="#5C4FD1"/>
-                        <text x="40" y="22" font-family="Inter" font-weight="700" font-size="18" fill="#14141F">nuvemshop</text>
+                    <svg width="150" height="32" viewBox="0 0 150 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Nuvemshop Logo -->
+                        <circle cx="12" cy="16" r="9" stroke="#5C4FD1" stroke-width="3.5" fill="none"/>
+                        <circle cx="24" cy="16" r="9" stroke="#5C4FD1" stroke-width="3.5" fill="none"/>
+                        <text x="40" y="22" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="16" fill="#14141F">nuvemshop</text>
                     </svg>
                 </div>
                 <nav class="nav">
@@ -43,8 +45,8 @@
                 <div class="hero-badge">
                     <span class="badge badge-primary">Trilha de Sucesso</span>
                 </div>
-                <h1 class="hero-title">Lance sua loja e comece a vender em <span class="highlight">7 dias</span></h1>
-                <p class="hero-subtitle">Siga nossa trilha passo a passo e transforme sua ideia em um negócio online de sucesso. Conteúdo prático, direto ao ponto.</p>
+                <h1 class="hero-title">Construa sua loja e comece a vender em <span class="highlight">7 dias</span></h1>
+                <p class="hero-subtitle">Siga nossa trilha passo a passo e transforme sua ideia em um negócio online de sucesso.</p>
                 
                 <div class="hero-stats">
                     <div class="stat-item">
@@ -67,14 +69,14 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="progress-ring-container">
-                    <svg class="progress-ring" width="200" height="200">
-                        <circle class="progress-ring-bg" cx="100" cy="100" r="90" />
-                        <circle class="progress-ring-fill" cx="100" cy="100" r="90" stroke-dasharray="565.48" stroke-dashoffset="367.56" />
-                    </svg>
-                    <div class="progress-ring-content">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop" alt="E-commerce" class="hero-image">
+                <div class="hero-progress-overlay">
+                    <div class="progress-mini-card">
                         <span class="progress-percentage">35%</span>
                         <span class="progress-text">concluído</span>
+                        <div class="progress-bar-mini">
+                            <div class="progress-fill-mini" style="width: 35%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,117 +95,73 @@
                 <p>Participe dos nossos webinars semanais gratuitos e aprenda com especialistas</p>
             </div>
 
-            <div class="webinars-calendar">
+            <div class="webinars-calendar-grid">
                 <!-- Webinar 1 -->
-                <div class="webinar-card upcoming">
-                    <div class="webinar-date">
-                        <span class="date-day">23</span>
-                        <span class="date-month">JAN</span>
-                        <span class="date-weekday">Quinta</span>
-                    </div>
-                    <div class="webinar-info">
-                        <div class="webinar-time">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                            <span>15:00 - 16:00 (Horário de Brasília)</span>
+                <div class="webinar-card-compact upcoming">
+                    <div class="webinar-card-header">
+                        <div class="webinar-date-compact">
+                            <span class="date-day">23</span>
+                            <span class="date-month">JAN</span>
                         </div>
-                        <h3 class="webinar-title">Design que converte: como personalizar sua loja com Canva</h3>
-                        <p class="webinar-description">Aprenda técnicas práticas de design para criar banners, logos e materiais que aumentam suas vendas.</p>
-                        <div class="webinar-speaker">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=face" alt="Speaker" class="speaker-avatar">
-                            <div class="speaker-info">
-                                <span class="speaker-name">Marina Costa</span>
-                                <span class="speaker-role">Designer @ Nuvemshop</span>
-                            </div>
-                        </div>
+                        <span class="webinar-time-badge">15:00</span>
                     </div>
-                    <div class="webinar-action">
-                        <span class="spots-left">127 vagas restantes</span>
-                        <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-primary">Inscrever-se</a>
+                    <h3 class="webinar-title-compact">Design que converte: personalize sua loja com Canva</h3>
+                    <div class="webinar-speaker-compact">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&crop=face" alt="Speaker">
+                        <span>Marina Costa</span>
                     </div>
+                    <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-primary btn-sm btn-full">Inscrever-se</a>
                 </div>
 
                 <!-- Webinar 2 -->
-                <div class="webinar-card">
-                    <div class="webinar-date">
-                        <span class="date-day">30</span>
-                        <span class="date-month">JAN</span>
-                        <span class="date-weekday">Quinta</span>
-                    </div>
-                    <div class="webinar-info">
-                        <div class="webinar-time">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                            <span>15:00 - 16:00 (Horário de Brasília)</span>
+                <div class="webinar-card-compact">
+                    <div class="webinar-card-header">
+                        <div class="webinar-date-compact">
+                            <span class="date-day">30</span>
+                            <span class="date-month">JAN</span>
                         </div>
-                        <h3 class="webinar-title">Automação de Marketing: venda mais no piloto automático</h3>
-                        <p class="webinar-description">Case Vegpet: como aumentar vendas com e-mails automatizados e recuperação de carrinho.</p>
-                        <div class="webinar-speaker">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="Speaker" class="speaker-avatar">
-                            <div class="speaker-info">
-                                <span class="speaker-name">Ricardo Almeida</span>
-                                <span class="speaker-role">Growth @ Nuvemshop</span>
-                            </div>
-                        </div>
+                        <span class="webinar-time-badge">15:00</span>
                     </div>
-                    <div class="webinar-action">
-                        <span class="spots-left">284 vagas restantes</span>
-                        <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-secondary">Inscrever-se</a>
+                    <h3 class="webinar-title-compact">Automação de Marketing: venda no piloto automático</h3>
+                    <div class="webinar-speaker-compact">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" alt="Speaker">
+                        <span>Ricardo Almeida</span>
                     </div>
+                    <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-secondary btn-sm btn-full">Inscrever-se</a>
                 </div>
 
                 <!-- Webinar 3 -->
-                <div class="webinar-card">
-                    <div class="webinar-date">
-                        <span class="date-day">06</span>
-                        <span class="date-month">FEV</span>
-                        <span class="date-weekday">Quinta</span>
-                    </div>
-                    <div class="webinar-info">
-                        <div class="webinar-time">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                            <span>15:00 - 16:00 (Horário de Brasília)</span>
+                <div class="webinar-card-compact">
+                    <div class="webinar-card-header">
+                        <div class="webinar-date-compact">
+                            <span class="date-day">06</span>
+                            <span class="date-month">FEV</span>
                         </div>
-                        <h3 class="webinar-title">D2C ou Marketplace? Estratégias para vender em múltiplos canais</h3>
-                        <p class="webinar-description">O que as grandes marcas ensinam sobre construir equilíbrio entre canais de venda.</p>
-                        <div class="webinar-speaker">
-                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=40&h=40&fit=crop&crop=face" alt="Speaker" class="speaker-avatar">
-                            <div class="speaker-info">
-                                <span class="speaker-name">Juliana Ferreira</span>
-                                <span class="speaker-role">Head of Commerce @ Nuvemshop</span>
-                            </div>
-                        </div>
+                        <span class="webinar-time-badge">15:00</span>
                     </div>
-                    <div class="webinar-action">
-                        <span class="spots-left">342 vagas restantes</span>
-                        <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-secondary">Inscrever-se</a>
+                    <h3 class="webinar-title-compact">D2C ou Marketplace? Venda em múltiplos canais</h3>
+                    <div class="webinar-speaker-compact">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=32&h=32&fit=crop&crop=face" alt="Speaker">
+                        <span>Juliana Ferreira</span>
                     </div>
+                    <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-secondary btn-sm btn-full">Inscrever-se</a>
                 </div>
 
                 <!-- Webinar 4 -->
-                <div class="webinar-card">
-                    <div class="webinar-date">
-                        <span class="date-day">13</span>
-                        <span class="date-month">FEV</span>
-                        <span class="date-weekday">Quinta</span>
-                    </div>
-                    <div class="webinar-info">
-                        <div class="webinar-time">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
-                            <span>15:00 - 16:00 (Horário de Brasília)</span>
+                <div class="webinar-card-compact">
+                    <div class="webinar-card-header">
+                        <div class="webinar-date-compact">
+                            <span class="date-day">13</span>
+                            <span class="date-month">FEV</span>
                         </div>
-                        <h3 class="webinar-title">NuvemCommerce 2026: tendências e dados do e-commerce</h3>
-                        <p class="webinar-description">Análise exclusiva dos dados da plataforma e o que esperar para o mercado este ano.</p>
-                        <div class="webinar-speaker">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Speaker" class="speaker-avatar">
-                            <div class="speaker-info">
-                                <span class="speaker-name">Felipe Santos</span>
-                                <span class="speaker-role">CEO @ Nuvemshop Brasil</span>
-                            </div>
-                        </div>
+                        <span class="webinar-time-badge">15:00</span>
                     </div>
-                    <div class="webinar-action">
-                        <span class="spots-left">456 vagas restantes</span>
-                        <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-secondary">Inscrever-se</a>
+                    <h3 class="webinar-title-compact">NuvemCommerce 2026: tendências do e-commerce</h3>
+                    <div class="webinar-speaker-compact">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face" alt="Speaker">
+                        <span>Felipe Santos</span>
                     </div>
+                    <a href="https://streamyard.com/watch/SEU_LINK_AQUI" target="_blank" class="btn btn-secondary btn-sm btn-full">Inscrever-se</a>
                 </div>
             </div>
 
@@ -437,13 +395,24 @@
                                 <span>Variações e estoque</span>
                                 <span class="duration">10 min</span>
                             </div>
+                            <!-- Atividade Prática -->
+                            <div class="activity-item" data-activity-id="activity-2" onclick="toggleActivity('activity-2')">
+                                <div class="activity-checkbox">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                </div>
+                                <div class="activity-content">
+                                    <span class="activity-label">Atividade Prática</span>
+                                    <span class="activity-title">Cadastrar seus primeiros 3 produtos</span>
+                                </div>
+                                <a href="https://www.nuvemshop.com.br/admin/products/new" target="_blank" class="activity-action btn btn-sm btn-secondary">Ir para o painel</a>
+                            </div>
                         </div>
 
                         <div class="module-progress">
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 37%"></div>
                             </div>
-                            <span class="progress-label">1/4 aulas</span>
+                            <span class="progress-label">1/5 itens</span>
                         </div>
 
                         <button class="btn btn-primary">Continuar módulo</button>
@@ -480,6 +449,14 @@
                                 <span>Configurando Nuvem Pago</span>
                                 <span class="duration">8 min</span>
                             </div>
+                            <!-- Atividade: Configurar Pagamento -->
+                            <div class="activity-item locked" data-activity-id="activity-3a">
+                                <div class="activity-checkbox"></div>
+                                <div class="activity-content">
+                                    <span class="activity-label">Atividade Prática</span>
+                                    <span class="activity-title">Configurar método de pagamento</span>
+                                </div>
+                            </div>
                             <div class="lesson-item">
                                 <div class="lesson-dot"></div>
                                 <span>Opções de frete</span>
@@ -490,13 +467,21 @@
                                 <span>Calculadora de frete</span>
                                 <span class="duration">6 min</span>
                             </div>
+                            <!-- Atividade: Configurar Frete -->
+                            <div class="activity-item locked" data-activity-id="activity-3b">
+                                <div class="activity-checkbox"></div>
+                                <div class="activity-content">
+                                    <span class="activity-label">Atividade Prática</span>
+                                    <span class="activity-title">Configurar método de envio</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="module-progress">
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 0%"></div>
                             </div>
-                            <span class="progress-label">0/4 aulas</span>
+                            <span class="progress-label">0/6 itens</span>
                         </div>
 
                         <div class="unlock-message">
@@ -546,13 +531,21 @@
                                 <span>Páginas institucionais</span>
                                 <span class="duration">7 min</span>
                             </div>
+                            <!-- Atividade: Escolher Layout -->
+                            <div class="activity-item locked" data-activity-id="activity-4">
+                                <div class="activity-checkbox"></div>
+                                <div class="activity-content">
+                                    <span class="activity-label">Atividade Prática</span>
+                                    <span class="activity-title">Escolher o layout da sua loja</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="module-progress">
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: 0%"></div>
                             </div>
-                            <span class="progress-label">0/4 aulas</span>
+                            <span class="progress-label">0/5 itens</span>
                         </div>
 
                         <div class="unlock-message">
@@ -900,9 +893,11 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <svg width="120" height="28" viewBox="0 0 140 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 0C7.163 0 0 7.163 0 16s7.163 16 16 16 16-7.163 16-16S24.837 0 16 0zm0 28c-6.627 0-12-5.373-12-12S9.373 4 16 4s12 5.373 12 12-5.373 12-12 12z" fill="#5C4FD1"/>
-                        <text x="40" y="22" font-family="Inter" font-weight="700" font-size="18" fill="white">nuvemshop</text>
+                    <svg width="140" height="28" viewBox="0 0 150 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Nuvemshop Logo White -->
+                        <circle cx="12" cy="16" r="9" stroke="#FFFFFF" stroke-width="3.5" fill="none"/>
+                        <circle cx="24" cy="16" r="9" stroke="#FFFFFF" stroke-width="3.5" fill="none"/>
+                        <text x="40" y="22" font-family="Inter, -apple-system, sans-serif" font-weight="600" font-size="16" fill="#FFFFFF">nuvemshop</text>
                     </svg>
                     <p>Transformando sonhos em lojas de sucesso.</p>
                 </div>

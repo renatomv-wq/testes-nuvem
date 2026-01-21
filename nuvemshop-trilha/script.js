@@ -982,6 +982,98 @@ function loadUserProgress() {
 loadUserProgress();
 
 // ===========================================
+// Activity (Practical Tasks) Functions
+// ===========================================
+const activities = {
+    "activity-2": {
+        id: "activity-2",
+        title: "Cadastrar seus primeiros 3 produtos",
+        moduleId: 2,
+        completed: false,
+        actionUrl: "https://www.nuvemshop.com.br/admin/products/new"
+    },
+    "activity-3a": {
+        id: "activity-3a", 
+        title: "Configurar método de pagamento",
+        moduleId: 3,
+        completed: false,
+        actionUrl: "https://www.nuvemshop.com.br/admin/payments"
+    },
+    "activity-3b": {
+        id: "activity-3b",
+        title: "Configurar método de envio",
+        moduleId: 3,
+        completed: false,
+        actionUrl: "https://www.nuvemshop.com.br/admin/shipping"
+    },
+    "activity-4": {
+        id: "activity-4",
+        title: "Escolher o layout da sua loja",
+        moduleId: 4,
+        completed: false,
+        actionUrl: "https://www.nuvemshop.com.br/admin/themes"
+    }
+};
+
+function toggleActivity(activityId) {
+    const activity = activities[activityId];
+    if (!activity) return;
+
+    const activityElement = document.querySelector(`[data-activity-id="${activityId}"]`);
+    if (!activityElement || activityElement.classList.contains('locked')) return;
+
+    // Toggle completed state
+    activity.completed = !activity.completed;
+    
+    if (activity.completed) {
+        activityElement.classList.add('completed');
+        showActivityCompletedMessage(activity);
+    } else {
+        activityElement.classList.remove('completed');
+    }
+
+    // Save progress
+    saveActivitiesProgress();
+    updateProgressUI();
+}
+
+function showActivityCompletedMessage(activity) {
+    // Simple feedback - could be enhanced with a toast/modal
+    const activityElement = document.querySelector(`[data-activity-id="${activity.id}"]`);
+    if (activityElement) {
+        activityElement.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            activityElement.style.transform = 'scale(1)';
+        }, 200);
+    }
+}
+
+function saveActivitiesProgress() {
+    localStorage.setItem('nuvemshop-trilha-activities', JSON.stringify(activities));
+}
+
+function loadActivitiesProgress() {
+    const saved = localStorage.getItem('nuvemshop-trilha-activities');
+    if (saved) {
+        const savedActivities = JSON.parse(saved);
+        Object.keys(savedActivities).forEach(key => {
+            if (activities[key]) {
+                activities[key].completed = savedActivities[key].completed;
+                
+                // Update UI
+                const activityElement = document.querySelector(`[data-activity-id="${key}"]`);
+                if (activityElement && activities[key].completed) {
+                    activityElement.classList.add('completed');
+                }
+            }
+        });
+    }
+}
+
+// Load activities progress on init
+loadActivitiesProgress();
+
+// ===========================================
 // Keyboard Shortcuts
 // ===========================================
 document.addEventListener('keydown', (e) => {
