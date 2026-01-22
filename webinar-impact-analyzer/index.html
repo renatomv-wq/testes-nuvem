@@ -6,638 +6,222 @@
     <title>Webinar Impact Analyzer - Nuvemshop</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <!-- Nimbus-inspired fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Nimbus Design System Tokens */
         :root {
-            /* Primary colors - Nuvemshop Blue */
             --primary-surface: #0050B3;
             --primary-interactive: #0066E5;
             --primary-interactive-hover: #0050B3;
-            --primary-interactive-pressed: #003D8A;
             --primary-text-low: #E6F0FF;
-            
-            /* Neutral colors */
             --neutral-background: #FFFFFF;
             --neutral-surface: #F7F7F8;
             --neutral-surface-highlight: #EBEBED;
             --neutral-interactive: #E1E1E3;
             --neutral-text-low: #8C8C8C;
             --neutral-text-high: #14171A;
-            
-            /* Success colors */
             --success-surface: #E6F9ED;
             --success-interactive: #00A650;
             --success-text-low: #006633;
-            
-            /* Warning colors */
             --warning-surface: #FFF4E6;
             --warning-interactive: #FF9500;
             --warning-text-low: #995900;
-            
-            /* Danger colors */
             --danger-surface: #FFE6E6;
             --danger-interactive: #E53935;
             --danger-text-low: #B71C1C;
-            
-            /* Spacing */
-            --space-1: 4px;
-            --space-2: 8px;
-            --space-3: 12px;
-            --space-4: 16px;
-            --space-5: 20px;
-            --space-6: 24px;
-            --space-8: 32px;
-            --space-10: 40px;
-            --space-12: 48px;
-            
-            /* Border radius */
-            --radius-1: 4px;
-            --radius-2: 8px;
-            --radius-3: 12px;
-            --radius-4: 16px;
-            --radius-full: 9999px;
-            
-            /* Shadows */
+            --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+            --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+            --radius-1: 4px; --radius-2: 8px; --radius-3: 12px; --radius-full: 9999px;
             --shadow-level-1: 0 1px 3px rgba(0, 0, 0, 0.08);
-            --shadow-level-2: 0 4px 12px rgba(0, 0, 0, 0.12);
-            --shadow-level-3: 0 8px 24px rgba(0, 0, 0, 0.16);
-            
-            /* Typography */
             --font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            --font-size-caption: 12px;
-            --font-size-body: 14px;
-            --font-size-highlight: 16px;
-            --font-size-title: 20px;
-            --font-size-display: 28px;
-            
-            --font-weight-regular: 400;
-            --font-weight-medium: 500;
-            --font-weight-bold: 700;
-            
-            --line-height-tight: 1.25;
-            --line-height-normal: 1.5;
+            --font-size-caption: 12px; --font-size-body: 14px;
+            --font-size-highlight: 16px; --font-size-title: 20px; --font-size-display: 28px;
+            --font-weight-regular: 400; --font-weight-medium: 500; --font-weight-bold: 700;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: var(--font-family);
             background: var(--neutral-surface);
             min-height: 100vh;
             color: var(--neutral-text-high);
             font-size: var(--font-size-body);
-            line-height: var(--line-height-normal);
+            line-height: 1.5;
         }
-
-        /* App Shell */
         .app-header {
             background: var(--neutral-background);
             border-bottom: 1px solid var(--neutral-interactive);
             padding: var(--space-4) var(--space-6);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky; top: 0; z-index: 100;
         }
-
         .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
+            max-width: 1400px; margin: 0 auto;
+            display: flex; align-items: center; gap: var(--space-3);
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-
+        .logo { display: flex; align-items: center; gap: var(--space-2); }
         .logo-icon {
-            width: 32px;
-            height: 32px;
+            width: 32px; height: 32px;
             background: var(--primary-interactive);
             border-radius: var(--radius-2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: var(--font-weight-bold);
-            font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: var(--font-weight-bold); font-size: 18px;
         }
-
-        .logo-text {
-            font-size: var(--font-size-highlight);
-            font-weight: var(--font-weight-bold);
-            color: var(--neutral-text-high);
-        }
-
+        .logo-text { font-size: var(--font-size-highlight); font-weight: var(--font-weight-bold); }
         .logo-badge {
-            background: var(--neutral-surface);
-            color: var(--neutral-text-low);
-            font-size: var(--font-size-caption);
-            padding: var(--space-1) var(--space-2);
-            border-radius: var(--radius-full);
-            font-weight: var(--font-weight-medium);
+            background: var(--neutral-surface); color: var(--neutral-text-low);
+            font-size: var(--font-size-caption); padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-full); font-weight: var(--font-weight-medium);
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: var(--space-6);
-        }
-
-        /* Cards */
-        .card {
-            background: var(--neutral-background);
-            border-radius: var(--radius-3);
-            box-shadow: var(--shadow-level-1);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: var(--space-4) var(--space-5);
-            border-bottom: 1px solid var(--neutral-interactive);
-        }
-
-        .card-title {
-            font-size: var(--font-size-highlight);
-            font-weight: var(--font-weight-bold);
-            color: var(--neutral-text-high);
-        }
-
-        .card-body {
-            padding: var(--space-5);
-        }
-
-        /* Upload Section */
+        .container { max-width: 1400px; margin: 0 auto; padding: var(--space-6); }
         .upload-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-4);
-            margin-bottom: var(--space-6);
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4); margin-bottom: var(--space-6);
         }
-
         .upload-card {
             background: var(--neutral-background);
             border: 2px dashed var(--neutral-interactive);
-            border-radius: var(--radius-3);
-            padding: var(--space-5);
+            border-radius: var(--radius-3); padding: var(--space-5);
             transition: all 0.2s ease;
         }
-
-        .upload-card:hover {
-            border-color: var(--primary-interactive);
-            background: var(--primary-text-low);
-        }
-
-        .upload-card.loaded {
-            border-color: var(--success-interactive);
-            border-style: solid;
-            background: var(--success-surface);
-        }
-
+        .upload-card:hover { border-color: var(--primary-interactive); background: var(--primary-text-low); }
+        .upload-card.loaded { border-color: var(--success-interactive); border-style: solid; background: var(--success-surface); }
         .upload-card h3 {
-            font-size: var(--font-size-body);
-            font-weight: var(--font-weight-bold);
-            margin-bottom: var(--space-3);
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
+            font-size: var(--font-size-body); font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-2);
         }
-
-        .upload-card input[type="file"] {
-            display: none;
-        }
-
+        .upload-card input[type="file"] { display: none; }
         .upload-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-6);
-            cursor: pointer;
-            border-radius: var(--radius-2);
-            background: var(--neutral-surface);
-            transition: background 0.2s ease;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: var(--space-6); cursor: pointer; border-radius: var(--radius-2);
+            background: var(--neutral-surface); transition: background 0.2s ease;
         }
-
-        .upload-label:hover {
-            background: var(--neutral-surface-highlight);
-        }
-
-        .upload-icon {
-            font-size: 40px;
-            margin-bottom: var(--space-3);
-        }
-
-        .upload-text {
-            color: var(--neutral-text-low);
-            text-align: center;
-            font-size: var(--font-size-body);
-        }
-
+        .upload-label:hover { background: var(--neutral-surface-highlight); }
+        .upload-icon { font-size: 40px; margin-bottom: var(--space-3); }
+        .upload-text { color: var(--neutral-text-low); text-align: center; }
         .file-info {
-            margin-top: var(--space-3);
-            padding: var(--space-3);
-            background: var(--neutral-surface);
-            border-radius: var(--radius-2);
-            font-size: var(--font-size-caption);
-            color: var(--success-text-low);
+            margin-top: var(--space-3); padding: var(--space-3);
+            background: var(--neutral-surface); border-radius: var(--radius-2);
+            font-size: var(--font-size-caption); color: var(--success-text-low);
         }
-
-        /* Primary Button */
         .btn-primary {
-            display: block;
-            width: 100%;
-            padding: var(--space-4) var(--space-6);
-            font-size: var(--font-size-highlight);
-            font-weight: var(--font-weight-bold);
-            color: white;
-            background: var(--primary-interactive);
-            border: none;
-            border-radius: var(--radius-2);
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.1s ease;
-            margin-bottom: var(--space-6);
+            display: block; width: 100%; padding: var(--space-4) var(--space-6);
+            font-size: var(--font-size-highlight); font-weight: var(--font-weight-bold);
+            color: white; background: var(--primary-interactive); border: none;
+            border-radius: var(--radius-2); cursor: pointer;
+            transition: background 0.2s ease; margin-bottom: var(--space-6);
         }
-
-        .btn-primary:hover:not(:disabled) {
-            background: var(--primary-interactive-hover);
-        }
-
-        .btn-primary:active:not(:disabled) {
-            background: var(--primary-interactive-pressed);
-            transform: scale(0.99);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* Tabs */
+        .btn-primary:hover:not(:disabled) { background: var(--primary-interactive-hover); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
         .tabs {
-            display: flex;
-            gap: var(--space-1);
-            background: var(--neutral-background);
-            padding: var(--space-2);
-            border-radius: var(--radius-3);
-            box-shadow: var(--shadow-level-1);
-            margin-bottom: var(--space-5);
-            flex-wrap: wrap;
+            display: flex; gap: var(--space-1); background: var(--neutral-background);
+            padding: var(--space-2); border-radius: var(--radius-3);
+            box-shadow: var(--shadow-level-1); margin-bottom: var(--space-5); flex-wrap: wrap;
         }
-
         .tab {
-            flex: 1;
-            min-width: 100px;
-            padding: var(--space-3) var(--space-4);
-            border: none;
-            background: transparent;
-            border-radius: var(--radius-2);
-            cursor: pointer;
-            font-family: var(--font-family);
-            font-size: var(--font-size-body);
-            font-weight: var(--font-weight-medium);
-            color: var(--neutral-text-low);
+            flex: 1; min-width: 100px; padding: var(--space-3) var(--space-4);
+            border: none; background: transparent; border-radius: var(--radius-2);
+            cursor: pointer; font-family: var(--font-family); font-size: var(--font-size-body);
+            font-weight: var(--font-weight-medium); color: var(--neutral-text-low);
             transition: all 0.2s ease;
         }
-
-        .tab:hover {
-            background: var(--neutral-surface);
-            color: var(--neutral-text-high);
-        }
-
-        .tab.active {
-            background: var(--primary-interactive);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Metrics Grid */
+        .tab:hover { background: var(--neutral-surface); color: var(--neutral-text-high); }
+        .tab.active { background: var(--primary-interactive); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: var(--space-4);
-            margin-bottom: var(--space-6);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-4); margin-bottom: var(--space-6);
         }
-
         .metric-card {
-            background: var(--neutral-background);
-            border-radius: var(--radius-3);
-            padding: var(--space-5);
-            box-shadow: var(--shadow-level-1);
+            background: var(--neutral-background); border-radius: var(--radius-3);
+            padding: var(--space-5); box-shadow: var(--shadow-level-1);
             border-left: 4px solid var(--primary-interactive);
         }
-
-        .metric-card.success {
-            border-left-color: var(--success-interactive);
-        }
-
-        .metric-card.warning {
-            border-left-color: var(--warning-interactive);
-        }
-
-        .metric-card.danger {
-            border-left-color: var(--danger-interactive);
-        }
-
+        .metric-card.success { border-left-color: var(--success-interactive); }
+        .metric-card.warning { border-left-color: var(--warning-interactive); }
+        .metric-card.danger { border-left-color: var(--danger-interactive); }
         .metric-value {
-            font-size: var(--font-size-display);
-            font-weight: var(--font-weight-bold);
-            color: var(--neutral-text-high);
-            line-height: var(--line-height-tight);
+            font-size: var(--font-size-display); font-weight: var(--font-weight-bold);
+            color: var(--neutral-text-high); line-height: 1.25;
         }
-
         .metric-label {
-            font-size: var(--font-size-caption);
-            color: var(--neutral-text-low);
-            margin-top: var(--space-1);
-            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-caption); color: var(--neutral-text-low);
+            margin-top: var(--space-1); font-weight: var(--font-weight-medium);
         }
-
-        .metric-delta {
-            font-size: var(--font-size-caption);
-            margin-top: var(--space-2);
-            font-weight: var(--font-weight-medium);
-        }
-
-        .metric-delta.positive {
-            color: var(--success-interactive);
-        }
-
-        .metric-delta.negative {
-            color: var(--danger-interactive);
-        }
-
-        /* Charts */
+        .metric-delta { font-size: var(--font-size-caption); margin-top: var(--space-2); font-weight: var(--font-weight-medium); }
+        .metric-delta.positive { color: var(--success-interactive); }
+        .metric-delta.negative { color: var(--danger-interactive); }
         .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: var(--space-5);
         }
-
         .chart-card {
-            background: var(--neutral-background);
-            border-radius: var(--radius-3);
-            padding: var(--space-5);
-            box-shadow: var(--shadow-level-1);
+            background: var(--neutral-background); border-radius: var(--radius-3);
+            padding: var(--space-5); box-shadow: var(--shadow-level-1);
         }
-
         .chart-title {
-            font-size: var(--font-size-body);
-            font-weight: var(--font-weight-bold);
-            margin-bottom: var(--space-4);
-            color: var(--neutral-text-high);
+            font-size: var(--font-size-body); font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-4); color: var(--neutral-text-high);
         }
-
-        /* Alert/Info boxes */
         .alert {
-            padding: var(--space-4);
-            border-radius: var(--radius-2);
-            margin-bottom: var(--space-5);
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-3);
+            padding: var(--space-4); border-radius: var(--radius-2);
+            margin-bottom: var(--space-5); display: flex; align-items: flex-start; gap: var(--space-3);
         }
-
-        .alert-info {
-            background: var(--primary-text-low);
-            border-left: 4px solid var(--primary-interactive);
-        }
-
-        .alert-success {
-            background: var(--success-surface);
-            border-left: 4px solid var(--success-interactive);
-        }
-
-        .alert-warning {
-            background: var(--warning-surface);
-            border-left: 4px solid var(--warning-interactive);
-        }
-
-        .alert p {
-            margin: 0;
-            font-size: var(--font-size-body);
-        }
-
-        /* Tables */
+        .alert-info { background: var(--primary-text-low); border-left: 4px solid var(--primary-interactive); }
+        .alert-success { background: var(--success-surface); border-left: 4px solid var(--success-interactive); }
+        .alert-warning { background: var(--warning-surface); border-left: 4px solid var(--warning-interactive); }
+        .alert p { margin: 0; font-size: var(--font-size-body); }
         .table-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border-radius: var(--radius-2);
+            max-height: 400px; overflow-y: auto; border-radius: var(--radius-2);
             border: 1px solid var(--neutral-interactive);
         }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: var(--font-size-body);
-        }
-
+        .data-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-body); }
         .data-table th {
-            background: var(--neutral-surface);
-            padding: var(--space-3) var(--space-4);
-            text-align: left;
-            font-weight: var(--font-weight-bold);
-            font-size: var(--font-size-caption);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--neutral-text-low);
-            position: sticky;
-            top: 0;
-            border-bottom: 1px solid var(--neutral-interactive);
+            background: var(--neutral-surface); padding: var(--space-3) var(--space-4);
+            text-align: left; font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-caption); text-transform: uppercase;
+            position: sticky; top: 0; border-bottom: 1px solid var(--neutral-interactive);
         }
-
-        .data-table td {
-            padding: var(--space-3) var(--space-4);
-            border-bottom: 1px solid var(--neutral-interactive);
-        }
-
-        .data-table tr:hover {
-            background: var(--neutral-surface);
-        }
-
-        /* Section titles */
+        .data-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--neutral-interactive); }
+        .data-table tr:hover { background: var(--neutral-surface); }
         .section-title {
-            font-size: var(--font-size-title);
-            font-weight: var(--font-weight-bold);
-            color: var(--neutral-text-high);
-            margin: var(--space-8) 0 var(--space-4);
-            padding-bottom: var(--space-3);
-            border-bottom: 2px solid var(--neutral-interactive);
+            font-size: var(--font-size-title); font-weight: var(--font-weight-bold);
+            color: var(--neutral-text-high); margin: var(--space-8) 0 var(--space-4);
+            padding-bottom: var(--space-3); border-bottom: 2px solid var(--neutral-interactive);
         }
-
-        .section-subtitle {
-            color: var(--neutral-text-low);
-            font-size: var(--font-size-body);
-            margin-bottom: var(--space-5);
-        }
-
-        /* Summary box */
+        .section-subtitle { color: var(--neutral-text-low); font-size: var(--font-size-body); margin-bottom: var(--space-5); }
         .summary-box {
-            background: var(--neutral-surface);
-            border-radius: var(--radius-2);
-            padding: var(--space-5);
-            margin-top: var(--space-5);
+            background: var(--neutral-surface); border-radius: var(--radius-2);
+            padding: var(--space-5); margin-top: var(--space-5);
         }
-
-        .summary-box h4 {
-            font-weight: var(--font-weight-bold);
-            margin-bottom: var(--space-3);
-            font-size: var(--font-size-body);
-        }
-
-        .summary-box p {
-            color: var(--neutral-text-low);
-            line-height: var(--line-height-normal);
-        }
-
-        /* Loading */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: var(--space-12);
-        }
-
-        .loading.show {
-            display: block;
-        }
-
+        .summary-box h4 { font-weight: var(--font-weight-bold); margin-bottom: var(--space-3); }
+        .summary-box p { color: var(--neutral-text-low); line-height: 1.6; }
+        .loading { display: none; text-align: center; padding: var(--space-10); }
+        .loading.show { display: block; }
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--neutral-interactive);
-            border-top-color: var(--primary-interactive);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto var(--space-4);
+            width: 48px; height: 48px; border: 4px solid var(--neutral-interactive);
+            border-top-color: var(--primary-interactive); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto var(--space-4);
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .results-section {
-            display: none;
-        }
-
-        .results-section.show {
-            display: block;
-        }
-
-        /* Instructions */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .results-section { display: none; }
+        .results-section.show { display: block; }
         .instructions {
-            background: var(--neutral-background);
-            border-radius: var(--radius-3);
-            padding: var(--space-8);
-            box-shadow: var(--shadow-level-1);
+            background: var(--neutral-background); border-radius: var(--radius-3);
+            padding: var(--space-8); box-shadow: var(--shadow-level-1);
         }
-
-        .instructions h2 {
-            color: var(--neutral-text-high);
-            font-size: var(--font-size-title);
-            margin-bottom: var(--space-4);
-        }
-
-        .instructions p {
-            color: var(--neutral-text-low);
-            margin-bottom: var(--space-4);
-        }
-
-        .instructions table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: var(--space-5) 0;
-        }
-
-        .instructions th, .instructions td {
-            padding: var(--space-3) var(--space-4);
-            text-align: left;
-            border-bottom: 1px solid var(--neutral-interactive);
-        }
-
-        .instructions th {
-            background: var(--neutral-surface);
-            font-weight: var(--font-weight-bold);
-            font-size: var(--font-size-caption);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--neutral-text-low);
-        }
-
-        /* Badge/Tag */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-1);
-            padding: var(--space-1) var(--space-3);
-            border-radius: var(--radius-full);
-            font-size: var(--font-size-caption);
-            font-weight: var(--font-weight-medium);
-        }
-
-        .badge-primary {
-            background: var(--primary-text-low);
-            color: var(--primary-interactive);
-        }
-
-        .badge-success {
-            background: var(--success-surface);
-            color: var(--success-text-low);
-        }
-
-        .badge-warning {
-            background: var(--warning-surface);
-            color: var(--warning-text-low);
-        }
-
-        .badge-danger {
-            background: var(--danger-surface);
-            color: var(--danger-text-low);
-        }
-
-        /* Responsive */
+        .instructions h2 { font-size: var(--font-size-title); margin-bottom: var(--space-4); }
+        .instructions p { color: var(--neutral-text-low); margin-bottom: var(--space-4); }
+        .instructions table { width: 100%; border-collapse: collapse; margin: var(--space-5) 0; }
+        .instructions th, .instructions td { padding: var(--space-3) var(--space-4); text-align: left; border-bottom: 1px solid var(--neutral-interactive); }
+        .instructions th { background: var(--neutral-surface); font-weight: var(--font-weight-bold); font-size: var(--font-size-caption); text-transform: uppercase; }
         @media (max-width: 768px) {
-            .upload-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-content {
-                flex-wrap: wrap;
-            }
-
-            .tab {
-                min-width: 70px;
-                padding: var(--space-2) var(--space-3);
-                font-size: var(--font-size-caption);
-            }
-
-            .metric-value {
-                font-size: var(--font-size-title);
-            }
+            .upload-grid { grid-template-columns: 1fr; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .tab { min-width: 70px; padding: var(--space-2) var(--space-3); font-size: var(--font-size-caption); }
+            .metric-value { font-size: var(--font-size-title); }
         }
     </style>
 </head>
 <body>
-    <!-- App Header -->
     <header class="app-header">
         <div class="header-content">
             <div class="logo">
@@ -649,23 +233,21 @@
     </header>
 
     <div class="container">
-        <!-- Upload Section -->
         <div class="upload-grid">
             <div class="upload-card" id="webinar-card">
                 <h3>📋 Base de Participantes</h3>
                 <label class="upload-label" for="webinar-file">
                     <span class="upload-icon">📁</span>
-                    <span class="upload-text">Clique para selecionar<br>ou arraste o arquivo CSV</span>
+                    <span class="upload-text">Clique para selecionar CSV</span>
                 </label>
                 <input type="file" id="webinar-file" accept=".csv,.txt" onchange="handleWebinarFile(this)">
                 <div class="file-info" id="webinar-info" style="display: none;"></div>
             </div>
-
             <div class="upload-card" id="store-card">
                 <h3>🏪 Base Total de Lojas</h3>
                 <label class="upload-label" for="store-file">
                     <span class="upload-icon">📁</span>
-                    <span class="upload-text">Clique para selecionar<br>ou arraste o arquivo CSV</span>
+                    <span class="upload-text">Clique para selecionar CSV</span>
                 </label>
                 <input type="file" id="store-file" accept=".csv,.txt" onchange="handleStoreFile(this)">
                 <div class="file-info" id="store-info" style="display: none;"></div>
@@ -676,47 +258,23 @@
             Analisar Impacto dos Webinars
         </button>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Processando dados...</p>
-        </div>
+        <div class="loading" id="loading"><div class="spinner"></div><p>Processando dados...</p></div>
 
-        <!-- Instructions -->
         <div class="instructions" id="instructions">
             <h2>👋 Bem-vindo ao Webinar Impact Analyzer</h2>
             <p>Ferramenta para análise de impacto dos webinars nas métricas de negócio.</p>
-            
             <table>
-                <thead>
-                    <tr>
-                        <th>Análise</th>
-                        <th>Métricas</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Análise</th><th>Métricas</th></tr></thead>
                 <tbody>
-                    <tr>
-                        <td><strong>First Seller</strong></td>
-                        <td>Taxa de conversão para primeira venda por mês</td>
-                    </tr>
-                    <tr>
-                        <td><strong>GMV</strong></td>
-                        <td>Comparação de GMV atual entre grupos</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Status</strong></td>
-                        <td>Matriz de transição de status detalhada</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Perfil</strong></td>
-                        <td>Idade, tempo até first seller, distribuições</td>
-                    </tr>
+                    <tr><td><strong>First Seller</strong></td><td>Taxa de conversão para primeira venda</td></tr>
+                    <tr><td><strong>GMV</strong></td><td>Comparação de GMV por status</td></tr>
+                    <tr><td><strong>Status</strong></td><td>Matriz de transição detalhada</td></tr>
+                    <tr><td><strong>Perfil</strong></td><td>Características dos participantes</td></tr>
                 </tbody>
             </table>
-
-            <p>Faça upload dos dois arquivos CSV para começar a análise.</p>
+            <p>Faça upload dos dois arquivos CSV para começar.</p>
         </div>
 
-        <!-- Results Section -->
         <div class="results-section" id="results">
             <div class="tabs">
                 <button class="tab active" onclick="showTab('overview')">📈 Visão Geral</button>
@@ -726,34 +284,30 @@
                 <button class="tab" onclick="showTab('profile')">👤 Perfil</button>
             </div>
 
-            <!-- Overview Tab -->
             <div class="tab-content active" id="tab-overview">
                 <div class="metrics-grid" id="overview-metrics"></div>
                 <div class="charts-grid" id="overview-charts"></div>
             </div>
 
-            <!-- H1 Tab -->
             <div class="tab-content" id="tab-h1">
                 <h2 class="section-title">Conversão para First Seller</h2>
-                <p class="section-subtitle">Taxa de conversão por mês para comparação com base histórica</p>
+                <p class="section-subtitle">Participantes que NÃO tinham first_seller_at e converteram após o webinar</p>
                 <div class="alert alert-info">
-                    <p>📊 Use estes dados para comparar com sua base histórica de conversão.</p>
+                    <p>📊 <strong>Lógica:</strong> Considera quem tinha o campo first_seller_at VAZIO no momento do webinar e depois passou a ter. Conversões em meses posteriores são consideradas.</p>
                 </div>
                 <div class="metrics-grid" id="h1-metrics"></div>
                 <div class="charts-grid" id="h1-charts"></div>
                 <div id="h1-table"></div>
             </div>
 
-            <!-- H2 Tab -->
             <div class="tab-content" id="tab-h2">
-                <h2 class="section-title">Impacto no GMV</h2>
-                <p class="section-subtitle">Comparação de GMV atual entre participantes e grupo de controle</p>
-                <div id="h2-significance"></div>
+                <h2 class="section-title">Análise de GMV</h2>
+                <p class="section-subtitle">Comparação de GMV médio por status entre participantes e base geral</p>
+                <div id="h2-summary"></div>
                 <div class="metrics-grid" id="h2-metrics"></div>
                 <div class="charts-grid" id="h2-charts"></div>
             </div>
 
-            <!-- H3 Tab -->
             <div class="tab-content" id="tab-h3">
                 <h2 class="section-title">Evolução de Status</h2>
                 <p class="section-subtitle">Análise detalhada de transição: de onde vieram e para onde foram</p>
@@ -765,10 +319,9 @@
                 <div id="h3-details"></div>
             </div>
 
-            <!-- Profile Tab -->
             <div class="tab-content" id="tab-profile">
                 <h2 class="section-title">Perfil dos Participantes</h2>
-                <p class="section-subtitle">Insights sobre quem são os participantes dos webinars</p>
+                <p class="section-subtitle">Características e comportamentos dos participantes dos webinars</p>
                 <div class="metrics-grid" id="profile-metrics"></div>
                 <div class="charts-grid" id="profile-charts"></div>
                 <div id="profile-insights"></div>
@@ -777,90 +330,83 @@
     </div>
 
     <script>
-        // Global data storage
         let webinarData = null;
         let storeData = null;
         let analysisResults = null;
 
-        // Nimbus color palette for charts
         const CHART_COLORS = {
-            primary: '#0066E5',
-            primaryLight: '#E6F0FF',
-            secondary: '#8C8C8C',
-            success: '#00A650',
-            successLight: '#E6F9ED',
-            warning: '#FF9500',
-            warningLight: '#FFF4E6',
-            danger: '#E53935',
-            dangerLight: '#FFE6E6',
-            neutral: '#F7F7F8'
+            primary: '#0066E5', primaryLight: '#E6F0FF', secondary: '#8C8C8C',
+            success: '#00A650', successLight: '#E6F9ED',
+            warning: '#FF9500', warningLight: '#FFF4E6',
+            danger: '#E53935', dangerLight: '#FFE6E6', neutral: '#F7F7F8'
         };
 
-        // Status order for comparisons
         const STATUS_ORDER = {
-            '': -1,
-            'no-seller': 0,
-            'struggling-seller': 1,
-            'tiny-seller': 2,
-            'small-seller': 3,
-            'medium-seller': 4,
-            'large-seller': 5,
-            'top-seller': 6
+            '': -1, 'no-seller': 0, 'struggling-seller': 1, 'tiny-seller': 2,
+            'small-seller': 3, 'medium-seller': 4, 'large-seller': 5, 'top-seller': 6
         };
 
         const STATUS_LIST = ['no-seller', 'struggling-seller', 'tiny-seller', 'small-seller', 'medium-seller', 'large-seller', 'top-seller'];
-
         const STATUS_LABELS = {
-            'no-seller': 'No Seller',
-            'struggling-seller': 'Struggling',
-            'tiny-seller': 'Tiny',
-            'small-seller': 'Small',
-            'medium-seller': 'Medium',
-            'large-seller': 'Large',
-            'top-seller': 'Top'
+            'no-seller': 'No Seller', 'struggling-seller': 'Struggling', 'tiny-seller': 'Tiny',
+            'small-seller': 'Small', 'medium-seller': 'Medium', 'large-seller': 'Large', 'top-seller': 'Top'
         };
-
         const STATUS_COLORS = {
-            'no-seller': '#E53935',
-            'struggling-seller': '#FF9500',
-            'tiny-seller': '#FFB800',
-            'small-seller': '#84CC16',
-            'medium-seller': '#00A650',
-            'large-seller': '#00B8A9',
-            'top-seller': '#0066E5'
+            'no-seller': '#E53935', 'struggling-seller': '#FF9500', 'tiny-seller': '#FFB800',
+            'small-seller': '#84CC16', 'medium-seller': '#00A650', 'large-seller': '#00B8A9', 'top-seller': '#0066E5'
         };
 
-        // Plotly layout defaults (Nimbus-inspired)
         const PLOTLY_LAYOUT = {
             font: { family: 'Geist, -apple-system, sans-serif', size: 12, color: '#14171A' },
-            paper_bgcolor: 'white',
-            plot_bgcolor: 'white',
+            paper_bgcolor: 'white', plot_bgcolor: 'white',
             margin: { t: 50, r: 20, b: 50, l: 50 },
-            colorway: ['#0066E5', '#00A650', '#FF9500', '#E53935', '#8C8C8C', '#00B8A9', '#84CC16']
+            colorway: ['#0066E5', '#00A650', '#FF9500', '#E53935', '#8C8C8C']
         };
 
-        // Parse date in DD/MM/YYYY format
         function parseDate(dateStr) {
-            if (!dateStr || dateStr === '') return null;
-            const parts = dateStr.split('/');
+            if (!dateStr || dateStr.toString().trim() === '') return null;
+            const str = dateStr.toString().trim();
+            const parts = str.split('/');
             if (parts.length !== 3) return null;
-            return new Date(parts[2], parts[1] - 1, parts[0]);
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const year = parseInt(parts[2]);
+            if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
+            return new Date(year, month, day);
         }
 
-        // File handlers
+        function isEmptyField(value) {
+            return value === null || value === undefined || value.toString().trim() === '';
+        }
+
+        function getWebinarMonthDate(monthStr) {
+            if (!monthStr) return null;
+            const monthNames = {
+                'january': 0, 'february': 1, 'march': 2, 'april': 3,
+                'may': 4, 'june': 5, 'july': 6, 'august': 7,
+                'september': 8, 'october': 9, 'november': 10, 'december': 11
+            };
+            const match = monthStr.match(/(\d{4})/);
+            if (!match) return null;
+            const year = parseInt(match[1]);
+            const lowerStr = monthStr.toLowerCase();
+            for (const [name, num] of Object.entries(monthNames)) {
+                if (lowerStr.includes(name)) {
+                    return new Date(year, num, 1);
+                }
+            }
+            return null;
+        }
+
         function handleWebinarFile(input) {
             const file = input.files[0];
             if (!file) return;
-
             Papa.parse(file, {
-                header: true,
-                delimiter: '\t',
-                skipEmptyLines: true,
+                header: true, delimiter: '\t', skipEmptyLines: true,
                 complete: function(results) {
                     if (!results.data[0] || !results.data[0].store_id) {
                         Papa.parse(file, {
-                            header: true,
-                            skipEmptyLines: true,
+                            header: true, skipEmptyLines: true,
                             complete: function(results2) {
                                 webinarData = results2.data;
                                 updateFileInfo('webinar', file.name, webinarData.length);
@@ -877,16 +423,12 @@
         function handleStoreFile(input) {
             const file = input.files[0];
             if (!file) return;
-
             Papa.parse(file, {
-                header: true,
-                delimiter: '\t',
-                skipEmptyLines: true,
+                header: true, delimiter: '\t', skipEmptyLines: true,
                 complete: function(results) {
                     if (!results.data[0] || !results.data[0].store_id) {
                         Papa.parse(file, {
-                            header: true,
-                            skipEmptyLines: true,
+                            header: true, skipEmptyLines: true,
                             complete: function(results2) {
                                 storeData = processStoreData(results2.data);
                                 updateFileInfo('store', file.name, storeData.length);
@@ -916,29 +458,23 @@
         function updateFileInfo(type, filename, rows) {
             const card = document.getElementById(`${type}-card`);
             const info = document.getElementById(`${type}-info`);
-            
             card.classList.add('loaded');
             info.style.display = 'block';
             info.innerHTML = `✅ <strong>${filename}</strong> — ${rows.toLocaleString()} registros`;
-            
             checkReadyToAnalyze();
         }
 
         function checkReadyToAnalyze() {
-            const btn = document.getElementById('analyze-btn');
-            btn.disabled = !(webinarData && storeData);
+            document.getElementById('analyze-btn').disabled = !(webinarData && storeData);
         }
 
-        // Tab handling
         function showTab(tabId) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        // Analysis functions
         function runAnalysis() {
             document.getElementById('loading').classList.add('show');
             document.getElementById('instructions').style.display = 'none';
@@ -947,6 +483,7 @@
             setTimeout(() => {
                 try {
                     analysisResults = performAnalysis();
+                    console.log('Analysis results:', analysisResults);
                     renderResults();
                     document.getElementById('loading').classList.remove('show');
                     document.getElementById('results').classList.add('show');
@@ -959,85 +496,95 @@
         }
 
         function performAnalysis() {
-            // Process webinar data with dates
-            const processedWebinar = webinarData.map(row => ({
-                ...row,
-                store_id: row.store_id,
-                webinar_month: row['Data do Webinar (mês)'] || '',
-                webinar_name: row.webinar_name || '',
-                webinar_status: row.webinar_status || '',
-                first_seller_at: row.first_seller_at || '',
-                first_seller_date: parseDate(row.first_seller_at),
-                created_at: row.created_at || '',
-                created_date: parseDate(row.created_at),
-                status_at_webinar: (row['Máx. Seller Segment Mes Webinar'] || '').toLowerCase().trim(),
-                status_before_webinar: (row['Máx. Seller Segment Mes-1 Webinar'] || '').toLowerCase().trim()
-            }));
+            // Processar dados de webinar
+            const processedWebinar = webinarData.map(row => {
+                const firstSellerRaw = row.first_seller_at;
+                const firstSellerDate = parseDate(firstSellerRaw);
+                const webinarMonthDate = getWebinarMonthDate(row['Data do Webinar (mês)']);
+                
+                // Campo vazio = não tinha first seller no momento do webinar
+                const hadNoFirstSellerAtWebinar = isEmptyField(firstSellerRaw);
+                
+                // Se tem data de first_seller e é POSTERIOR ao webinar, converteu depois
+                // Se não tem data, verificamos pelo status atual depois
+                const convertedAfterWebinar = !hadNoFirstSellerAtWebinar && firstSellerDate && webinarMonthDate && firstSellerDate >= webinarMonthDate;
+                
+                return {
+                    ...row,
+                    store_id: row.store_id,
+                    webinar_month: row['Data do Webinar (mês)'] || '',
+                    webinar_name: row.webinar_name || '',
+                    webinar_status: row.webinar_status || '',
+                    first_seller_raw: firstSellerRaw,
+                    first_seller_date: firstSellerDate,
+                    webinar_month_date: webinarMonthDate,
+                    had_no_first_seller: hadNoFirstSellerAtWebinar,
+                    created_at: row.created_at || '',
+                    created_date: parseDate(row.created_at),
+                    status_at_webinar: (row['Máx. Seller Segment Mes Webinar'] || '').toLowerCase().trim()
+                };
+            });
 
-            // Create participants summary
-            const participantIds = new Set();
+            console.log('Sample webinar data:', processedWebinar.slice(0, 5));
+            console.log('Count with no first_seller:', processedWebinar.filter(r => r.had_no_first_seller).length);
+
+            // Criar mapa de participantes (lojas únicas)
             const participantMap = new Map();
-
             processedWebinar.forEach(row => {
                 const storeId = row.store_id;
                 if (!storeId) return;
-                
-                participantIds.add(storeId);
                 
                 if (!participantMap.has(storeId)) {
                     participantMap.set(storeId, {
                         store_id: storeId,
                         webinar_count: 0,
-                        webinars: [],
-                        first_seller_at: row.first_seller_at,
+                        first_webinar_month: row.webinar_month,
+                        first_webinar_date: row.webinar_month_date,
+                        first_seller_raw: row.first_seller_raw,
                         first_seller_date: row.first_seller_date,
-                        created_at: row.created_at,
+                        had_no_first_seller_at_webinar: row.had_no_first_seller,
                         created_date: row.created_date,
-                        status_at_webinar: row.status_at_webinar,
-                        webinar_month: row.webinar_month,
-                        webinar_status: row.webinar_status
+                        status_at_webinar: row.status_at_webinar
                     });
                 }
                 participantMap.get(storeId).webinar_count++;
-                participantMap.get(storeId).webinars.push({
-                    month: row.webinar_month,
-                    name: row.webinar_name,
-                    status: row.webinar_status
-                });
             });
 
-            // Merge with store data
+            // Merge com dados de loja
             const participants = [];
             const control = [];
 
             storeData.forEach(store => {
                 if (participantMap.has(store.store_id)) {
                     const p = participantMap.get(store.store_id);
+                    
+                    // Se não tinha first_seller no webinar mas agora tem status de seller, converteu
+                    const isNowSeller = !['', 'no-seller'].includes(store.current_status);
+                    const convertedToSeller = p.had_no_first_seller_at_webinar && isNowSeller;
+                    
                     participants.push({
                         ...store,
                         ...p,
-                        status_at_webinar: p.status_at_webinar || '',
-                        current_status: store.current_status || ''
+                        current_status: store.current_status || '',
+                        is_now_seller: isNowSeller,
+                        converted_to_seller: convertedToSeller
                     });
                 } else {
                     control.push(store);
                 }
             });
 
-            // Run analyses
+            console.log('Participants with no FS at webinar:', participants.filter(p => p.had_no_first_seller_at_webinar).length);
+            console.log('Participants converted:', participants.filter(p => p.converted_to_seller).length);
+
             const h1 = analyzeFirstSeller(participants, processedWebinar);
-            const h2 = analyzeGMV(participants, control);
+            const h2 = analyzeGMV(participants, control, storeData);
             const h3 = analyzeStatusEvolution(participants, control);
             const profile = analyzeProfile(participants, processedWebinar);
 
             return {
-                participants,
-                control,
-                webinarData: processedWebinar,
-                h1,
-                h2,
-                h3,
-                profile,
+                participants, control, webinarData: processedWebinar,
+                h1, h2, h3, profile,
                 overview: {
                     participantCount: participants.length,
                     controlCount: control.length,
@@ -1049,6 +596,7 @@
         }
 
         function analyzeFirstSeller(participants, webinarData) {
+            // Análise por mês
             const byMonth = {};
             const monthOrder = [];
             
@@ -1059,137 +607,142 @@
                 if (!byMonth[month]) {
                     byMonth[month] = {
                         month,
-                        total: 0,
-                        noSellerAtStart: 0,
-                        convertedAfter: 0,
-                        stores: new Set()
+                        stores: new Map(),
+                        webinarDate: row.webinar_month_date
                     };
                     monthOrder.push(month);
                 }
                 
+                // Só conta primeira participação de cada loja no mês
                 if (!byMonth[month].stores.has(row.store_id)) {
-                    byMonth[month].stores.add(row.store_id);
-                    byMonth[month].total++;
-                    
-                    const wasNoSeller = ['', 'no-seller'].includes(row.status_at_webinar);
-                    if (wasNoSeller) {
-                        byMonth[month].noSellerAtStart++;
-                    }
-                    
-                    if (wasNoSeller && row.first_seller_date) {
-                        const webinarMonthMatch = month.match(/(\w+)\s+(\d{4})/);
-                        if (webinarMonthMatch) {
-                            const monthNames = {
-                                'january': 0, 'february': 1, 'march': 2, 'april': 3,
-                                'may': 4, 'june': 5, 'july': 6, 'august': 7,
-                                'september': 8, 'october': 9, 'november': 10, 'december': 11
-                            };
-                            const monthName = month.toLowerCase().split(' - ')[1]?.split(' ')[0] || '';
-                            const year = parseInt(webinarMonthMatch[2]);
-                            const monthNum = monthNames[monthName];
-                            
-                            if (monthNum !== undefined) {
-                                const webinarDate = new Date(year, monthNum, 1);
-                                if (row.first_seller_date >= webinarDate) {
-                                    byMonth[month].convertedAfter++;
-                                }
-                            }
-                        }
-                    }
+                    byMonth[month].stores.set(row.store_id, {
+                        had_no_first_seller: row.had_no_first_seller,
+                        first_seller_date: row.first_seller_date,
+                        webinar_date: row.webinar_month_date
+                    });
                 }
             });
 
+            // Ordenar meses
             const sortedMonths = monthOrder.sort((a, b) => {
-                const getMonthNum = (m) => {
-                    const match = m.match(/Month\s+(\d+)/);
-                    return match ? parseInt(match[1]) : 0;
-                };
-                return getMonthNum(a) - getMonthNum(b);
+                const getNum = m => parseInt((m.match(/Month\s+(\d+)/) || [0, 0])[1]);
+                return getNum(a) - getNum(b);
             });
 
-            const monthlyData = sortedMonths.map(month => ({
-                month: month.replace('Month ', 'M').split(' - ')[0],
-                fullMonth: month,
-                total: byMonth[month].total,
-                noSellerAtStart: byMonth[month].noSellerAtStart,
-                converted: byMonth[month].convertedAfter,
-                conversionRate: byMonth[month].noSellerAtStart > 0 
-                    ? (byMonth[month].convertedAfter / byMonth[month].noSellerAtStart * 100) 
-                    : 0
-            }));
+            // Buscar status atual das lojas
+            const storeCurrentStatus = new Map();
+            participants.forEach(p => {
+                storeCurrentStatus.set(p.store_id, p.current_status);
+            });
 
-            const totalNoSeller = participants.filter(p => 
-                ['', 'no-seller'].includes(p.status_at_webinar)
-            ).length;
-            
-            const totalConverted = participants.filter(p =>
-                ['', 'no-seller'].includes(p.status_at_webinar) &&
-                !['', 'no-seller'].includes(p.current_status)
-            ).length;
+            const monthlyData = sortedMonths.map(month => {
+                const data = byMonth[month];
+                let total = 0;
+                let withoutFirstSeller = 0;
+                let converted = 0;
+
+                data.stores.forEach((storeData, storeId) => {
+                    total++;
+                    
+                    // Quem não tinha first_seller_at preenchido
+                    if (storeData.had_no_first_seller) {
+                        withoutFirstSeller++;
+                        
+                        // Verifica se agora é seller (baseado no status atual)
+                        const currentStatus = storeCurrentStatus.get(storeId) || '';
+                        const isNowSeller = !['', 'no-seller'].includes(currentStatus);
+                        
+                        if (isNowSeller) {
+                            converted++;
+                        }
+                    }
+                });
+
+                const rate = withoutFirstSeller > 0 ? (converted / withoutFirstSeller * 100) : 0;
+
+                return {
+                    month: month.replace('Month ', 'M').split(' - ')[0],
+                    fullMonth: month,
+                    total,
+                    withoutFirstSeller,
+                    converted,
+                    conversionRate: rate
+                };
+            });
+
+            // Totais gerais
+            const totalWithoutFS = participants.filter(p => p.had_no_first_seller_at_webinar).length;
+            const totalConverted = participants.filter(p => p.converted_to_seller).length;
+            const overallRate = totalWithoutFS > 0 ? (totalConverted / totalWithoutFS * 100) : 0;
+
+            console.log('H1 Results:', { totalWithoutFS, totalConverted, overallRate, monthlyData });
 
             return {
                 byMonth: monthlyData,
                 total: participants.length,
-                noSellerAtStart: totalNoSeller,
+                withoutFirstSeller: totalWithoutFS,
                 converted: totalConverted,
-                overallRate: totalNoSeller > 0 ? (totalConverted / totalNoSeller * 100) : 0
+                overallRate
             };
         }
 
-        function analyzeGMV(participants, control) {
-            const pGmv30 = participants.map(p => p.gmv_d30).filter(v => !isNaN(v));
-            const cGmv30 = control.map(c => c.gmv_d30).filter(v => !isNaN(v));
-
-            const pStats = calculateStats(pGmv30);
-            const cStats = calculateStats(cGmv30);
-
-            const tTestResult = tTest(pGmv30, cGmv30);
-
-            const meanDiffPct = cStats.mean > 0 ? 
-                ((pStats.mean - cStats.mean) / cStats.mean * 100) : 0;
-
+        function analyzeGMV(participants, control, allStores) {
             const gmvByStatus = {};
+            
             STATUS_LIST.forEach(status => {
-                const pValues = participants.filter(p => p.current_status === status).map(p => p.gmv_d30);
-                const cValues = control.filter(c => c.current_status === status).map(c => c.gmv_d30);
+                const pValues = participants.filter(p => p.current_status === status).map(p => p.gmv_d30).filter(v => v > 0);
+                const allValues = allStores.filter(s => s.current_status === status).map(s => s.gmv_d30).filter(v => v > 0);
+                
+                const pStats = calculateStats(pValues);
+                const allStats = calculateStats(allValues);
+                
                 gmvByStatus[status] = {
-                    participants: calculateStats(pValues),
-                    control: calculateStats(cValues)
+                    participants: pStats,
+                    allStores: allStats,
+                    diffPct: allStats.mean > 0 ? ((pStats.mean - allStats.mean) / allStats.mean * 100) : 0
                 };
             });
 
+            const pGmv = participants.map(p => p.gmv_d30).filter(v => v > 0);
+            const allGmv = allStores.map(s => s.gmv_d30).filter(v => v > 0);
+            
+            const pStats = calculateStats(pGmv);
+            const allStats = calculateStats(allGmv);
+            const cStats = calculateStats(control.map(c => c.gmv_d30).filter(v => v > 0));
+
+            let aboveAvgCount = 0;
+            let totalWithStatus = 0;
+            
+            participants.forEach(p => {
+                if (p.current_status && gmvByStatus[p.current_status] && p.gmv_d30 > 0) {
+                    totalWithStatus++;
+                    if (p.gmv_d30 > gmvByStatus[p.current_status].allStores.mean) {
+                        aboveAvgCount++;
+                    }
+                }
+            });
+
             return {
-                participants: pStats,
-                control: cStats,
-                tTest: tTestResult,
-                meanDiffPct,
-                byStatus: gmvByStatus
+                participants: pStats, allStores: allStats, control: cStats,
+                byStatus: gmvByStatus,
+                aboveAvgCount,
+                aboveAvgPct: totalWithStatus > 0 ? (aboveAvgCount / totalWithStatus * 100) : 0,
+                diffPct: allStats.mean > 0 ? ((pStats.mean - allStats.mean) / allStats.mean * 100) : 0
             };
         }
 
         function analyzeStatusEvolution(participants, control) {
             const transitions = { upgrade: 0, maintained: 0, downgrade: 0, unknown: 0 };
-            
             const transitionMatrix = {};
             STATUS_LIST.forEach(from => {
                 transitionMatrix[from] = {};
-                STATUS_LIST.forEach(to => {
-                    transitionMatrix[from][to] = 0;
-                });
+                STATUS_LIST.forEach(to => { transitionMatrix[from][to] = 0; });
             });
 
             const transitionsByInitial = {};
             STATUS_LIST.forEach(status => {
-                transitionsByInitial[status] = {
-                    total: 0,
-                    upgrade: 0,
-                    maintained: 0,
-                    downgrade: 0,
-                    destinations: {}
-                };
-                STATUS_LIST.forEach(dest => {
-                    transitionsByInitial[status].destinations[dest] = 0;
-                });
+                transitionsByInitial[status] = { total: 0, upgrade: 0, maintained: 0, downgrade: 0, destinations: {} };
+                STATUS_LIST.forEach(dest => { transitionsByInitial[status].destinations[dest] = 0; });
             });
 
             participants.forEach(p => {
@@ -1203,61 +756,35 @@
                     return;
                 }
 
-                if (transitionMatrix[before]) {
-                    transitionMatrix[before][after]++;
-                }
-
+                if (transitionMatrix[before]) transitionMatrix[before][after]++;
                 if (transitionsByInitial[before]) {
                     transitionsByInitial[before].total++;
                     transitionsByInitial[before].destinations[after]++;
-                    
-                    if (afterNum > beforeNum) {
-                        transitions.upgrade++;
-                        transitionsByInitial[before].upgrade++;
-                    } else if (afterNum < beforeNum) {
-                        transitions.downgrade++;
-                        transitionsByInitial[before].downgrade++;
-                    } else {
-                        transitions.maintained++;
-                        transitionsByInitial[before].maintained++;
-                    }
+                    if (afterNum > beforeNum) { transitions.upgrade++; transitionsByInitial[before].upgrade++; }
+                    else if (afterNum < beforeNum) { transitions.downgrade++; transitionsByInitial[before].downgrade++; }
+                    else { transitions.maintained++; transitionsByInitial[before].maintained++; }
                 }
             });
 
             const total = transitions.upgrade + transitions.maintained + transitions.downgrade;
-
-            const pDist = {};
-            const cDist = {};
-            
+            const pDist = {}, cDist = {};
             STATUS_LIST.forEach(s => {
                 pDist[s] = participants.filter(p => p.current_status === s).length;
                 cDist[s] = control.filter(c => c.current_status === s).length;
             });
 
             return {
-                transitions,
-                total,
+                transitions, total,
                 upgradeRate: total > 0 ? (transitions.upgrade / total * 100) : 0,
                 maintainedRate: total > 0 ? (transitions.maintained / total * 100) : 0,
                 downgradeRate: total > 0 ? (transitions.downgrade / total * 100) : 0,
-                transitionMatrix,
-                transitionsByInitial,
-                participantsDist: pDist,
-                controlDist: cDist
+                transitionMatrix, transitionsByInitial, participantsDist: pDist, controlDist: cDist
             };
         }
 
         function analyzeProfile(participants, webinarData) {
             const ages = participants.map(p => p.store_age_days).filter(a => a > 0);
-            const ageCategories = {
-                '0-30 dias': 0,
-                '31-90 dias': 0,
-                '91-180 dias': 0,
-                '181-365 dias': 0,
-                '1-2 anos': 0,
-                '2+ anos': 0
-            };
-            
+            const ageCategories = { '0-30 dias': 0, '31-90 dias': 0, '91-180 dias': 0, '181-365 dias': 0, '1-2 anos': 0, '2+ anos': 0 };
             ages.forEach(age => {
                 if (age <= 30) ageCategories['0-30 dias']++;
                 else if (age <= 90) ageCategories['31-90 dias']++;
@@ -1268,34 +795,33 @@
             });
 
             const timeToFirstSeller = [];
+            const timeCategories = { '0-30 dias': 0, '31-60 dias': 0, '61-90 dias': 0, '91-120 dias': 0, '121-180 dias': 0, '181-365 dias': 0, '365+ dias': 0 };
+            
             participants.forEach(p => {
                 if (p.created_date && p.first_seller_date && p.first_seller_date > p.created_date) {
                     const days = Math.floor((p.first_seller_date - p.created_date) / (1000 * 60 * 60 * 24));
                     if (days >= 0 && days < 3650) {
                         timeToFirstSeller.push(days);
+                        if (days <= 30) timeCategories['0-30 dias']++;
+                        else if (days <= 60) timeCategories['31-60 dias']++;
+                        else if (days <= 90) timeCategories['61-90 dias']++;
+                        else if (days <= 120) timeCategories['91-120 dias']++;
+                        else if (days <= 180) timeCategories['121-180 dias']++;
+                        else if (days <= 365) timeCategories['181-365 dias']++;
+                        else timeCategories['365+ dias']++;
                     }
                 }
             });
 
             const statusAtWebinar = {};
-            STATUS_LIST.forEach(s => {
-                statusAtWebinar[s] = participants.filter(p => p.status_at_webinar === s).length;
-            });
+            STATUS_LIST.forEach(s => { statusAtWebinar[s] = participants.filter(p => p.status_at_webinar === s).length; });
             statusAtWebinar['sem status'] = participants.filter(p => !p.status_at_webinar || p.status_at_webinar === '').length;
 
-            const participationType = {
-                'live': 0,
-                'on-demand': 0,
-                'registered': 0,
-                'outro': 0
-            };
+            const participationType = { 'live': 0, 'on-demand': 0, 'registered': 0, 'outro': 0 };
             webinarData.forEach(row => {
                 const status = (row.webinar_status || '').toLowerCase();
-                if (participationType[status] !== undefined) {
-                    participationType[status]++;
-                } else {
-                    participationType['outro']++;
-                }
+                if (participationType[status] !== undefined) participationType[status]++;
+                else participationType['outro']++;
             });
 
             const webinarCountDist = {};
@@ -1305,85 +831,50 @@
                 webinarCountDist[key] = (webinarCountDist[key] || 0) + 1;
             });
 
+            const webinarsByMonth = {};
+            webinarData.forEach(row => {
+                const month = row.webinar_month;
+                if (!month) return;
+                if (!webinarsByMonth[month]) webinarsByMonth[month] = new Set();
+                webinarsByMonth[month].add(row.store_id);
+            });
+            
+            const avgWebinarsByMonth = Object.entries(webinarsByMonth).map(([month, stores]) => {
+                const storeParticipations = {};
+                webinarData.filter(r => r.webinar_month === month).forEach(r => {
+                    storeParticipations[r.store_id] = (storeParticipations[r.store_id] || 0) + 1;
+                });
+                return {
+                    month: month.replace('Month ', 'M').split(' - ')[0],
+                    fullMonth: month,
+                    uniqueStores: stores.size,
+                    avgWebinars: Object.values(storeParticipations).reduce((a,b) => a+b, 0) / stores.size
+                };
+            }).sort((a, b) => parseInt(a.month.replace('M', '')) - parseInt(b.month.replace('M', '')));
+
             const webinarCounts = {};
             webinarData.forEach(row => {
-                const name = row.webinar_name;
-                if (name) {
-                    webinarCounts[name] = (webinarCounts[name] || 0) + 1;
-                }
+                if (row.webinar_name) webinarCounts[row.webinar_name] = (webinarCounts[row.webinar_name] || 0) + 1;
             });
-            const topWebinars = Object.entries(webinarCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
+            const topWebinars = Object.entries(webinarCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
             return {
-                ageCategories,
-                ageStats: calculateStats(ages),
-                timeToFirstSeller,
-                timeToFirstSellerStats: calculateStats(timeToFirstSeller),
-                statusAtWebinar,
-                participationType,
-                webinarCountDist,
-                topWebinars,
-                totalParticipants: participants.length,
-                uniqueStores: new Set(participants.map(p => p.store_id)).size
+                ageCategories, ageStats: calculateStats(ages),
+                timeToFirstSeller, timeCategories, timeToFirstSellerStats: calculateStats(timeToFirstSeller),
+                statusAtWebinar, participationType, webinarCountDist,
+                avgWebinarsByMonth, topWebinars, totalParticipants: participants.length
             };
         }
 
-        // Statistical functions
         function calculateStats(arr) {
             if (!arr || arr.length === 0) return { mean: 0, median: 0, std: 0, count: 0 };
-            
             const sorted = [...arr].sort((a, b) => a - b);
             const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
             const median = sorted[Math.floor(sorted.length / 2)];
             const variance = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / arr.length;
-            const std = Math.sqrt(variance);
-
-            return { mean, median, std, count: arr.length };
+            return { mean, median, std: Math.sqrt(variance), count: arr.length };
         }
 
-        function tTest(arr1, arr2) {
-            if (!arr1 || !arr2 || arr1.length < 2 || arr2.length < 2) {
-                return { statistic: 0, pValue: 1, significant: false };
-            }
-
-            const stats1 = calculateStats(arr1);
-            const stats2 = calculateStats(arr2);
-
-            const se = Math.sqrt((stats1.std * stats1.std / stats1.count) + 
-                                 (stats2.std * stats2.std / stats2.count));
-            
-            if (se === 0) return { statistic: 0, pValue: 1, significant: false };
-
-            const t = (stats1.mean - stats2.mean) / se;
-            const pValue = 2 * (1 - normalCDF(Math.abs(t)));
-
-            return {
-                statistic: t,
-                pValue,
-                significant: pValue < 0.05
-            };
-        }
-
-        function normalCDF(x) {
-            const a1 =  0.254829592;
-            const a2 = -0.284496736;
-            const a3 =  1.421413741;
-            const a4 = -1.453152027;
-            const a5 =  1.061405429;
-            const p  =  0.3275911;
-
-            const sign = x < 0 ? -1 : 1;
-            x = Math.abs(x) / Math.sqrt(2);
-
-            const t = 1.0 / (1.0 + p * x);
-            const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-
-            return 0.5 * (1.0 + sign * y);
-        }
-
-        // Rendering functions
         function renderResults() {
             renderOverview();
             renderH1();
@@ -1395,35 +886,16 @@
         function renderOverview() {
             const o = analysisResults.overview;
             const h1 = analysisResults.h1;
+            const h2 = analysisResults.h2;
             const h3 = analysisResults.h3;
 
             document.getElementById('overview-metrics').innerHTML = `
-                <div class="metric-card">
-                    <div class="metric-value">${o.participantCount.toLocaleString()}</div>
-                    <div class="metric-label">Lojas Participantes</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">${o.controlCount.toLocaleString()}</div>
-                    <div class="metric-label">Grupo de Controle</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">${o.totalParticipations.toLocaleString()}</div>
-                    <div class="metric-label">Total Participações</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">${o.webinarCount}</div>
-                    <div class="metric-label">Webinars</div>
-                </div>
-                <div class="metric-card success">
-                    <div class="metric-value">${h1.overallRate.toFixed(1)}%</div>
-                    <div class="metric-label">Conversão First Seller</div>
-                    <div class="metric-delta">${h1.converted} de ${h1.noSellerAtStart}</div>
-                </div>
-                <div class="metric-card success">
-                    <div class="metric-value">${h3.upgradeRate.toFixed(1)}%</div>
-                    <div class="metric-label">Taxa de Upgrade</div>
-                    <div class="metric-delta positive">${h3.transitions.upgrade} lojas</div>
-                </div>
+                <div class="metric-card"><div class="metric-value">${o.participantCount.toLocaleString()}</div><div class="metric-label">Lojas Participantes</div></div>
+                <div class="metric-card"><div class="metric-value">${o.controlCount.toLocaleString()}</div><div class="metric-label">Grupo de Controle</div></div>
+                <div class="metric-card"><div class="metric-value">${o.totalParticipations.toLocaleString()}</div><div class="metric-label">Total Participações</div></div>
+                <div class="metric-card success"><div class="metric-value">${h1.overallRate.toFixed(1)}%</div><div class="metric-label">Conversão First Seller</div><div class="metric-delta">${h1.converted} de ${h1.withoutFirstSeller}</div></div>
+                <div class="metric-card ${h2.diffPct > 0 ? 'success' : 'danger'}"><div class="metric-value">${h2.diffPct > 0 ? '+' : ''}${h2.diffPct.toFixed(1)}%</div><div class="metric-label">GMV vs Base Geral</div></div>
+                <div class="metric-card success"><div class="metric-value">${h3.upgradeRate.toFixed(1)}%</div><div class="metric-label">Taxa de Upgrade</div><div class="metric-delta positive">${h3.transitions.upgrade} lojas</div></div>
             `;
 
             document.getElementById('overview-charts').innerHTML = `
@@ -1436,52 +908,29 @@
                     x: h1.byMonth.map(m => m.month),
                     y: h1.byMonth.map(m => m.conversionRate),
                     type: 'bar',
-                    marker: { color: CHART_COLORS.primary, cornerradius: 4 },
+                    marker: { color: CHART_COLORS.primary },
                     text: h1.byMonth.map(m => m.conversionRate.toFixed(1) + '%'),
                     textposition: 'outside'
-                }], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: 'Taxa de Conversão First Seller por Mês', font: { size: 14 } },
-                    yaxis: { title: 'Taxa (%)' },
-                    height: 350
-                }, { responsive: true });
+                }], { ...PLOTLY_LAYOUT, title: { text: 'Taxa de Conversão First Seller por Mês (%)', font: { size: 14 } }, yaxis: { title: 'Taxa (%)', ticksuffix: '%' }, height: 350 }, { responsive: true });
             }
 
             Plotly.newPlot('overview-chart2', [{
                 values: [h3.transitions.upgrade, h3.transitions.maintained, h3.transitions.downgrade],
                 labels: ['Upgrade', 'Manteve', 'Downgrade'],
-                type: 'pie',
-                hole: 0.45,
+                type: 'pie', hole: 0.45,
                 marker: { colors: [CHART_COLORS.success, CHART_COLORS.warning, CHART_COLORS.danger] },
                 textinfo: 'label+percent'
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Evolução de Status', font: { size: 14 } },
-                height: 350,
-                showlegend: false
-            }, { responsive: true });
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Evolução de Status', font: { size: 14 } }, height: 350, showlegend: false }, { responsive: true });
         }
 
         function renderH1() {
             const h1 = analysisResults.h1;
 
             document.getElementById('h1-metrics').innerHTML = `
-                <div class="metric-card">
-                    <div class="metric-value">${h1.total.toLocaleString()}</div>
-                    <div class="metric-label">Total Participantes</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">${h1.noSellerAtStart.toLocaleString()}</div>
-                    <div class="metric-label">No-Sellers no Início</div>
-                </div>
-                <div class="metric-card success">
-                    <div class="metric-value">${h1.converted.toLocaleString()}</div>
-                    <div class="metric-label">Converteram</div>
-                </div>
-                <div class="metric-card success">
-                    <div class="metric-value">${h1.overallRate.toFixed(1)}%</div>
-                    <div class="metric-label">Taxa Geral</div>
-                </div>
+                <div class="metric-card"><div class="metric-value">${h1.total.toLocaleString()}</div><div class="metric-label">Total Participantes</div></div>
+                <div class="metric-card"><div class="metric-value">${h1.withoutFirstSeller.toLocaleString()}</div><div class="metric-label">Sem First Seller no Webinar</div><div class="metric-delta">Campo vazio</div></div>
+                <div class="metric-card success"><div class="metric-value">${h1.converted.toLocaleString()}</div><div class="metric-label">Converteram Após</div></div>
+                <div class="metric-card success"><div class="metric-value">${h1.overallRate.toFixed(1)}%</div><div class="metric-label">Taxa de Conversão</div></div>
             `;
 
             document.getElementById('h1-charts').innerHTML = `
@@ -1490,6 +939,7 @@
             `;
 
             if (h1.byMonth.length > 0) {
+                // Gráfico de taxa de conversão em %
                 Plotly.newPlot('h1-chart1', [{
                     x: h1.byMonth.map(m => m.month),
                     y: h1.byMonth.map(m => m.conversionRate),
@@ -1499,67 +949,46 @@
                     textposition: 'top center',
                     line: { color: CHART_COLORS.primary, width: 3 },
                     marker: { size: 10 }
-                }], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: 'Taxa de Conversão para First Seller por Mês', font: { size: 14 } },
-                    yaxis: { title: 'Taxa de Conversão (%)' },
-                    xaxis: { title: 'Mês do Webinar' },
-                    height: 400
+                }], { 
+                    ...PLOTLY_LAYOUT, 
+                    title: { text: 'Taxa de Conversão por Mês (%)', font: { size: 14 } }, 
+                    yaxis: { title: 'Taxa (%)', ticksuffix: '%' }, 
+                    height: 400 
                 }, { responsive: true });
 
+                // Gráfico de % de lojas sem first seller e % convertidas
+                const pctWithoutFS = h1.byMonth.map(m => m.total > 0 ? (m.withoutFirstSeller / m.total * 100) : 0);
+                const pctConverted = h1.byMonth.map(m => m.total > 0 ? (m.converted / m.total * 100) : 0);
+
                 Plotly.newPlot('h1-chart2', [
-                    {
-                        x: h1.byMonth.map(m => m.month),
-                        y: h1.byMonth.map(m => m.noSellerAtStart),
-                        type: 'bar',
-                        name: 'No-Sellers',
-                        marker: { color: CHART_COLORS.secondary }
-                    },
-                    {
-                        x: h1.byMonth.map(m => m.month),
-                        y: h1.byMonth.map(m => m.converted),
-                        type: 'bar',
-                        name: 'Converteram',
-                        marker: { color: CHART_COLORS.success }
-                    }
-                ], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: 'Volume de Conversão por Mês', font: { size: 14 } },
-                    barmode: 'group',
-                    yaxis: { title: 'Quantidade' },
-                    height: 400
+                    { x: h1.byMonth.map(m => m.month), y: pctWithoutFS, type: 'bar', name: '% Sem First Seller', marker: { color: CHART_COLORS.secondary } },
+                    { x: h1.byMonth.map(m => m.month), y: pctConverted, type: 'bar', name: '% Converteram', marker: { color: CHART_COLORS.success } }
+                ], { 
+                    ...PLOTLY_LAYOUT, 
+                    title: { text: 'Distribuição por Mês (%)', font: { size: 14 } }, 
+                    barmode: 'group', 
+                    yaxis: { title: '%', ticksuffix: '%' }, 
+                    height: 400 
                 }, { responsive: true });
             }
 
             let tableHTML = `
                 <div class="chart-card">
-                    <h3 class="chart-title">📋 Dados por Mês (para comparação com base histórica)</h3>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Mês</th>
-                                    <th>Participantes</th>
-                                    <th>No-Sellers</th>
-                                    <th>Converteram</th>
-                                    <th>Taxa Conversão</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
-            
+                    <h3 class="chart-title">📋 Dados por Mês</h3>
+                    <div class="table-container"><table class="data-table">
+                        <thead><tr><th>Mês</th><th>Participantes</th><th>Sem First Seller</th><th>% Sem FS</th><th>Converteram</th><th>Taxa Conversão</th></tr></thead>
+                        <tbody>`;
             h1.byMonth.forEach(m => {
-                tableHTML += `
-                    <tr>
-                        <td>${m.fullMonth}</td>
-                        <td>${m.total.toLocaleString()}</td>
-                        <td>${m.noSellerAtStart.toLocaleString()}</td>
-                        <td>${m.converted.toLocaleString()}</td>
-                        <td><strong>${m.conversionRate.toFixed(2)}%</strong></td>
-                    </tr>
-                `;
+                const pctWithoutFS = m.total > 0 ? (m.withoutFirstSeller / m.total * 100) : 0;
+                tableHTML += `<tr>
+                    <td>${m.fullMonth}</td>
+                    <td>${m.total.toLocaleString()}</td>
+                    <td>${m.withoutFirstSeller.toLocaleString()}</td>
+                    <td>${pctWithoutFS.toFixed(1)}%</td>
+                    <td>${m.converted.toLocaleString()}</td>
+                    <td><strong>${m.conversionRate.toFixed(2)}%</strong></td>
+                </tr>`;
             });
-
             tableHTML += '</tbody></table></div></div>';
             document.getElementById('h1-table').innerHTML = tableHTML;
         }
@@ -1567,26 +996,19 @@
         function renderH2() {
             const h2 = analysisResults.h2;
 
-            document.getElementById('h2-significance').innerHTML = h2.tTest.significant ?
-                `<div class="alert alert-success"><p>✅ <strong>Resultado estatisticamente significativo</strong> (p-valor: ${h2.tTest.pValue.toFixed(4)})</p></div>` :
-                `<div class="alert alert-warning"><p>⚠️ <strong>Resultado não é estatisticamente significativo</strong> (p-valor: ${h2.tTest.pValue.toFixed(4)})</p></div>`;
+            const summaryClass = h2.diffPct > 0 ? 'alert-success' : 'alert-warning';
+            document.getElementById('h2-summary').innerHTML = `
+                <div class="alert ${summaryClass}">
+                    <p><strong>Participantes vs Base Geral:</strong> GMV médio ${h2.diffPct > 0 ? 'maior' : 'menor'} em ${Math.abs(h2.diffPct).toFixed(1)}%. 
+                    ${h2.aboveAvgPct.toFixed(1)}% dos participantes têm GMV acima da média do seu status.</p>
+                </div>
+            `;
 
             document.getElementById('h2-metrics').innerHTML = `
-                <div class="metric-card">
-                    <div class="metric-value">R$ ${formatNumber(h2.participants.mean)}</div>
-                    <div class="metric-label">GMV Médio (Participantes)</div>
-                    <div class="metric-delta">Mediana: R$ ${formatNumber(h2.participants.median)}</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">R$ ${formatNumber(h2.control.mean)}</div>
-                    <div class="metric-label">GMV Médio (Controle)</div>
-                    <div class="metric-delta">Mediana: R$ ${formatNumber(h2.control.median)}</div>
-                </div>
-                <div class="metric-card ${h2.meanDiffPct > 0 ? 'success' : 'danger'}">
-                    <div class="metric-value">${h2.meanDiffPct > 0 ? '+' : ''}${h2.meanDiffPct.toFixed(1)}%</div>
-                    <div class="metric-label">Diferença</div>
-                    <div class="metric-delta">Participantes vs Controle</div>
-                </div>
+                <div class="metric-card"><div class="metric-value">R$ ${formatNumber(h2.participants.mean)}</div><div class="metric-label">GMV Médio Participantes</div></div>
+                <div class="metric-card"><div class="metric-value">R$ ${formatNumber(h2.allStores.mean)}</div><div class="metric-label">GMV Médio Base Geral</div></div>
+                <div class="metric-card ${h2.diffPct > 0 ? 'success' : 'danger'}"><div class="metric-value">${h2.diffPct > 0 ? '+' : ''}${h2.diffPct.toFixed(1)}%</div><div class="metric-label">Diferença</div></div>
+                <div class="metric-card success"><div class="metric-value">${h2.aboveAvgPct.toFixed(1)}%</div><div class="metric-label">Acima da Média do Status</div></div>
             `;
 
             document.getElementById('h2-charts').innerHTML = `
@@ -1596,92 +1018,38 @@
             `;
 
             Plotly.newPlot('h2-chart1', [{
-                x: ['Participantes', 'Controle'],
-                y: [h2.participants.mean, h2.control.mean],
+                x: ['Participantes', 'Base Geral', 'Controle'],
+                y: [h2.participants.mean, h2.allStores.mean, h2.control.mean],
                 type: 'bar',
-                marker: { color: [CHART_COLORS.primary, CHART_COLORS.secondary] },
-                text: ['R$ ' + formatNumber(h2.participants.mean), 'R$ ' + formatNumber(h2.control.mean)],
+                marker: { color: [CHART_COLORS.primary, CHART_COLORS.secondary, CHART_COLORS.neutral] },
+                text: ['R$ ' + formatNumber(h2.participants.mean), 'R$ ' + formatNumber(h2.allStores.mean), 'R$ ' + formatNumber(h2.control.mean)],
                 textposition: 'outside'
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Comparação de GMV Médio (D-30)', font: { size: 14 } },
-                yaxis: { title: 'GMV (R$)' },
-                height: 350
-            }, { responsive: true });
+            }], { ...PLOTLY_LAYOUT, title: { text: 'GMV Médio (D-30)', font: { size: 14 } }, yaxis: { title: 'GMV (R$)' }, height: 350 }, { responsive: true });
 
-            const pGmv = analysisResults.participants.map(p => p.gmv_d30).filter(v => v > 0 && v < 100000);
-            const cGmv = analysisResults.control.map(c => c.gmv_d30).filter(v => v > 0 && v < 100000);
-
+            const statusData = STATUS_LIST.filter(s => h2.byStatus[s].participants.count > 5);
             Plotly.newPlot('h2-chart2', [
-                { y: pGmv, type: 'box', name: 'Participantes', marker: { color: CHART_COLORS.primary } },
-                { y: cGmv, type: 'box', name: 'Controle', marker: { color: CHART_COLORS.secondary } }
-            ], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Distribuição de GMV (até R$ 100k)', font: { size: 14 } },
-                yaxis: { title: 'GMV (R$)' },
-                height: 350
-            }, { responsive: true });
+                { x: statusData.map(s => STATUS_LABELS[s]), y: statusData.map(s => h2.byStatus[s].participants.mean), type: 'bar', name: 'Participantes', marker: { color: CHART_COLORS.primary } },
+                { x: statusData.map(s => STATUS_LABELS[s]), y: statusData.map(s => h2.byStatus[s].allStores.mean), type: 'bar', name: 'Base Geral', marker: { color: CHART_COLORS.secondary } }
+            ], { ...PLOTLY_LAYOUT, title: { text: 'GMV Médio por Status', font: { size: 14 } }, barmode: 'group', height: 350 }, { responsive: true });
 
-            const statusData = [];
-            STATUS_LIST.forEach(status => {
-                if (h2.byStatus[status].participants.count > 10) {
-                    statusData.push({
-                        status: STATUS_LABELS[status],
-                        pMean: h2.byStatus[status].participants.mean,
-                        cMean: h2.byStatus[status].control.mean
-                    });
-                }
-            });
-
-            if (statusData.length > 0) {
-                Plotly.newPlot('h2-chart3', [
-                    {
-                        x: statusData.map(s => s.status),
-                        y: statusData.map(s => s.pMean),
-                        type: 'bar',
-                        name: 'Participantes',
-                        marker: { color: CHART_COLORS.primary }
-                    },
-                    {
-                        x: statusData.map(s => s.status),
-                        y: statusData.map(s => s.cMean),
-                        type: 'bar',
-                        name: 'Controle',
-                        marker: { color: CHART_COLORS.secondary }
-                    }
-                ], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: 'GMV Médio por Status Atual', font: { size: 14 } },
-                    barmode: 'group',
-                    yaxis: { title: 'GMV (R$)' },
-                    height: 400
-                }, { responsive: true });
-            }
+            Plotly.newPlot('h2-chart3', [{
+                x: statusData.map(s => STATUS_LABELS[s]),
+                y: statusData.map(s => h2.byStatus[s].diffPct),
+                type: 'bar',
+                marker: { color: statusData.map(s => h2.byStatus[s].diffPct > 0 ? CHART_COLORS.success : CHART_COLORS.danger) },
+                text: statusData.map(s => (h2.byStatus[s].diffPct > 0 ? '+' : '') + h2.byStatus[s].diffPct.toFixed(1) + '%'),
+                textposition: 'outside'
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Diferença GMV Participantes vs Base Geral (%)', font: { size: 14 } }, yaxis: { title: 'Diferença (%)', ticksuffix: '%' }, height: 400 }, { responsive: true });
         }
 
         function renderH3() {
             const h3 = analysisResults.h3;
 
             document.getElementById('h3-metrics').innerHTML = `
-                <div class="metric-card">
-                    <div class="metric-value">${h3.total.toLocaleString()}</div>
-                    <div class="metric-label">Lojas Analisadas</div>
-                </div>
-                <div class="metric-card success">
-                    <div class="metric-value">${h3.upgradeRate.toFixed(1)}%</div>
-                    <div class="metric-label">Taxa de Upgrade</div>
-                    <div class="metric-delta positive">${h3.transitions.upgrade.toLocaleString()} lojas</div>
-                </div>
-                <div class="metric-card warning">
-                    <div class="metric-value">${h3.maintainedRate.toFixed(1)}%</div>
-                    <div class="metric-label">Mantiveram Status</div>
-                    <div class="metric-delta">${h3.transitions.maintained.toLocaleString()} lojas</div>
-                </div>
-                <div class="metric-card danger">
-                    <div class="metric-value">${h3.downgradeRate.toFixed(1)}%</div>
-                    <div class="metric-label">Taxa de Downgrade</div>
-                    <div class="metric-delta negative">${h3.transitions.downgrade.toLocaleString()} lojas</div>
-                </div>
+                <div class="metric-card"><div class="metric-value">${h3.total.toLocaleString()}</div><div class="metric-label">Lojas Analisadas</div></div>
+                <div class="metric-card success"><div class="metric-value">${h3.upgradeRate.toFixed(1)}%</div><div class="metric-label">Taxa de Upgrade</div><div class="metric-delta positive">${h3.transitions.upgrade} lojas</div></div>
+                <div class="metric-card warning"><div class="metric-value">${h3.maintainedRate.toFixed(1)}%</div><div class="metric-label">Mantiveram</div><div class="metric-delta">${h3.transitions.maintained} lojas</div></div>
+                <div class="metric-card danger"><div class="metric-value">${h3.downgradeRate.toFixed(1)}%</div><div class="metric-label">Downgrade</div><div class="metric-delta negative">${h3.transitions.downgrade} lojas</div></div>
             `;
 
             document.getElementById('h3-charts').innerHTML = `
@@ -1692,126 +1060,58 @@
             Plotly.newPlot('h3-chart1', [{
                 values: [h3.transitions.upgrade, h3.transitions.maintained, h3.transitions.downgrade],
                 labels: ['Upgrade', 'Manteve', 'Downgrade'],
-                type: 'pie',
-                hole: 0.45,
-                marker: { colors: [CHART_COLORS.success, CHART_COLORS.warning, CHART_COLORS.danger] },
-                textinfo: 'label+percent'
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Evolução de Status dos Participantes', font: { size: 14 } },
-                height: 400,
-                showlegend: false
-            }, { responsive: true });
+                type: 'pie', hole: 0.45,
+                marker: { colors: [CHART_COLORS.success, CHART_COLORS.warning, CHART_COLORS.danger] }
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Evolução de Status', font: { size: 14 } }, height: 400, showlegend: false }, { responsive: true });
 
             const pTotal = Object.values(h3.participantsDist).reduce((a, b) => a + b, 0);
             const cTotal = Object.values(h3.controlDist).reduce((a, b) => a + b, 0);
-
             const pPct = STATUS_LIST.map(s => pTotal > 0 ? (h3.participantsDist[s] / pTotal * 100) : 0);
             const cPct = STATUS_LIST.map(s => cTotal > 0 ? (h3.controlDist[s] / cTotal * 100) : 0);
 
             Plotly.newPlot('h3-chart2', [
                 { x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: pPct, type: 'bar', name: 'Participantes', marker: { color: CHART_COLORS.primary } },
                 { x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: cPct, type: 'bar', name: 'Controle', marker: { color: CHART_COLORS.secondary } }
-            ], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Distribuição de Status Atual (%)', font: { size: 14 } },
-                barmode: 'group',
-                yaxis: { title: 'Percentual (%)' },
-                height: 400
-            }, { responsive: true });
+            ], { ...PLOTLY_LAYOUT, title: { text: 'Distribuição de Status Atual (%)', font: { size: 14 } }, barmode: 'group', yaxis: { title: '%', ticksuffix: '%' }, height: 400 }, { responsive: true });
 
-            const matrixValues = STATUS_LIST.map(from => 
-                STATUS_LIST.map(to => h3.transitionMatrix[from][to])
-            );
-
+            const matrixValues = STATUS_LIST.map(from => STATUS_LIST.map(to => h3.transitionMatrix[from][to]));
             document.getElementById('h3-matrix').innerHTML = '<div class="chart-card"><div id="h3-heatmap"></div></div>';
-
             Plotly.newPlot('h3-heatmap', [{
-                z: matrixValues,
-                x: STATUS_LIST.map(s => STATUS_LABELS[s]),
-                y: STATUS_LIST.map(s => STATUS_LABELS[s]),
-                type: 'heatmap',
-                colorscale: [[0, '#F7F7F8'], [0.5, '#E6F0FF'], [1, '#0066E5']],
-                text: matrixValues.map(row => row.map(v => v > 0 ? v : '')),
-                texttemplate: '%{text}',
-                hovertemplate: 'De: %{y}<br>Para: %{x}<br>Quantidade: %{z}<extra></extra>'
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Matriz de Transição de Status (De → Para)', font: { size: 14 } },
-                xaxis: { title: 'Status Atual (Para)', side: 'bottom' },
-                yaxis: { title: 'Status no Webinar (De)', autorange: 'reversed' },
-                height: 500
-            }, { responsive: true });
+                z: matrixValues, x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: STATUS_LIST.map(s => STATUS_LABELS[s]),
+                type: 'heatmap', colorscale: [[0, '#F7F7F8'], [0.5, '#E6F0FF'], [1, '#0066E5']],
+                text: matrixValues.map(row => row.map(v => v > 0 ? v : '')), texttemplate: '%{text}'
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Matriz de Transição (De → Para)', font: { size: 14 } }, xaxis: { title: 'Status Atual' }, yaxis: { title: 'Status no Webinar', autorange: 'reversed' }, height: 500 }, { responsive: true });
 
             let detailsHTML = '<div class="charts-grid">';
-            
             STATUS_LIST.forEach(status => {
                 const data = h3.transitionsByInitial[status];
-                if (data.total < 10) return;
-
-                detailsHTML += `<div class="chart-card"><div id="h3-detail-${status}"></div></div>`;
+                if (data.total >= 10) detailsHTML += `<div class="chart-card"><div id="h3-detail-${status}"></div></div>`;
             });
-            
             detailsHTML += '</div>';
             document.getElementById('h3-details').innerHTML = detailsHTML;
 
             STATUS_LIST.forEach(status => {
                 const data = h3.transitionsByInitial[status];
                 if (data.total < 10) return;
-
-                const destinations = STATUS_LIST
-                    .map(dest => ({ dest, count: data.destinations[dest], label: STATUS_LABELS[dest] }))
-                    .filter(d => d.count > 0);
-
+                const destinations = STATUS_LIST.map(dest => ({ dest, count: data.destinations[dest], label: STATUS_LABELS[dest], pct: data.total > 0 ? (data.destinations[dest] / data.total * 100) : 0 })).filter(d => d.count > 0);
                 Plotly.newPlot(`h3-detail-${status}`, [{
-                    x: destinations.map(d => d.label),
-                    y: destinations.map(d => d.count),
-                    type: 'bar',
-                    marker: { 
-                        color: destinations.map(d => {
-                            const fromNum = STATUS_ORDER[status];
-                            const toNum = STATUS_ORDER[d.dest];
-                            if (toNum > fromNum) return CHART_COLORS.success;
-                            if (toNum < fromNum) return CHART_COLORS.danger;
-                            return CHART_COLORS.warning;
-                        })
-                    },
-                    text: destinations.map(d => d.count),
-                    textposition: 'outside'
-                }], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: `De ${STATUS_LABELS[status]} (${data.total}) → Para:`, font: { size: 13 } },
-                    yaxis: { title: 'Qtd' },
-                    height: 280
-                }, { responsive: true });
+                    x: destinations.map(d => d.label), y: destinations.map(d => d.pct), type: 'bar',
+                    marker: { color: destinations.map(d => { const from = STATUS_ORDER[status], to = STATUS_ORDER[d.dest]; return to > from ? CHART_COLORS.success : to < from ? CHART_COLORS.danger : CHART_COLORS.warning; }) },
+                    text: destinations.map(d => d.pct.toFixed(1) + '%'), textposition: 'outside'
+                }], { ...PLOTLY_LAYOUT, title: { text: `De ${STATUS_LABELS[status]} (${data.total}) → Para:`, font: { size: 13 } }, yaxis: { title: '%', ticksuffix: '%' }, height: 280 }, { responsive: true });
             });
         }
 
         function renderProfile() {
             const profile = analysisResults.profile;
-
             const avgAge = profile.ageStats.mean;
             const avgTimeToSeller = profile.timeToFirstSellerStats.mean;
 
             document.getElementById('profile-metrics').innerHTML = `
-                <div class="metric-card">
-                    <div class="metric-value">${profile.totalParticipants.toLocaleString()}</div>
-                    <div class="metric-label">Lojas Participantes</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">${Math.round(avgAge)} dias</div>
-                    <div class="metric-label">Idade Média das Lojas</div>
-                    <div class="metric-delta">${(avgAge / 365).toFixed(1)} anos</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">${Math.round(avgTimeToSeller)} dias</div>
-                    <div class="metric-label">Tempo até First Seller</div>
-                    <div class="metric-delta">${(avgTimeToSeller / 30).toFixed(1)} meses</div>
-                </div>
-                <div class="metric-card success">
-                    <div class="metric-value">${profile.timeToFirstSeller.length.toLocaleString()}</div>
-                    <div class="metric-label">Lojas com First Seller</div>
-                </div>
+                <div class="metric-card"><div class="metric-value">${profile.totalParticipants.toLocaleString()}</div><div class="metric-label">Lojas Participantes</div></div>
+                <div class="metric-card"><div class="metric-value">${Math.round(avgAge)} dias</div><div class="metric-label">Idade Média</div><div class="metric-delta">${(avgAge / 365).toFixed(1)} anos</div></div>
+                <div class="metric-card"><div class="metric-value">${Math.round(avgTimeToSeller)} dias</div><div class="metric-label">Tempo até First Seller</div><div class="metric-delta">${(avgTimeToSeller / 30).toFixed(1)} meses</div></div>
+                <div class="metric-card success"><div class="metric-value">${profile.timeToFirstSeller.length.toLocaleString()}</div><div class="metric-label">Lojas com First Seller</div></div>
             `;
 
             document.getElementById('profile-charts').innerHTML = `
@@ -1823,115 +1123,69 @@
                 <div class="chart-card"><div id="profile-chart6"></div></div>
             `;
 
-            const ageLabels = Object.keys(profile.ageCategories);
-            const ageValues = Object.values(profile.ageCategories);
-
+            // Gráficos em %
+            const totalAge = Object.values(profile.ageCategories).reduce((a, b) => a + b, 0);
+            const agePct = Object.entries(profile.ageCategories).map(([k, v]) => ({ label: k, pct: totalAge > 0 ? (v / totalAge * 100) : 0 }));
             Plotly.newPlot('profile-chart1', [{
-                x: ageLabels,
-                y: ageValues,
-                type: 'bar',
+                x: agePct.map(a => a.label), y: agePct.map(a => a.pct), type: 'bar',
                 marker: { color: CHART_COLORS.primary },
-                text: ageValues.map(v => v.toLocaleString()),
-                textposition: 'outside'
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Distribuição por Idade da Loja', font: { size: 14 } },
-                yaxis: { title: 'Quantidade' },
-                height: 350
-            }, { responsive: true });
+                text: agePct.map(a => a.pct.toFixed(1) + '%'), textposition: 'outside'
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Distribuição por Idade da Loja (%)', font: { size: 14 } }, yaxis: { ticksuffix: '%' }, height: 350 }, { responsive: true });
 
-            if (profile.timeToFirstSeller.length > 0) {
-                Plotly.newPlot('profile-chart2', [{
-                    x: profile.timeToFirstSeller,
-                    type: 'histogram',
-                    nbinsx: 30,
-                    marker: { color: CHART_COLORS.primary }
-                }], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: 'Tempo até First Seller (dias)', font: { size: 14 } },
-                    xaxis: { title: 'Dias' },
-                    yaxis: { title: 'Quantidade' },
-                    height: 350
-                }, { responsive: true });
-            }
+            const totalTime = Object.values(profile.timeCategories).reduce((a, b) => a + b, 0);
+            const timePct = Object.entries(profile.timeCategories).map(([k, v]) => ({ label: k, pct: totalTime > 0 ? (v / totalTime * 100) : 0 }));
+            Plotly.newPlot('profile-chart2', [{
+                x: timePct.map(t => t.label), y: timePct.map(t => t.pct), type: 'bar',
+                marker: { color: CHART_COLORS.success },
+                text: timePct.map(t => t.pct.toFixed(1) + '%'), textposition: 'outside'
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Tempo até First Seller (%)', font: { size: 14 } }, yaxis: { ticksuffix: '%' }, height: 350 }, { responsive: true });
 
             const statusLabels = Object.keys(profile.statusAtWebinar).filter(s => profile.statusAtWebinar[s] > 0);
-            const statusValues = statusLabels.map(s => profile.statusAtWebinar[s]);
-
             Plotly.newPlot('profile-chart3', [{
                 labels: statusLabels.map(s => STATUS_LABELS[s] || s),
-                values: statusValues,
-                type: 'pie',
-                marker: { colors: statusLabels.map(s => STATUS_COLORS[s] || CHART_COLORS.secondary) }
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Status no Momento do Webinar', font: { size: 14 } },
-                height: 350,
-                showlegend: true
-            }, { responsive: true });
+                values: statusLabels.map(s => profile.statusAtWebinar[s]),
+                type: 'pie', marker: { colors: statusLabels.map(s => STATUS_COLORS[s] || CHART_COLORS.secondary) }
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Status no Momento do Webinar', font: { size: 14 } }, height: 350 }, { responsive: true });
 
             const partLabels = Object.keys(profile.participationType).filter(p => profile.participationType[p] > 0);
-            const partValues = partLabels.map(p => profile.participationType[p]);
-
             Plotly.newPlot('profile-chart4', [{
                 labels: partLabels.map(p => p.charAt(0).toUpperCase() + p.slice(1)),
-                values: partValues,
-                type: 'pie',
-                marker: { colors: [CHART_COLORS.primary, '#8B5CF6', '#A78BFA', '#C4B5FD'] }
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Tipo de Participação', font: { size: 14 } },
-                height: 350,
-                showlegend: true
-            }, { responsive: true });
+                values: partLabels.map(p => profile.participationType[p]),
+                type: 'pie', marker: { colors: [CHART_COLORS.primary, '#8B5CF6', '#A78BFA', '#C4B5FD'] }
+            }], { ...PLOTLY_LAYOUT, title: { text: 'Tipo de Participação', font: { size: 14 } }, height: 350 }, { responsive: true });
 
-            const countLabels = ['1', '2', '3', '4', '5+'];
-            const countValues = countLabels.map(l => profile.webinarCountDist[l] || 0);
-
-            Plotly.newPlot('profile-chart5', [{
-                x: countLabels,
-                y: countValues,
-                type: 'bar',
-                marker: { color: CHART_COLORS.primary },
-                text: countValues.map(v => v.toLocaleString()),
-                textposition: 'outside'
-            }], {
-                ...PLOTLY_LAYOUT,
-                title: { text: 'Webinars por Loja', font: { size: 14 } },
-                xaxis: { title: 'Webinars' },
-                yaxis: { title: 'Lojas' },
-                height: 350
-            }, { responsive: true });
+            if (profile.avgWebinarsByMonth.length > 0) {
+                Plotly.newPlot('profile-chart5', [{
+                    x: profile.avgWebinarsByMonth.map(m => m.month),
+                    y: profile.avgWebinarsByMonth.map(m => m.avgWebinars),
+                    type: 'bar', marker: { color: CHART_COLORS.primary },
+                    text: profile.avgWebinarsByMonth.map(m => m.avgWebinars.toFixed(2)), textposition: 'outside'
+                }], { ...PLOTLY_LAYOUT, title: { text: 'Média de Webinars por Loja (por Mês)', font: { size: 14 } }, yaxis: { title: 'Média' }, height: 350 }, { responsive: true });
+            }
 
             if (profile.topWebinars.length > 0) {
                 Plotly.newPlot('profile-chart6', [{
                     y: profile.topWebinars.map(w => w[0].substring(0, 35) + '...'),
                     x: profile.topWebinars.map(w => w[1]),
-                    type: 'bar',
-                    orientation: 'h',
-                    marker: { color: CHART_COLORS.primary },
-                    text: profile.topWebinars.map(w => w[1]),
-                    textposition: 'outside'
-                }], {
-                    ...PLOTLY_LAYOUT,
-                    title: { text: 'Top 10 Webinars', font: { size: 14 } },
-                    xaxis: { title: 'Participações' },
-                    margin: { l: 220, r: 20, t: 50, b: 50 },
-                    height: 400
-                }, { responsive: true });
+                    type: 'bar', orientation: 'h', marker: { color: CHART_COLORS.primary },
+                    text: profile.topWebinars.map(w => w[1]), textposition: 'outside'
+                }], { ...PLOTLY_LAYOUT, title: { text: 'Top 10 Webinars', font: { size: 14 } }, margin: { l: 220, r: 20, t: 50, b: 50 }, height: 400 }, { responsive: true });
             }
+
+            const avgWebinarsTotal = profile.avgWebinarsByMonth.length > 0 
+                ? (profile.avgWebinarsByMonth.reduce((a, b) => a + b.avgWebinars, 0) / profile.avgWebinarsByMonth.length).toFixed(2)
+                : '0';
 
             document.getElementById('profile-insights').innerHTML = `
                 <div class="summary-box">
                     <h4>📋 Insights do Perfil</h4>
                     <p>
-                        <strong>Idade das lojas:</strong> A média é de ${Math.round(avgAge)} dias (${(avgAge/365).toFixed(1)} anos). 
-                        A maioria das lojas participantes tem ${Object.entries(profile.ageCategories).sort((a,b) => b[1] - a[1])[0][0]}.<br><br>
-                        <strong>Tempo até First Seller:</strong> Em média, lojas que fizeram first seller levaram ${Math.round(avgTimeToSeller)} dias 
-                        (${(avgTimeToSeller/30).toFixed(1)} meses) desde a criação.<br><br>
-                        <strong>Engajamento:</strong> ${((profile.webinarCountDist['1'] || 0) / profile.totalParticipants * 100).toFixed(1)}% 
-                        participou de apenas 1 webinar, enquanto ${((profile.webinarCountDist['5+'] || 0) / profile.totalParticipants * 100).toFixed(1)}% 
-                        participou de 5 ou mais.
+                        <strong>Idade das lojas:</strong> Média de ${Math.round(avgAge)} dias (${(avgAge/365).toFixed(1)} anos).<br><br>
+                        <strong>Tempo até First Seller:</strong> Média de ${Math.round(avgTimeToSeller)} dias (${(avgTimeToSeller/30).toFixed(1)} meses). 
+                        ${profile.timeCategories['0-30 dias']} lojas (${(profile.timeCategories['0-30 dias'] / totalTime * 100).toFixed(1)}%) converteram em até 30 dias.<br><br>
+                        <strong>Engajamento médio:</strong> ${avgWebinarsTotal} webinars por loja em média por mês.<br><br>
+                        <strong>Retorno:</strong> ${((profile.webinarCountDist['1'] || 0) / profile.totalParticipants * 100).toFixed(1)}% participou de apenas 1 webinar, 
+                        ${((profile.webinarCountDist['5+'] || 0) / profile.totalParticipants * 100).toFixed(1)}% participou de 5+.
                     </p>
                 </div>
             `;
