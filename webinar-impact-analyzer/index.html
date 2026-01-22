@@ -167,6 +167,35 @@
             30% { transform: translateY(-4px); }
         }
 
+        /* API Key Section */
+        .api-key-section {
+            padding: var(--space-3) var(--space-4);
+            border-top: 1px solid var(--neutral-interactive);
+            background: var(--neutral-surface);
+        }
+        .api-key-toggle {
+            font-size: 12px; color: var(--neutral-text-low);
+            cursor: pointer; display: flex; align-items: center; gap: var(--space-2);
+        }
+        .api-key-toggle:hover { color: var(--primary-interactive); }
+        .api-key-form {
+            margin-top: var(--space-3);
+            display: flex; gap: var(--space-2); flex-wrap: wrap; align-items: center;
+        }
+        .api-key-input {
+            flex: 1; min-width: 200px; padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--neutral-interactive); border-radius: var(--radius-2);
+            font-size: 13px; font-family: var(--font-family);
+        }
+        .api-key-save {
+            padding: var(--space-2) var(--space-4);
+            background: var(--primary-interactive); color: white;
+            border: none; border-radius: var(--radius-2);
+            font-size: 13px; cursor: pointer;
+        }
+        .api-key-save:hover { background: var(--primary-interactive-hover); }
+        .api-key-hint { font-size: 11px; color: var(--neutral-text-low); width: 100%; margin-top: var(--space-2); }
+
         /* Suggestions */
         .suggestions {
             display: flex; flex-wrap: wrap; gap: var(--space-2);
@@ -390,14 +419,25 @@
                 <input type="text" class="chat-input" id="chat-input" 
                     placeholder="Pergunte sobre conversão, GMV, status..." 
                     onkeypress="if(event.key==='Enter') sendMessage()">
-                <button class="chat-send" onclick="sendMessage()">➤</button>
+                <button class="chat-send" onclick="sendMessage()" id="send-btn">➤</button>
+            </div>
+            <div class="api-key-section" id="api-key-section">
+                <div class="api-key-toggle" onclick="toggleApiKey()">
+                    <span id="api-status">🔒 Configurar Gemini</span>
+                </div>
+                <div class="api-key-form" id="api-key-form" style="display: none;">
+                    <input type="password" id="api-key-input" placeholder="Cole sua Google Gemini API Key" class="api-key-input">
+                    <button onclick="saveApiKey()" class="api-key-save">Salvar</button>
+                    <p class="api-key-hint">Sua chave fica salva apenas no seu navegador. <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--primary-interactive);">Obter API Key</a></p>
+                </div>
             </div>
             <div class="suggestions">
-                <span class="suggestion-chip" onclick="askQuestion('Qual foi a taxa de conversão para first seller?')">Taxa de conversão</span>
-                <span class="suggestion-chip" onclick="askQuestion('Quantas lojas participaram dos webinars?')">Total de participantes</span>
-                <span class="suggestion-chip" onclick="askQuestion('O GMV dos participantes é maior que a base geral?')">Comparação de GMV</span>
-                <span class="suggestion-chip" onclick="askQuestion('Quantas lojas fizeram upgrade de status?')">Evolução de status</span>
-                <span class="suggestion-chip" onclick="askQuestion('Qual o perfil das lojas participantes?')">Perfil dos participantes</span>
+                <span class="suggestion-chip" onclick="askQuestion('Faça um resumo executivo dos resultados')">📋 Resumo executivo</span>
+                <span class="suggestion-chip" onclick="askQuestion('Qual a taxa de conversão para first seller e como ela variou por mês?')">🎯 Conversão First Seller</span>
+                <span class="suggestion-chip" onclick="askQuestion('Compare o GMV dos participantes com a base geral por status')">💰 Análise de GMV</span>
+                <span class="suggestion-chip" onclick="askQuestion('Analise a evolução de status das lojas participantes')">📈 Evolução de Status</span>
+                <span class="suggestion-chip" onclick="askQuestion('Quais foram os webinars mais efetivos?')">🏆 Top Webinars</span>
+                <span class="suggestion-chip" onclick="askQuestion('Quais insights e recomendações você pode extrair dos dados?')">💡 Insights</span>
             </div>
         </div>
 
@@ -653,106 +693,270 @@
 };
 
         // ============================================================
-        // RESPOSTAS DO AGENTE - Base de conhecimento para o chat
+        // CONFIGURAÇÃO DA IA (Google Gemini)
         // ============================================================
-        const KNOWLEDGE_BASE = {
-            // Padrões de perguntas e respostas
-            patterns: [
-                {
-                    keywords: ['taxa', 'conversão', 'first seller', 'converter'],
-                    answer: () => `A **taxa de conversão para First Seller** foi de **${REPORT_DATA.h1.overallRate.toFixed(1)}%**.
+        let GEMINI_API_KEY = localStorage.getItem('gemini_api_key') || '';
 
-📊 Detalhes:
-- Total de participantes: ${REPORT_DATA.h1.total.toLocaleString()}
-- Sem First Seller no webinar: ${REPORT_DATA.h1.withoutFirstSeller.toLocaleString()}
-- Converteram após: ${REPORT_DATA.h1.afterWebinar.toLocaleString()}
+        // Contexto completo dos dados para a IA
+        function getDataContext() {
+            return `
+## CONTEXTO: Análise de Impacto dos Webinars Nuvemshop (Junho-Setembro 2025)
 
-O cálculo considera lojas que não tinham first_seller_at no momento do webinar e passaram a ter depois.`
-                },
-                {
-                    keywords: ['quantas', 'participaram', 'participantes', 'lojas'],
-                    answer: () => `📈 **${REPORT_DATA.overview.participantCount.toLocaleString()}** lojas únicas participaram dos webinars.
-
+### VISÃO GERAL
+- Total de lojas participantes: ${REPORT_DATA.overview.participantCount.toLocaleString()}
 - Total de participações: ${REPORT_DATA.overview.totalParticipations.toLocaleString()}
 - Webinars realizados: ${REPORT_DATA.overview.webinarCount}
-- Meses analisados: ${REPORT_DATA.overview.monthCount}
-- Grupo de controle: ${REPORT_DATA.overview.controlCount.toLocaleString()} lojas`
-                },
-                {
-                    keywords: ['gmv', 'faturamento', 'receita', 'média'],
-                    answer: () => `💰 **Análise de GMV (D-30):**
+- Período: ${REPORT_DATA.overview.monthCount} meses (Junho a Setembro 2025)
+- Grupo de controle: ${REPORT_DATA.overview.controlCount.toLocaleString()} lojas
 
-- Participantes: **R$ ${formatNumber(REPORT_DATA.h2.participants.mean)}** médio
-- Base Geral: **R$ ${formatNumber(REPORT_DATA.h2.allStores.mean)}** médio
-- Diferença: **${REPORT_DATA.h2.diffPct > 0 ? '+' : ''}${REPORT_DATA.h2.diffPct.toFixed(1)}%**
+### HIPÓTESE 1: CONVERSÃO PARA FIRST SELLER
+A taxa mede quantas lojas que NÃO tinham first_seller no momento do webinar passaram a ter depois.
+- Taxa geral de conversão: ${REPORT_DATA.h1.overallRate.toFixed(2)}%
+- Total sem First Seller no webinar (denominador): ${REPORT_DATA.h1.withoutFirstSeller}
+  - Campo vazio (nunca venderam): ${REPORT_DATA.h1.fieldEmpty}
+  - First Seller após webinar: ${REPORT_DATA.h1.afterWebinar}
+- Converteram (numerador): ${REPORT_DATA.h1.converted}
 
-${REPORT_DATA.h2.aboveAvgPct.toFixed(1)}% dos participantes têm GMV acima da média do seu status.`
-                },
-                {
-                    keywords: ['upgrade', 'status', 'evolução', 'evoluíram', 'subiram'],
-                    answer: () => `📊 **Evolução de Status:**
+Conversão por mês:
+${REPORT_DATA.h1.byMonth.map(m => `- ${m.fullMonth}: ${m.conversionRate.toFixed(2)}% (${m.converted}/${m.withoutFirstSeller})`).join('\n')}
 
-- ✅ Upgrade: **${REPORT_DATA.h3.upgradeRate.toFixed(1)}%** (${REPORT_DATA.h3.transitions.upgrade} lojas)
-- ➡️ Mantiveram: **${REPORT_DATA.h3.maintainedRate.toFixed(1)}%** (${REPORT_DATA.h3.transitions.maintained} lojas)
-- ⬇️ Downgrade: **${REPORT_DATA.h3.downgradeRate.toFixed(1)}%** (${REPORT_DATA.h3.transitions.downgrade} lojas)
+### HIPÓTESE 2: ANÁLISE DE GMV
+GMV D-30 (últimos 30 dias):
+- Participantes: R$ ${REPORT_DATA.h2.participants.mean.toFixed(2)} médio (${REPORT_DATA.h2.participants.count} lojas)
+- Base Geral: R$ ${REPORT_DATA.h2.allStores.mean.toFixed(2)} médio (${REPORT_DATA.h2.allStores.count} lojas)
+- Diferença: ${REPORT_DATA.h2.diffPct > 0 ? '+' : ''}${REPORT_DATA.h2.diffPct.toFixed(2)}%
+- ${REPORT_DATA.h2.aboveAvgPct.toFixed(1)}% dos participantes têm GMV acima da média do seu status
 
-Comparando o status no momento do webinar com o status atual.`
-                },
-                {
-                    keywords: ['perfil', 'características', 'idade', 'tipo'],
-                    answer: () => `👤 **Perfil dos Participantes:**
+GMV por status (Participantes vs Base):
+${Object.entries(REPORT_DATA.h2.byStatus).map(([status, data]) => 
+    `- ${status}: R$ ${data.participants.mean.toFixed(0)} vs R$ ${data.allStores.mean.toFixed(0)} (${data.diffPct > 0 ? '+' : ''}${data.diffPct.toFixed(1)}%)`
+).join('\n')}
 
-- Idade média das lojas: **${Math.round(REPORT_DATA.profile.ageStats.mean)} dias** (${(REPORT_DATA.profile.ageStats.mean/365).toFixed(1)} anos)
-- Tempo médio até First Seller: **${Math.round(REPORT_DATA.profile.timeToFirstSellerStats.mean)} dias**
-- Total de participantes únicos: ${REPORT_DATA.profile.totalParticipants.toLocaleString()}
+### HIPÓTESE 3: EVOLUÇÃO DE STATUS
+Comparando status no webinar vs status atual (Jan/2026):
+- Upgrade: ${REPORT_DATA.h3.upgradeRate.toFixed(1)}% (${REPORT_DATA.h3.transitions.upgrade} lojas)
+- Mantiveram: ${REPORT_DATA.h3.maintainedRate.toFixed(1)}% (${REPORT_DATA.h3.transitions.maintained} lojas)
+- Downgrade: ${REPORT_DATA.h3.downgradeRate.toFixed(1)}% (${REPORT_DATA.h3.transitions.downgrade} lojas)
 
-Veja o report completo para mais detalhes sobre distribuição por status e tipo de participação.`
-                },
-                {
-                    keywords: ['downgrade', 'desceram', 'caíram', 'pioraram'],
-                    answer: () => `⬇️ **Taxa de Downgrade:** ${REPORT_DATA.h3.downgradeRate.toFixed(1)}%
+Transições por status inicial:
+${Object.entries(REPORT_DATA.h3.transitionsByInitial).map(([status, data]) => 
+    `- ${status} (${data.total}): ${data.upgrade} upgrade, ${data.maintained} manteve, ${data.downgrade} downgrade`
+).join('\n')}
 
-${REPORT_DATA.h3.transitions.downgrade} lojas desceram de status entre o momento do webinar e janeiro de 2026.
+### PERFIL DOS PARTICIPANTES
+- Idade média das lojas: ${REPORT_DATA.profile.ageStats.mean.toFixed(0)} dias (${(REPORT_DATA.profile.ageStats.mean/365).toFixed(1)} anos)
+- Tempo médio até First Seller: ${REPORT_DATA.profile.timeToFirstSellerStats.mean.toFixed(0)} dias
+- Lojas com First Seller: ${REPORT_DATA.profile.timeToFirstSellerStats.count}
 
-Isso representa uma minoria dos participantes, enquanto ${REPORT_DATA.h3.upgradeRate.toFixed(1)}% fizeram upgrade.`
-                },
-                {
-                    keywords: ['melhor', 'pior', 'mês', 'quando'],
-                    answer: () => {
-                        if (REPORT_DATA.h1.byMonth.length === 0) return 'Não há dados mensais disponíveis.';
-                        const best = REPORT_DATA.h1.byMonth.reduce((a, b) => a.conversionRate > b.conversionRate ? a : b);
-                        const worst = REPORT_DATA.h1.byMonth.reduce((a, b) => a.conversionRate < b.conversionRate ? a : b);
-                        return `📅 **Análise por Mês:**
+Distribuição por idade:
+${Object.entries(REPORT_DATA.profile.ageCategories).map(([cat, count]) => `- ${cat}: ${count} lojas`).join('\n')}
 
-- Melhor mês: **${best.fullMonth}** com ${best.conversionRate.toFixed(1)}% de conversão
-- Pior mês: **${worst.fullMonth}** com ${worst.conversionRate.toFixed(1)}% de conversão
+Tempo até First Seller:
+${Object.entries(REPORT_DATA.profile.timeCategories).map(([cat, count]) => `- ${cat}: ${count} lojas`).join('\n')}
 
-Veja o gráfico completo no report para tendências ao longo do tempo.`;
+Status no momento do webinar:
+${Object.entries(REPORT_DATA.profile.statusAtWebinar).map(([status, count]) => `- ${status}: ${count} lojas`).join('\n')}
+
+Tipo de participação:
+${Object.entries(REPORT_DATA.profile.participationType).filter(([k,v]) => v > 0).map(([type, count]) => `- ${type}: ${count}`).join('\n')}
+
+Engajamento:
+- 1 webinar: ${REPORT_DATA.profile.webinarCountDist['1'] || 0} lojas
+- 2 webinars: ${REPORT_DATA.profile.webinarCountDist['2'] || 0} lojas
+- 3 webinars: ${REPORT_DATA.profile.webinarCountDist['3'] || 0} lojas
+- 4 webinars: ${REPORT_DATA.profile.webinarCountDist['4'] || 0} lojas
+- 5+ webinars: ${REPORT_DATA.profile.webinarCountDist['5+'] || 0} lojas
+
+Top 5 Webinars:
+${REPORT_DATA.profile.topWebinars.slice(0, 5).map((w, i) => `${i+1}. ${w[0]} (${w[1]} participantes)`).join('\n')}
+`;
+        }
+
+        const SYSTEM_PROMPT = `Você é um analista de dados especialista da Nuvemshop, analisando o impacto dos webinars nas lojas.
+
+REGRAS:
+1. Responda SEMPRE em português brasileiro
+2. Seja direto e objetivo, mas analítico
+3. Use dados específicos do contexto para embasar suas respostas
+4. Formate com **negrito** para destacar números importantes
+5. Use emojis para tornar a leitura mais agradável
+6. Quando relevante, sugira insights ou próximos passos
+7. Se a pergunta não tiver relação com os dados, explique educadamente o que você pode responder
+
+CONTEXTO DOS DADOS:
+${getDataContext()}`;
+
+        // Fallback para respostas locais (sem API)
+        function getLocalResponse(question) {
+            const q = question.toLowerCase();
+            const data = REPORT_DATA;
+            
+            if (q.includes('taxa') || q.includes('conversão') || q.includes('first seller')) {
+                return `📊 **Taxa de Conversão para First Seller: ${data.h1.overallRate.toFixed(1)}%**
+
+De ${data.h1.withoutFirstSeller} lojas sem First Seller no momento do webinar, ${data.h1.converted} converteram após participar.
+
+**Por mês:**
+${data.h1.byMonth.map(m => `• ${m.fullMonth}: **${m.conversionRate.toFixed(1)}%**`).join('\n')}
+
+💡 Julho teve a melhor taxa (9.9%), enquanto Setembro teve a menor (4.8%).`;
+            }
+            
+            if (q.includes('gmv') || q.includes('faturamento') || q.includes('receita')) {
+                return `💰 **Análise de GMV (D-30)**
+
+Participantes têm GMV **${data.h2.diffPct.toFixed(0)}% maior** que a base geral!
+
+• Participantes: **R$ ${formatNumber(data.h2.participants.mean)}** médio
+• Base Geral: **R$ ${formatNumber(data.h2.allStores.mean)}** médio
+
+**Destaque por status:**
+• Large-seller: +53% acima da média
+• Top-seller: +34% acima da média
+• Small-seller: +5% acima da média
+
+⚠️ No-seller e Struggling estão abaixo da média do status.`;
+            }
+            
+            if (q.includes('upgrade') || q.includes('status') || q.includes('evolu')) {
+                return `📈 **Evolução de Status**
+
+• ✅ Upgrade: **${data.h3.upgradeRate.toFixed(1)}%** (${data.h3.transitions.upgrade} lojas)
+• ➡️ Mantiveram: **${data.h3.maintainedRate.toFixed(1)}%** (${data.h3.transitions.maintained} lojas)
+• ⬇️ Downgrade: **${data.h3.downgradeRate.toFixed(1)}%** (${data.h3.transitions.downgrade} lojas)
+
+**Melhor evolução:**
+• No-seller: 39% fizeram upgrade
+• Large-seller: 32% subiram para Top-seller
+
+💡 A maioria das lojas manteve ou melhorou seu status após os webinars.`;
+            }
+            
+            if (q.includes('perfil') || q.includes('quem') || q.includes('participante')) {
+                return `👤 **Perfil dos Participantes**
+
+• **${data.profile.totalParticipants}** lojas únicas
+• Idade média: **${(data.profile.ageStats.mean/365).toFixed(1)} anos**
+• ${data.profile.ageCategories['2+ anos']} lojas têm mais de 2 anos
+
+**Status no webinar:**
+• Struggling-seller: ${data.profile.statusAtWebinar['struggling-seller']} (mais comum)
+• No-seller: ${data.profile.statusAtWebinar['no-seller']}
+• Tiny-seller: ${data.profile.statusAtWebinar['tiny-seller']}
+
+**Participação:**
+• ${data.profile.participationType.live} ao vivo
+• ${data.profile.participationType['on-demand']} on-demand`;
+            }
+            
+            if (q.includes('webinar') && (q.includes('top') || q.includes('melhor') || q.includes('popular'))) {
+                return `🏆 **Top 5 Webinars por Participação**
+
+${data.profile.topWebinars.slice(0, 5).map((w, i) => `${i+1}. **${w[0]}**\n   → ${w[1]} participantes`).join('\n\n')}
+
+💡 Webinars sobre Black Friday tiveram grande adesão!`;
+            }
+            
+            return `🤔 Posso te ajudar com análises sobre:
+
+• **Taxa de conversão** para First Seller
+• **GMV** dos participantes vs base geral
+• **Evolução de status** (upgrade/downgrade)
+• **Perfil** dos participantes
+• **Top webinars** por participação
+
+Ou clique em "Ver Report Completo" para explorar todos os dados!`;
+        }
+
+        // Chamar API do Google Gemini
+        async function callGemini(question) {
+            if (!GEMINI_API_KEY) {
+                return getLocalResponse(question);
+            }
+
+            const fullPrompt = `${SYSTEM_PROMPT}
+
+PERGUNTA DO USUÁRIO:
+${question}`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: fullPrompt }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 2000,
+                            topP: 0.8,
+                            topK: 40
+                        },
+                        safetySettings: [
+                            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    console.error('Gemini Error:', error);
+                    if (error.error?.status === 'INVALID_ARGUMENT' || error.error?.code === 400) {
+                        return '⚠️ API Key inválida. Por favor, verifique sua chave nas configurações.';
                     }
-                },
-                {
-                    keywords: ['top', 'webinar', 'mais', 'popular'],
-                    answer: () => {
-                        if (REPORT_DATA.profile.topWebinars.length === 0) return 'Não há dados de webinars disponíveis.';
-                        const top3 = REPORT_DATA.profile.topWebinars.slice(0, 3);
-                        return `🏆 **Top Webinars por Participação:**
-
-${top3.map((w, i) => `${i+1}. ${w[0].substring(0, 50)}... (${w[1]} participantes)`).join('\n')}
-
-Veja o ranking completo na aba Perfil do report.`;
-                    }
+                    return getLocalResponse(question);
                 }
-            ],
-            defaultAnswer: `Não encontrei informações específicas sobre essa pergunta. Tente perguntar sobre:
 
-• Taxa de conversão para First Seller
-• Quantidade de participantes
-• Comparação de GMV
-• Evolução de status (upgrade/downgrade)
-• Perfil das lojas participantes
+                const data = await response.json();
+                
+                // Extrair texto da resposta do Gemini
+                if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                    return data.candidates[0].content.parts[0].text;
+                }
+                
+                console.error('Unexpected Gemini response format:', data);
+                return getLocalResponse(question);
+            } catch (error) {
+                console.error('Error calling Gemini:', error);
+                return getLocalResponse(question);
+            }
+        }
 
-Ou clique em "Ver Report Completo" para explorar todos os dados.`
-        };
+        // Alias para compatibilidade
+        const callOpenAI = callGemini;
+
+        // Funções de gerenciamento da API Key
+        function toggleApiKey() {
+            const form = document.getElementById('api-key-form');
+            form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('api-key-input');
+            const key = input.value.trim();
+            if (key) {
+                GEMINI_API_KEY = key;
+                localStorage.setItem('gemini_api_key', key);
+                document.getElementById('api-status').innerHTML = '✅ Gemini Configurado';
+                document.getElementById('api-key-form').style.display = 'none';
+                input.value = '';
+            }
+        }
+
+        function updateApiStatus() {
+            const status = document.getElementById('api-status');
+            if (GEMINI_API_KEY) {
+                status.innerHTML = '✅ Gemini Configurado';
+            } else {
+                status.innerHTML = '🔒 Configurar Gemini';
+            }
+        }
 
         // ============================================================
         // CONSTANTES E CONFIGURAÇÕES
@@ -784,10 +988,18 @@ Ou clique em "Ver Report Completo" para explorar todos os dados.`
         // ============================================================
         // FUNÇÕES DE CHAT
         // ============================================================
-        function sendMessage() {
+        let isProcessing = false;
+
+        async function sendMessage() {
+            if (isProcessing) return;
+            
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             if (!message) return;
+
+            isProcessing = true;
+            const sendBtn = document.getElementById('send-btn');
+            sendBtn.disabled = true;
 
             addMessage(message, 'user');
             input.value = '';
@@ -801,12 +1013,17 @@ Ou clique em "Ver Report Completo" para explorar todos os dados.`
             messagesDiv.appendChild(typingDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-            // Simular delay de resposta
-            setTimeout(() => {
+            try {
+                const response = await callOpenAI(message);
                 document.getElementById('typing')?.remove();
-                const response = getResponse(message);
                 addMessage(response, 'assistant');
-            }, 800 + Math.random() * 500);
+            } catch (error) {
+                document.getElementById('typing')?.remove();
+                addMessage('Desculpe, ocorreu um erro. Tente novamente.', 'assistant');
+            } finally {
+                isProcessing = false;
+                sendBtn.disabled = false;
+            }
         }
 
         function addMessage(text, type) {
@@ -816,26 +1033,16 @@ Ou clique em "Ver Report Completo" para explorar todos os dados.`
             const messageDiv = document.createElement('div');
             messageDiv.className = `chat-message ${type}`;
             
-            // Converter markdown básico para HTML
+            // Converter markdown para HTML
             let htmlText = text
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
                 .replace(/\n/g, '<br>');
             
             messageDiv.innerHTML = `<div class="message-content">${htmlText}</div>`;
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        function getResponse(question) {
-            const q = question.toLowerCase();
-            
-            for (const pattern of KNOWLEDGE_BASE.patterns) {
-                if (pattern.keywords.some(kw => q.includes(kw))) {
-                    return pattern.answer();
-                }
-            }
-            
-            return KNOWLEDGE_BASE.defaultAnswer;
         }
 
         function askQuestion(question) {
@@ -1183,6 +1390,7 @@ Ou clique em "Ver Report Completo" para explorar todos os dados.`
         // ============================================================
         document.addEventListener('DOMContentLoaded', () => {
             renderQuickStats();
+            updateApiStatus();
         });
     </script>
 </body>
