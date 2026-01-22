@@ -6,25 +6,78 @@
     <title>Webinar Impact Analyzer - Nuvemshop</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Nimbus-inspired fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Nimbus Design System Tokens */
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
+            /* Primary colors - Nuvemshop Blue */
+            --primary-surface: #0050B3;
+            --primary-interactive: #0066E5;
+            --primary-interactive-hover: #0050B3;
+            --primary-interactive-pressed: #003D8A;
+            --primary-text-low: #E6F0FF;
+            
+            /* Neutral colors */
+            --neutral-background: #FFFFFF;
+            --neutral-surface: #F7F7F8;
+            --neutral-surface-highlight: #EBEBED;
+            --neutral-interactive: #E1E1E3;
+            --neutral-text-low: #8C8C8C;
+            --neutral-text-high: #14171A;
+            
+            /* Success colors */
+            --success-surface: #E6F9ED;
+            --success-interactive: #00A650;
+            --success-text-low: #006633;
+            
+            /* Warning colors */
+            --warning-surface: #FFF4E6;
+            --warning-interactive: #FF9500;
+            --warning-text-low: #995900;
+            
+            /* Danger colors */
+            --danger-surface: #FFE6E6;
+            --danger-interactive: #E53935;
+            --danger-text-low: #B71C1C;
+            
+            /* Spacing */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            
+            /* Border radius */
+            --radius-1: 4px;
+            --radius-2: 8px;
+            --radius-3: 12px;
+            --radius-4: 16px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-level-1: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-level-2: 0 4px 12px rgba(0, 0, 0, 0.12);
+            --shadow-level-3: 0 8px 24px rgba(0, 0, 0, 0.16);
+            
+            /* Typography */
+            --font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-size-caption: 12px;
+            --font-size-body: 14px;
+            --font-size-highlight: 16px;
+            --font-size-title: 20px;
+            --font-size-display: 28px;
+            
+            --font-weight-regular: 400;
+            --font-weight-medium: 500;
+            --font-weight-bold: 700;
+            
+            --line-height-tight: 1.25;
+            --line-height-normal: 1.5;
         }
 
         * {
@@ -34,65 +87,129 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            font-family: var(--font-family);
+            background: var(--neutral-surface);
             min-height: 100vh;
-            color: var(--gray-800);
+            color: var(--neutral-text-high);
+            font-size: var(--font-size-body);
+            line-height: var(--line-height-normal);
+        }
+
+        /* App Shell */
+        .app-header {
+            background: var(--neutral-background);
+            border-bottom: 1px solid var(--neutral-interactive);
+            padding: var(--space-4) var(--space-6);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-interactive);
+            border-radius: var(--radius-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-weight-bold);
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: var(--font-size-highlight);
+            font-weight: var(--font-weight-bold);
+            color: var(--neutral-text-high);
+        }
+
+        .logo-badge {
+            background: var(--neutral-surface);
+            color: var(--neutral-text-low);
+            font-size: var(--font-size-caption);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-full);
+            font-weight: var(--font-weight-medium);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: var(--space-6);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
+        /* Cards */
+        .card {
+            background: var(--neutral-background);
+            border-radius: var(--radius-3);
+            box-shadow: var(--shadow-level-1);
+            overflow: hidden;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
+        .card-header {
+            padding: var(--space-4) var(--space-5);
+            border-bottom: 1px solid var(--neutral-interactive);
         }
 
-        .subtitle {
-            color: var(--gray-500);
-            font-size: 1.1rem;
+        .card-title {
+            font-size: var(--font-size-highlight);
+            font-weight: var(--font-weight-bold);
+            color: var(--neutral-text-high);
         }
 
-        .upload-section {
+        .card-body {
+            padding: var(--space-5);
+        }
+
+        /* Upload Section */
+        .upload-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
         }
 
         .upload-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 2px dashed var(--gray-300);
-            transition: all 0.3s ease;
+            background: var(--neutral-background);
+            border: 2px dashed var(--neutral-interactive);
+            border-radius: var(--radius-3);
+            padding: var(--space-5);
+            transition: all 0.2s ease;
         }
 
         .upload-card:hover {
-            border-color: var(--primary);
+            border-color: var(--primary-interactive);
+            background: var(--primary-text-low);
         }
 
         .upload-card.loaded {
-            border-color: var(--success);
+            border-color: var(--success-interactive);
             border-style: solid;
+            background: var(--success-surface);
         }
 
         .upload-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--gray-700);
+            font-size: var(--font-size-body);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-3);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
         }
 
         .upload-card input[type="file"] {
@@ -104,92 +221,101 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: var(--space-6);
             cursor: pointer;
-            border-radius: 12px;
-            background: var(--gray-50);
-            transition: background 0.3s ease;
+            border-radius: var(--radius-2);
+            background: var(--neutral-surface);
+            transition: background 0.2s ease;
         }
 
         .upload-label:hover {
-            background: var(--gray-100);
+            background: var(--neutral-surface-highlight);
         }
 
         .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 40px;
+            margin-bottom: var(--space-3);
         }
 
         .upload-text {
-            color: var(--gray-500);
+            color: var(--neutral-text-low);
             text-align: center;
+            font-size: var(--font-size-body);
         }
 
         .file-info {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background: var(--gray-50);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            color: var(--gray-600);
+            margin-top: var(--space-3);
+            padding: var(--space-3);
+            background: var(--neutral-surface);
+            border-radius: var(--radius-2);
+            font-size: var(--font-size-caption);
+            color: var(--success-text-low);
         }
 
-        .analyze-btn {
+        /* Primary Button */
+        .btn-primary {
             display: block;
             width: 100%;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: var(--space-4) var(--space-6);
+            font-size: var(--font-size-highlight);
+            font-weight: var(--font-weight-bold);
             color: white;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: var(--primary-interactive);
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius-2);
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            margin-bottom: 2rem;
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-bottom: var(--space-6);
         }
 
-        .analyze-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-interactive-hover);
         }
 
-        .analyze-btn:disabled {
-            opacity: 0.5;
+        .btn-primary:active:not(:disabled) {
+            background: var(--primary-interactive-pressed);
+            transform: scale(0.99);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
+        /* Tabs */
         .tabs {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            background: white;
-            padding: 0.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            gap: var(--space-1);
+            background: var(--neutral-background);
+            padding: var(--space-2);
+            border-radius: var(--radius-3);
+            box-shadow: var(--shadow-level-1);
+            margin-bottom: var(--space-5);
             flex-wrap: wrap;
         }
 
         .tab {
             flex: 1;
-            min-width: 120px;
-            padding: 1rem;
+            min-width: 100px;
+            padding: var(--space-3) var(--space-4);
             border: none;
             background: transparent;
-            border-radius: 8px;
+            border-radius: var(--radius-2);
             cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: var(--gray-500);
-            transition: all 0.3s ease;
+            font-family: var(--font-family);
+            font-size: var(--font-size-body);
+            font-weight: var(--font-weight-medium);
+            color: var(--neutral-text-low);
+            transition: all 0.2s ease;
         }
 
         .tab:hover {
-            background: var(--gray-100);
+            background: var(--neutral-surface);
+            color: var(--neutral-text-high);
         }
 
         .tab.active {
-            background: var(--primary);
+            background: var(--primary-interactive);
             color: white;
         }
 
@@ -201,70 +327,190 @@
             display: block;
         }
 
+        /* Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
         }
 
         .metric-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            background: var(--neutral-background);
+            border-radius: var(--radius-3);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-level-1);
+            border-left: 4px solid var(--primary-interactive);
+        }
+
+        .metric-card.success {
+            border-left-color: var(--success-interactive);
+        }
+
+        .metric-card.warning {
+            border-left-color: var(--warning-interactive);
+        }
+
+        .metric-card.danger {
+            border-left-color: var(--danger-interactive);
         }
 
         .metric-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--gray-800);
+            font-size: var(--font-size-display);
+            font-weight: var(--font-weight-bold);
+            color: var(--neutral-text-high);
+            line-height: var(--line-height-tight);
         }
 
         .metric-label {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-            margin-top: 0.25rem;
+            font-size: var(--font-size-caption);
+            color: var(--neutral-text-low);
+            margin-top: var(--space-1);
+            font-weight: var(--font-weight-medium);
         }
 
         .metric-delta {
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
+            font-size: var(--font-size-caption);
+            margin-top: var(--space-2);
+            font-weight: var(--font-weight-medium);
         }
 
         .metric-delta.positive {
-            color: var(--success);
+            color: var(--success-interactive);
         }
 
         .metric-delta.negative {
-            color: var(--danger);
+            color: var(--danger-interactive);
         }
 
-        .chart-container {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .chart-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--gray-700);
-        }
-
+        /* Charts */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
+            gap: var(--space-5);
         }
 
+        .chart-card {
+            background: var(--neutral-background);
+            border-radius: var(--radius-3);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-level-1);
+        }
+
+        .chart-title {
+            font-size: var(--font-size-body);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-4);
+            color: var(--neutral-text-high);
+        }
+
+        /* Alert/Info boxes */
+        .alert {
+            padding: var(--space-4);
+            border-radius: var(--radius-2);
+            margin-bottom: var(--space-5);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+        }
+
+        .alert-info {
+            background: var(--primary-text-low);
+            border-left: 4px solid var(--primary-interactive);
+        }
+
+        .alert-success {
+            background: var(--success-surface);
+            border-left: 4px solid var(--success-interactive);
+        }
+
+        .alert-warning {
+            background: var(--warning-surface);
+            border-left: 4px solid var(--warning-interactive);
+        }
+
+        .alert p {
+            margin: 0;
+            font-size: var(--font-size-body);
+        }
+
+        /* Tables */
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: var(--radius-2);
+            border: 1px solid var(--neutral-interactive);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-size-body);
+        }
+
+        .data-table th {
+            background: var(--neutral-surface);
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-caption);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--neutral-text-low);
+            position: sticky;
+            top: 0;
+            border-bottom: 1px solid var(--neutral-interactive);
+        }
+
+        .data-table td {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--neutral-interactive);
+        }
+
+        .data-table tr:hover {
+            background: var(--neutral-surface);
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: var(--font-size-title);
+            font-weight: var(--font-weight-bold);
+            color: var(--neutral-text-high);
+            margin: var(--space-8) 0 var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 2px solid var(--neutral-interactive);
+        }
+
+        .section-subtitle {
+            color: var(--neutral-text-low);
+            font-size: var(--font-size-body);
+            margin-bottom: var(--space-5);
+        }
+
+        /* Summary box */
+        .summary-box {
+            background: var(--neutral-surface);
+            border-radius: var(--radius-2);
+            padding: var(--space-5);
+            margin-top: var(--space-5);
+        }
+
+        .summary-box h4 {
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-3);
+            font-size: var(--font-size-body);
+        }
+
+        .summary-box p {
+            color: var(--neutral-text-low);
+            line-height: var(--line-height-normal);
+        }
+
+        /* Loading */
         .loading {
             display: none;
             text-align: center;
-            padding: 3rem;
+            padding: var(--space-12);
         }
 
         .loading.show {
@@ -272,13 +518,13 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--gray-200);
-            border-top-color: var(--primary);
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--neutral-interactive);
+            border-top-color: var(--primary-interactive);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto var(--space-4);
         }
 
         @keyframes spin {
@@ -293,108 +539,80 @@
             display: block;
         }
 
+        /* Instructions */
         .instructions {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: var(--neutral-background);
+            border-radius: var(--radius-3);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-level-1);
         }
 
         .instructions h2 {
-            color: var(--gray-800);
-            margin-bottom: 1rem;
+            color: var(--neutral-text-high);
+            font-size: var(--font-size-title);
+            margin-bottom: var(--space-4);
+        }
+
+        .instructions p {
+            color: var(--neutral-text-low);
+            margin-bottom: var(--space-4);
         }
 
         .instructions table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1rem 0;
+            margin: var(--space-5) 0;
         }
 
         .instructions th, .instructions td {
-            padding: 0.75rem;
+            padding: var(--space-3) var(--space-4);
             text-align: left;
-            border-bottom: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--neutral-interactive);
         }
 
         .instructions th {
-            background: var(--gray-50);
-            font-weight: 600;
+            background: var(--neutral-surface);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-caption);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--neutral-text-low);
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.875rem;
+        /* Badge/Tag */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-caption);
+            font-weight: var(--font-weight-medium);
         }
 
-        .data-table th, .data-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--gray-200);
+        .badge-primary {
+            background: var(--primary-text-low);
+            color: var(--primary-interactive);
         }
 
-        .data-table th {
-            background: var(--gray-50);
-            font-weight: 600;
-            position: sticky;
-            top: 0;
+        .badge-success {
+            background: var(--success-surface);
+            color: var(--success-text-low);
         }
 
-        .data-table tr:hover {
-            background: var(--gray-50);
+        .badge-warning {
+            background: var(--warning-surface);
+            color: var(--warning-text-low);
         }
 
-        .table-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border-radius: 8px;
-            border: 1px solid var(--gray-200);
+        .badge-danger {
+            background: var(--danger-surface);
+            color: var(--danger-text-low);
         }
 
-        .summary-box {
-            background: var(--gray-50);
-            border-left: 4px solid var(--primary);
-            padding: 1rem;
-            border-radius: 0 8px 8px 0;
-            margin-top: 1rem;
-        }
-
-        .summary-box h4 {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .summary-box p {
-            color: var(--gray-600);
-            line-height: 1.6;
-        }
-
-        .info-card {
-            background: #eff6ff;
-            border-left: 4px solid #3b82f6;
-            padding: 1rem;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-card p {
-            color: var(--gray-700);
-            margin: 0;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin: 2rem 0 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--gray-200);
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            .upload-section {
+            .upload-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -402,49 +620,60 @@
                 grid-template-columns: 1fr;
             }
             
-            h1 {
-                font-size: 1.75rem;
+            .header-content {
+                flex-wrap: wrap;
             }
 
             .tab {
-                min-width: 80px;
-                padding: 0.75rem 0.5rem;
-                font-size: 0.8rem;
+                min-width: 70px;
+                padding: var(--space-2) var(--space-3);
+                font-size: var(--font-size-caption);
+            }
+
+            .metric-value {
+                font-size: var(--font-size-title);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📊 Webinar Impact Analyzer</h1>
-            <p class="subtitle">Análise de impacto dos webinars nas métricas de negócio | Nuvemshop</p>
-        </header>
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">📊</div>
+                <span class="logo-text">Webinar Impact Analyzer</span>
+            </div>
+            <span class="logo-badge">Lifecycle Team</span>
+        </div>
+    </header>
 
-        <div class="upload-section">
+    <div class="container">
+        <!-- Upload Section -->
+        <div class="upload-grid">
             <div class="upload-card" id="webinar-card">
-                <h3>📋 1. Base de Participantes do Webinar</h3>
+                <h3>📋 Base de Participantes</h3>
                 <label class="upload-label" for="webinar-file">
                     <span class="upload-icon">📁</span>
-                    <span class="upload-text">Clique para selecionar o arquivo CSV<br>ou arraste e solte aqui</span>
+                    <span class="upload-text">Clique para selecionar<br>ou arraste o arquivo CSV</span>
                 </label>
                 <input type="file" id="webinar-file" accept=".csv,.txt" onchange="handleWebinarFile(this)">
                 <div class="file-info" id="webinar-info" style="display: none;"></div>
             </div>
 
             <div class="upload-card" id="store-card">
-                <h3>🏪 2. Base Total de Lojas</h3>
+                <h3>🏪 Base Total de Lojas</h3>
                 <label class="upload-label" for="store-file">
                     <span class="upload-icon">📁</span>
-                    <span class="upload-text">Clique para selecionar o arquivo CSV<br>ou arraste e solte aqui</span>
+                    <span class="upload-text">Clique para selecionar<br>ou arraste o arquivo CSV</span>
                 </label>
                 <input type="file" id="store-file" accept=".csv,.txt" onchange="handleStoreFile(this)">
                 <div class="file-info" id="store-info" style="display: none;"></div>
             </div>
         </div>
 
-        <button class="analyze-btn" id="analyze-btn" disabled onclick="runAnalysis()">
-            🚀 Analisar Impacto dos Webinars
+        <button class="btn-primary" id="analyze-btn" disabled onclick="runAnalysis()">
+            Analisar Impacto dos Webinars
         </button>
 
         <div class="loading" id="loading">
@@ -452,9 +681,10 @@
             <p>Processando dados...</p>
         </div>
 
+        <!-- Instructions -->
         <div class="instructions" id="instructions">
-            <h2>👋 Bem-vindo ao Webinar Impact Analyzer!</h2>
-            <p>Esta ferramenta analisa o impacto dos webinars em três hipóteses + perfil dos participantes:</p>
+            <h2>👋 Bem-vindo ao Webinar Impact Analyzer</h2>
+            <p>Ferramenta para análise de impacto dos webinars nas métricas de negócio.</p>
             
             <table>
                 <thead>
@@ -465,15 +695,15 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>H1: First Seller</strong></td>
+                        <td><strong>First Seller</strong></td>
                         <td>Taxa de conversão para primeira venda por mês</td>
                     </tr>
                     <tr>
-                        <td><strong>H2: GMV</strong></td>
+                        <td><strong>GMV</strong></td>
                         <td>Comparação de GMV atual entre grupos</td>
                     </tr>
                     <tr>
-                        <td><strong>H3: Status</strong></td>
+                        <td><strong>Status</strong></td>
                         <td>Matriz de transição de status detalhada</td>
                     </tr>
                     <tr>
@@ -483,9 +713,10 @@
                 </tbody>
             </table>
 
-            <p><strong>Faça upload dos dois arquivos CSV para começar a análise.</strong></p>
+            <p>Faça upload dos dois arquivos CSV para começar a análise.</p>
         </div>
 
+        <!-- Results Section -->
         <div class="results-section" id="results">
             <div class="tabs">
                 <button class="tab active" onclick="showTab('overview')">📈 Visão Geral</button>
@@ -503,9 +734,10 @@
 
             <!-- H1 Tab -->
             <div class="tab-content" id="tab-h1">
-                <h2 style="margin-bottom: 1rem;">Hipótese 1: Conversão para First Seller</h2>
-                <div class="info-card">
-                    <p>📊 <strong>Taxa de conversão por mês:</strong> Use estes dados para comparar com sua base histórica de conversão.</p>
+                <h2 class="section-title">Conversão para First Seller</h2>
+                <p class="section-subtitle">Taxa de conversão por mês para comparação com base histórica</p>
+                <div class="alert alert-info">
+                    <p>📊 Use estes dados para comparar com sua base histórica de conversão.</p>
                 </div>
                 <div class="metrics-grid" id="h1-metrics"></div>
                 <div class="charts-grid" id="h1-charts"></div>
@@ -514,10 +746,8 @@
 
             <!-- H2 Tab -->
             <div class="tab-content" id="tab-h2">
-                <h2 style="margin-bottom: 1rem;">Hipótese 2: Impacto no GMV</h2>
-                <p style="color: var(--gray-500); margin-bottom: 1.5rem;">
-                    Comparação de GMV atual entre participantes e grupo de controle
-                </p>
+                <h2 class="section-title">Impacto no GMV</h2>
+                <p class="section-subtitle">Comparação de GMV atual entre participantes e grupo de controle</p>
                 <div id="h2-significance"></div>
                 <div class="metrics-grid" id="h2-metrics"></div>
                 <div class="charts-grid" id="h2-charts"></div>
@@ -525,24 +755,20 @@
 
             <!-- H3 Tab -->
             <div class="tab-content" id="tab-h3">
-                <h2 style="margin-bottom: 1rem;">Hipótese 3: Evolução de Status</h2>
-                <p style="color: var(--gray-500); margin-bottom: 1.5rem;">
-                    Análise detalhada de transição de status: de onde vieram e para onde foram
-                </p>
+                <h2 class="section-title">Evolução de Status</h2>
+                <p class="section-subtitle">Análise detalhada de transição: de onde vieram e para onde foram</p>
                 <div class="metrics-grid" id="h3-metrics"></div>
                 <div class="charts-grid" id="h3-charts"></div>
-                <h3 class="section-title">Matriz de Transição Detalhada</h3>
+                <h3 class="section-title" style="font-size: var(--font-size-highlight);">Matriz de Transição</h3>
                 <div id="h3-matrix"></div>
-                <h3 class="section-title">Transições por Status Inicial</h3>
+                <h3 class="section-title" style="font-size: var(--font-size-highlight);">Transições por Status Inicial</h3>
                 <div id="h3-details"></div>
             </div>
 
             <!-- Profile Tab -->
             <div class="tab-content" id="tab-profile">
-                <h2 style="margin-bottom: 1rem;">👤 Perfil dos Participantes</h2>
-                <p style="color: var(--gray-500); margin-bottom: 1.5rem;">
-                    Insights sobre quem são os participantes dos webinars
-                </p>
+                <h2 class="section-title">Perfil dos Participantes</h2>
+                <p class="section-subtitle">Insights sobre quem são os participantes dos webinars</p>
                 <div class="metrics-grid" id="profile-metrics"></div>
                 <div class="charts-grid" id="profile-charts"></div>
                 <div id="profile-insights"></div>
@@ -555,6 +781,20 @@
         let webinarData = null;
         let storeData = null;
         let analysisResults = null;
+
+        // Nimbus color palette for charts
+        const CHART_COLORS = {
+            primary: '#0066E5',
+            primaryLight: '#E6F0FF',
+            secondary: '#8C8C8C',
+            success: '#00A650',
+            successLight: '#E6F9ED',
+            warning: '#FF9500',
+            warningLight: '#FFF4E6',
+            danger: '#E53935',
+            dangerLight: '#FFE6E6',
+            neutral: '#F7F7F8'
+        };
 
         // Status order for comparisons
         const STATUS_ORDER = {
@@ -580,22 +820,23 @@
             'top-seller': 'Top'
         };
 
-        const COLORS = {
-            participants: '#6366f1',
-            control: '#94a3b8',
-            upgrade: '#10b981',
-            downgrade: '#ef4444',
-            maintained: '#f59e0b'
+        const STATUS_COLORS = {
+            'no-seller': '#E53935',
+            'struggling-seller': '#FF9500',
+            'tiny-seller': '#FFB800',
+            'small-seller': '#84CC16',
+            'medium-seller': '#00A650',
+            'large-seller': '#00B8A9',
+            'top-seller': '#0066E5'
         };
 
-        const STATUS_COLORS = {
-            'no-seller': '#ef4444',
-            'struggling-seller': '#f97316',
-            'tiny-seller': '#f59e0b',
-            'small-seller': '#84cc16',
-            'medium-seller': '#22c55e',
-            'large-seller': '#14b8a6',
-            'top-seller': '#6366f1'
+        // Plotly layout defaults (Nimbus-inspired)
+        const PLOTLY_LAYOUT = {
+            font: { family: 'Geist, -apple-system, sans-serif', size: 12, color: '#14171A' },
+            paper_bgcolor: 'white',
+            plot_bgcolor: 'white',
+            margin: { t: 50, r: 20, b: 50, l: 50 },
+            colorway: ['#0066E5', '#00A650', '#FF9500', '#E53935', '#8C8C8C', '#00B8A9', '#84CC16']
         };
 
         // Parse date in DD/MM/YYYY format
@@ -678,7 +919,7 @@
             
             card.classList.add('loaded');
             info.style.display = 'block';
-            info.innerHTML = `✅ <strong>${filename}</strong><br>${rows.toLocaleString()} registros carregados`;
+            info.innerHTML = `✅ <strong>${filename}</strong> — ${rows.toLocaleString()} registros`;
             
             checkReadyToAnalyze();
         }
@@ -808,7 +1049,6 @@
         }
 
         function analyzeFirstSeller(participants, webinarData) {
-            // Group by month and calculate conversion rate
             const byMonth = {};
             const monthOrder = [];
             
@@ -827,7 +1067,6 @@
                     monthOrder.push(month);
                 }
                 
-                // Count unique stores per month
                 if (!byMonth[month].stores.has(row.store_id)) {
                     byMonth[month].stores.add(row.store_id);
                     byMonth[month].total++;
@@ -837,9 +1076,7 @@
                         byMonth[month].noSellerAtStart++;
                     }
                     
-                    // Check if became seller after webinar
                     if (wasNoSeller && row.first_seller_date) {
-                        // Get webinar month as date
                         const webinarMonthMatch = month.match(/(\w+)\s+(\d{4})/);
                         if (webinarMonthMatch) {
                             const monthNames = {
@@ -862,7 +1099,6 @@
                 }
             });
 
-            // Sort months chronologically
             const sortedMonths = monthOrder.sort((a, b) => {
                 const getMonthNum = (m) => {
                     const match = m.match(/Month\s+(\d+)/);
@@ -882,7 +1118,6 @@
                     : 0
             }));
 
-            // Overall stats
             const totalNoSeller = participants.filter(p => 
                 ['', 'no-seller'].includes(p.status_at_webinar)
             ).length;
@@ -913,7 +1148,6 @@
             const meanDiffPct = cStats.mean > 0 ? 
                 ((pStats.mean - cStats.mean) / cStats.mean * 100) : 0;
 
-            // GMV by status
             const gmvByStatus = {};
             STATUS_LIST.forEach(status => {
                 const pValues = participants.filter(p => p.current_status === status).map(p => p.gmv_d30);
@@ -936,7 +1170,6 @@
         function analyzeStatusEvolution(participants, control) {
             const transitions = { upgrade: 0, maintained: 0, downgrade: 0, unknown: 0 };
             
-            // Detailed transition matrix
             const transitionMatrix = {};
             STATUS_LIST.forEach(from => {
                 transitionMatrix[from] = {};
@@ -945,7 +1178,6 @@
                 });
             });
 
-            // Track transitions by initial status
             const transitionsByInitial = {};
             STATUS_LIST.forEach(status => {
                 transitionsByInitial[status] = {
@@ -971,12 +1203,10 @@
                     return;
                 }
 
-                // Update matrix
                 if (transitionMatrix[before]) {
                     transitionMatrix[before][after]++;
                 }
 
-                // Update transitions by initial
                 if (transitionsByInitial[before]) {
                     transitionsByInitial[before].total++;
                     transitionsByInitial[before].destinations[after]++;
@@ -996,7 +1226,6 @@
 
             const total = transitions.upgrade + transitions.maintained + transitions.downgrade;
 
-            // Status distribution comparison
             const pDist = {};
             const cDist = {};
             
@@ -1019,7 +1248,6 @@
         }
 
         function analyzeProfile(participants, webinarData) {
-            // Age distribution
             const ages = participants.map(p => p.store_age_days).filter(a => a > 0);
             const ageCategories = {
                 '0-30 dias': 0,
@@ -1039,25 +1267,22 @@
                 else ageCategories['2+ anos']++;
             });
 
-            // Time to first seller (from store creation)
             const timeToFirstSeller = [];
             participants.forEach(p => {
                 if (p.created_date && p.first_seller_date && p.first_seller_date > p.created_date) {
                     const days = Math.floor((p.first_seller_date - p.created_date) / (1000 * 60 * 60 * 24));
-                    if (days >= 0 && days < 3650) { // Limit to 10 years
+                    if (days >= 0 && days < 3650) {
                         timeToFirstSeller.push(days);
                     }
                 }
             });
 
-            // Status distribution at webinar
             const statusAtWebinar = {};
             STATUS_LIST.forEach(s => {
                 statusAtWebinar[s] = participants.filter(p => p.status_at_webinar === s).length;
             });
             statusAtWebinar['sem status'] = participants.filter(p => !p.status_at_webinar || p.status_at_webinar === '').length;
 
-            // Webinar participation type
             const participationType = {
                 'live': 0,
                 'on-demand': 0,
@@ -1073,7 +1298,6 @@
                 }
             });
 
-            // Webinar count distribution
             const webinarCountDist = {};
             participants.forEach(p => {
                 const count = p.webinar_count || 1;
@@ -1081,7 +1305,6 @@
                 webinarCountDist[key] = (webinarCountDist[key] || 0) + 1;
             });
 
-            // Top webinars
             const webinarCounts = {};
             webinarData.forEach(row => {
                 const name = row.webinar_name;
@@ -1134,8 +1357,6 @@
             if (se === 0) return { statistic: 0, pValue: 1, significant: false };
 
             const t = (stats1.mean - stats2.mean) / se;
-            const df = Math.min(stats1.count, stats2.count) - 1;
-            
             const pValue = 2 * (1 - normalCDF(Math.abs(t)));
 
             return {
@@ -1174,7 +1395,6 @@
         function renderOverview() {
             const o = analysisResults.overview;
             const h1 = analysisResults.h1;
-            const h2 = analysisResults.h2;
             const h3 = analysisResults.h3;
 
             document.getElementById('overview-metrics').innerHTML = `
@@ -1194,58 +1414,57 @@
                     <div class="metric-value">${o.webinarCount}</div>
                     <div class="metric-label">Webinars</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card success">
                     <div class="metric-value">${h1.overallRate.toFixed(1)}%</div>
                     <div class="metric-label">Conversão First Seller</div>
-                    <div class="metric-delta">${h1.converted} de ${h1.noSellerAtStart} no-sellers</div>
+                    <div class="metric-delta">${h1.converted} de ${h1.noSellerAtStart}</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card success">
                     <div class="metric-value">${h3.upgradeRate.toFixed(1)}%</div>
                     <div class="metric-label">Taxa de Upgrade</div>
-                    <div class="metric-delta positive">${h3.transitions.upgrade} lojas subiram</div>
+                    <div class="metric-delta positive">${h3.transitions.upgrade} lojas</div>
                 </div>
             `;
 
-            // Overview charts
             document.getElementById('overview-charts').innerHTML = `
-                <div class="chart-container"><div id="overview-chart1"></div></div>
-                <div class="chart-container"><div id="overview-chart2"></div></div>
+                <div class="chart-card"><div id="overview-chart1"></div></div>
+                <div class="chart-card"><div id="overview-chart2"></div></div>
             `;
 
-            // Conversion by month
             if (h1.byMonth.length > 0) {
                 Plotly.newPlot('overview-chart1', [{
                     x: h1.byMonth.map(m => m.month),
                     y: h1.byMonth.map(m => m.conversionRate),
                     type: 'bar',
-                    marker: { color: COLORS.participants },
+                    marker: { color: CHART_COLORS.primary, cornerradius: 4 },
                     text: h1.byMonth.map(m => m.conversionRate.toFixed(1) + '%'),
                     textposition: 'outside'
                 }], {
-                    title: 'Taxa de Conversão First Seller por Mês',
+                    ...PLOTLY_LAYOUT,
+                    title: { text: 'Taxa de Conversão First Seller por Mês', font: { size: 14 } },
                     yaxis: { title: 'Taxa (%)' },
                     height: 350
                 }, { responsive: true });
             }
 
-            // Status evolution pie
             Plotly.newPlot('overview-chart2', [{
                 values: [h3.transitions.upgrade, h3.transitions.maintained, h3.transitions.downgrade],
                 labels: ['Upgrade', 'Manteve', 'Downgrade'],
                 type: 'pie',
-                hole: 0.4,
-                marker: { colors: [COLORS.upgrade, COLORS.maintained, COLORS.downgrade] },
+                hole: 0.45,
+                marker: { colors: [CHART_COLORS.success, CHART_COLORS.warning, CHART_COLORS.danger] },
                 textinfo: 'label+percent'
             }], {
-                title: 'Evolução de Status',
-                height: 350
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Evolução de Status', font: { size: 14 } },
+                height: 350,
+                showlegend: false
             }, { responsive: true });
         }
 
         function renderH1() {
             const h1 = analysisResults.h1;
 
-            // Metrics
             document.getElementById('h1-metrics').innerHTML = `
                 <div class="metric-card">
                     <div class="metric-value">${h1.total.toLocaleString()}</div>
@@ -1255,23 +1474,21 @@
                     <div class="metric-value">${h1.noSellerAtStart.toLocaleString()}</div>
                     <div class="metric-label">No-Sellers no Início</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card success">
                     <div class="metric-value">${h1.converted.toLocaleString()}</div>
                     <div class="metric-label">Converteram</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card success">
                     <div class="metric-value">${h1.overallRate.toFixed(1)}%</div>
                     <div class="metric-label">Taxa Geral</div>
                 </div>
             `;
 
-            // Charts
             document.getElementById('h1-charts').innerHTML = `
-                <div class="chart-container"><div id="h1-chart1"></div></div>
-                <div class="chart-container"><div id="h1-chart2"></div></div>
+                <div class="chart-card"><div id="h1-chart1"></div></div>
+                <div class="chart-card"><div id="h1-chart2"></div></div>
             `;
 
-            // Conversion rate by month
             if (h1.byMonth.length > 0) {
                 Plotly.newPlot('h1-chart1', [{
                     x: h1.byMonth.map(m => m.month),
@@ -1280,42 +1497,42 @@
                     mode: 'lines+markers+text',
                     text: h1.byMonth.map(m => m.conversionRate.toFixed(1) + '%'),
                     textposition: 'top center',
-                    line: { color: COLORS.participants, width: 3 },
+                    line: { color: CHART_COLORS.primary, width: 3 },
                     marker: { size: 10 }
                 }], {
-                    title: 'Taxa de Conversão para First Seller por Mês',
+                    ...PLOTLY_LAYOUT,
+                    title: { text: 'Taxa de Conversão para First Seller por Mês', font: { size: 14 } },
                     yaxis: { title: 'Taxa de Conversão (%)' },
                     xaxis: { title: 'Mês do Webinar' },
                     height: 400
                 }, { responsive: true });
 
-                // Volume by month
                 Plotly.newPlot('h1-chart2', [
                     {
                         x: h1.byMonth.map(m => m.month),
                         y: h1.byMonth.map(m => m.noSellerAtStart),
                         type: 'bar',
                         name: 'No-Sellers',
-                        marker: { color: COLORS.control }
+                        marker: { color: CHART_COLORS.secondary }
                     },
                     {
                         x: h1.byMonth.map(m => m.month),
                         y: h1.byMonth.map(m => m.converted),
                         type: 'bar',
                         name: 'Converteram',
-                        marker: { color: COLORS.upgrade }
+                        marker: { color: CHART_COLORS.success }
                     }
                 ], {
-                    title: 'Volume de Conversão por Mês',
+                    ...PLOTLY_LAYOUT,
+                    title: { text: 'Volume de Conversão por Mês', font: { size: 14 } },
                     barmode: 'group',
                     yaxis: { title: 'Quantidade' },
                     height: 400
                 }, { responsive: true });
             }
 
-            // Table with monthly data
             let tableHTML = `
-                <div class="chart-container">
+                <div class="chart-card">
                     <h3 class="chart-title">📋 Dados por Mês (para comparação com base histórica)</h3>
                     <div class="table-container">
                         <table class="data-table">
@@ -1343,25 +1560,17 @@
                 `;
             });
 
-            tableHTML += `
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-            
+            tableHTML += '</tbody></table></div></div>';
             document.getElementById('h1-table').innerHTML = tableHTML;
         }
 
         function renderH2() {
             const h2 = analysisResults.h2;
 
-            // Significance badge
             document.getElementById('h2-significance').innerHTML = h2.tTest.significant ?
-                `<div class="info-card"><p>✅ <strong>Resultado estatisticamente significativo</strong> (p-valor: ${h2.tTest.pValue.toFixed(4)})</p></div>` :
-                `<div class="info-card"><p>⚠️ <strong>Resultado não é estatisticamente significativo</strong> (p-valor: ${h2.tTest.pValue.toFixed(4)})</p></div>`;
+                `<div class="alert alert-success"><p>✅ <strong>Resultado estatisticamente significativo</strong> (p-valor: ${h2.tTest.pValue.toFixed(4)})</p></div>` :
+                `<div class="alert alert-warning"><p>⚠️ <strong>Resultado não é estatisticamente significativo</strong> (p-valor: ${h2.tTest.pValue.toFixed(4)})</p></div>`;
 
-            // Metrics
             document.getElementById('h2-metrics').innerHTML = `
                 <div class="metric-card">
                     <div class="metric-value">R$ ${formatNumber(h2.participants.mean)}</div>
@@ -1373,48 +1582,46 @@
                     <div class="metric-label">GMV Médio (Controle)</div>
                     <div class="metric-delta">Mediana: R$ ${formatNumber(h2.control.median)}</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card ${h2.meanDiffPct > 0 ? 'success' : 'danger'}">
                     <div class="metric-value">${h2.meanDiffPct > 0 ? '+' : ''}${h2.meanDiffPct.toFixed(1)}%</div>
                     <div class="metric-label">Diferença</div>
                     <div class="metric-delta">Participantes vs Controle</div>
                 </div>
             `;
 
-            // Charts
             document.getElementById('h2-charts').innerHTML = `
-                <div class="chart-container"><div id="h2-chart1"></div></div>
-                <div class="chart-container"><div id="h2-chart2"></div></div>
-                <div class="chart-container" style="grid-column: 1 / -1;"><div id="h2-chart3"></div></div>
+                <div class="chart-card"><div id="h2-chart1"></div></div>
+                <div class="chart-card"><div id="h2-chart2"></div></div>
+                <div class="chart-card" style="grid-column: 1 / -1;"><div id="h2-chart3"></div></div>
             `;
 
-            // Bar chart
             Plotly.newPlot('h2-chart1', [{
                 x: ['Participantes', 'Controle'],
                 y: [h2.participants.mean, h2.control.mean],
                 type: 'bar',
-                marker: { color: [COLORS.participants, COLORS.control] },
+                marker: { color: [CHART_COLORS.primary, CHART_COLORS.secondary] },
                 text: ['R$ ' + formatNumber(h2.participants.mean), 'R$ ' + formatNumber(h2.control.mean)],
                 textposition: 'outside'
             }], {
-                title: 'Comparação de GMV Médio (D-30)',
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Comparação de GMV Médio (D-30)', font: { size: 14 } },
                 yaxis: { title: 'GMV (R$)' },
                 height: 350
             }, { responsive: true });
 
-            // Box plot
             const pGmv = analysisResults.participants.map(p => p.gmv_d30).filter(v => v > 0 && v < 100000);
             const cGmv = analysisResults.control.map(c => c.gmv_d30).filter(v => v > 0 && v < 100000);
 
             Plotly.newPlot('h2-chart2', [
-                { y: pGmv, type: 'box', name: 'Participantes', marker: { color: COLORS.participants } },
-                { y: cGmv, type: 'box', name: 'Controle', marker: { color: COLORS.control } }
+                { y: pGmv, type: 'box', name: 'Participantes', marker: { color: CHART_COLORS.primary } },
+                { y: cGmv, type: 'box', name: 'Controle', marker: { color: CHART_COLORS.secondary } }
             ], {
-                title: 'Distribuição de GMV (até R$ 100k)',
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Distribuição de GMV (até R$ 100k)', font: { size: 14 } },
                 yaxis: { title: 'GMV (R$)' },
                 height: 350
             }, { responsive: true });
 
-            // GMV by status comparison
             const statusData = [];
             STATUS_LIST.forEach(status => {
                 if (h2.byStatus[status].participants.count > 10) {
@@ -1433,17 +1640,18 @@
                         y: statusData.map(s => s.pMean),
                         type: 'bar',
                         name: 'Participantes',
-                        marker: { color: COLORS.participants }
+                        marker: { color: CHART_COLORS.primary }
                     },
                     {
                         x: statusData.map(s => s.status),
                         y: statusData.map(s => s.cMean),
                         type: 'bar',
                         name: 'Controle',
-                        marker: { color: COLORS.control }
+                        marker: { color: CHART_COLORS.secondary }
                     }
                 ], {
-                    title: 'GMV Médio por Status Atual',
+                    ...PLOTLY_LAYOUT,
+                    title: { text: 'GMV Médio por Status Atual', font: { size: 14 } },
                     barmode: 'group',
                     yaxis: { title: 'GMV (R$)' },
                     height: 400
@@ -1454,49 +1662,47 @@
         function renderH3() {
             const h3 = analysisResults.h3;
 
-            // Metrics
             document.getElementById('h3-metrics').innerHTML = `
                 <div class="metric-card">
                     <div class="metric-value">${h3.total.toLocaleString()}</div>
                     <div class="metric-label">Lojas Analisadas</div>
                 </div>
-                <div class="metric-card" style="border-left: 4px solid ${COLORS.upgrade}">
+                <div class="metric-card success">
                     <div class="metric-value">${h3.upgradeRate.toFixed(1)}%</div>
                     <div class="metric-label">Taxa de Upgrade</div>
                     <div class="metric-delta positive">${h3.transitions.upgrade.toLocaleString()} lojas</div>
                 </div>
-                <div class="metric-card" style="border-left: 4px solid ${COLORS.maintained}">
+                <div class="metric-card warning">
                     <div class="metric-value">${h3.maintainedRate.toFixed(1)}%</div>
                     <div class="metric-label">Mantiveram Status</div>
                     <div class="metric-delta">${h3.transitions.maintained.toLocaleString()} lojas</div>
                 </div>
-                <div class="metric-card" style="border-left: 4px solid ${COLORS.downgrade}">
+                <div class="metric-card danger">
                     <div class="metric-value">${h3.downgradeRate.toFixed(1)}%</div>
                     <div class="metric-label">Taxa de Downgrade</div>
                     <div class="metric-delta negative">${h3.transitions.downgrade.toLocaleString()} lojas</div>
                 </div>
             `;
 
-            // Charts
             document.getElementById('h3-charts').innerHTML = `
-                <div class="chart-container"><div id="h3-chart1"></div></div>
-                <div class="chart-container"><div id="h3-chart2"></div></div>
+                <div class="chart-card"><div id="h3-chart1"></div></div>
+                <div class="chart-card"><div id="h3-chart2"></div></div>
             `;
 
-            // Pie chart
             Plotly.newPlot('h3-chart1', [{
                 values: [h3.transitions.upgrade, h3.transitions.maintained, h3.transitions.downgrade],
                 labels: ['Upgrade', 'Manteve', 'Downgrade'],
                 type: 'pie',
-                hole: 0.4,
-                marker: { colors: [COLORS.upgrade, COLORS.maintained, COLORS.downgrade] },
+                hole: 0.45,
+                marker: { colors: [CHART_COLORS.success, CHART_COLORS.warning, CHART_COLORS.danger] },
                 textinfo: 'label+percent'
             }], {
-                title: 'Evolução de Status dos Participantes',
-                height: 400
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Evolução de Status dos Participantes', font: { size: 14 } },
+                height: 400,
+                showlegend: false
             }, { responsive: true });
 
-            // Status distribution comparison
             const pTotal = Object.values(h3.participantsDist).reduce((a, b) => a + b, 0);
             const cTotal = Object.values(h3.controlDist).reduce((a, b) => a + b, 0);
 
@@ -1504,60 +1710,51 @@
             const cPct = STATUS_LIST.map(s => cTotal > 0 ? (h3.controlDist[s] / cTotal * 100) : 0);
 
             Plotly.newPlot('h3-chart2', [
-                { x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: pPct, type: 'bar', name: 'Participantes', marker: { color: COLORS.participants } },
-                { x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: cPct, type: 'bar', name: 'Controle', marker: { color: COLORS.control } }
+                { x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: pPct, type: 'bar', name: 'Participantes', marker: { color: CHART_COLORS.primary } },
+                { x: STATUS_LIST.map(s => STATUS_LABELS[s]), y: cPct, type: 'bar', name: 'Controle', marker: { color: CHART_COLORS.secondary } }
             ], {
-                title: 'Distribuição de Status Atual (%)',
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Distribuição de Status Atual (%)', font: { size: 14 } },
                 barmode: 'group',
                 yaxis: { title: 'Percentual (%)' },
                 height: 400
             }, { responsive: true });
 
-            // Transition matrix heatmap
             const matrixValues = STATUS_LIST.map(from => 
                 STATUS_LIST.map(to => h3.transitionMatrix[from][to])
             );
 
-            document.getElementById('h3-matrix').innerHTML = '<div class="chart-container"><div id="h3-heatmap"></div></div>';
+            document.getElementById('h3-matrix').innerHTML = '<div class="chart-card"><div id="h3-heatmap"></div></div>';
 
             Plotly.newPlot('h3-heatmap', [{
                 z: matrixValues,
                 x: STATUS_LIST.map(s => STATUS_LABELS[s]),
                 y: STATUS_LIST.map(s => STATUS_LABELS[s]),
                 type: 'heatmap',
-                colorscale: 'Blues',
+                colorscale: [[0, '#F7F7F8'], [0.5, '#E6F0FF'], [1, '#0066E5']],
                 text: matrixValues.map(row => row.map(v => v > 0 ? v : '')),
                 texttemplate: '%{text}',
                 hovertemplate: 'De: %{y}<br>Para: %{x}<br>Quantidade: %{z}<extra></extra>'
             }], {
-                title: 'Matriz de Transição de Status (De → Para)',
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Matriz de Transição de Status (De → Para)', font: { size: 14 } },
                 xaxis: { title: 'Status Atual (Para)', side: 'bottom' },
                 yaxis: { title: 'Status no Webinar (De)', autorange: 'reversed' },
                 height: 500
             }, { responsive: true });
 
-            // Detailed transitions by initial status
             let detailsHTML = '<div class="charts-grid">';
             
             STATUS_LIST.forEach(status => {
                 const data = h3.transitionsByInitial[status];
                 if (data.total < 10) return;
 
-                const destinations = STATUS_LIST
-                    .map(dest => ({ dest, count: data.destinations[dest] }))
-                    .filter(d => d.count > 0);
-
-                detailsHTML += `
-                    <div class="chart-container">
-                        <div id="h3-detail-${status}"></div>
-                    </div>
-                `;
+                detailsHTML += `<div class="chart-card"><div id="h3-detail-${status}"></div></div>`;
             });
             
             detailsHTML += '</div>';
             document.getElementById('h3-details').innerHTML = detailsHTML;
 
-            // Render individual charts
             STATUS_LIST.forEach(status => {
                 const data = h3.transitionsByInitial[status];
                 if (data.total < 10) return;
@@ -1574,17 +1771,18 @@
                         color: destinations.map(d => {
                             const fromNum = STATUS_ORDER[status];
                             const toNum = STATUS_ORDER[d.dest];
-                            if (toNum > fromNum) return COLORS.upgrade;
-                            if (toNum < fromNum) return COLORS.downgrade;
-                            return COLORS.maintained;
+                            if (toNum > fromNum) return CHART_COLORS.success;
+                            if (toNum < fromNum) return CHART_COLORS.danger;
+                            return CHART_COLORS.warning;
                         })
                     },
                     text: destinations.map(d => d.count),
                     textposition: 'outside'
                 }], {
-                    title: `De ${STATUS_LABELS[status]} (${data.total} lojas) → Para:`,
-                    yaxis: { title: 'Quantidade' },
-                    height: 300
+                    ...PLOTLY_LAYOUT,
+                    title: { text: `De ${STATUS_LABELS[status]} (${data.total}) → Para:`, font: { size: 13 } },
+                    yaxis: { title: 'Qtd' },
+                    height: 280
                 }, { responsive: true });
             });
         }
@@ -1592,7 +1790,6 @@
         function renderProfile() {
             const profile = analysisResults.profile;
 
-            // Metrics
             const avgAge = profile.ageStats.mean;
             const avgTimeToSeller = profile.timeToFirstSellerStats.mean;
 
@@ -1608,26 +1805,24 @@
                 </div>
                 <div class="metric-card">
                     <div class="metric-value">${Math.round(avgTimeToSeller)} dias</div>
-                    <div class="metric-label">Tempo Médio até First Seller</div>
+                    <div class="metric-label">Tempo até First Seller</div>
                     <div class="metric-delta">${(avgTimeToSeller / 30).toFixed(1)} meses</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card success">
                     <div class="metric-value">${profile.timeToFirstSeller.length.toLocaleString()}</div>
                     <div class="metric-label">Lojas com First Seller</div>
                 </div>
             `;
 
-            // Charts
             document.getElementById('profile-charts').innerHTML = `
-                <div class="chart-container"><div id="profile-chart1"></div></div>
-                <div class="chart-container"><div id="profile-chart2"></div></div>
-                <div class="chart-container"><div id="profile-chart3"></div></div>
-                <div class="chart-container"><div id="profile-chart4"></div></div>
-                <div class="chart-container"><div id="profile-chart5"></div></div>
-                <div class="chart-container"><div id="profile-chart6"></div></div>
+                <div class="chart-card"><div id="profile-chart1"></div></div>
+                <div class="chart-card"><div id="profile-chart2"></div></div>
+                <div class="chart-card"><div id="profile-chart3"></div></div>
+                <div class="chart-card"><div id="profile-chart4"></div></div>
+                <div class="chart-card"><div id="profile-chart5"></div></div>
+                <div class="chart-card"><div id="profile-chart6"></div></div>
             `;
 
-            // Age distribution
             const ageLabels = Object.keys(profile.ageCategories);
             const ageValues = Object.values(profile.ageCategories);
 
@@ -1635,31 +1830,31 @@
                 x: ageLabels,
                 y: ageValues,
                 type: 'bar',
-                marker: { color: COLORS.participants },
+                marker: { color: CHART_COLORS.primary },
                 text: ageValues.map(v => v.toLocaleString()),
                 textposition: 'outside'
             }], {
-                title: 'Distribuição por Idade da Loja',
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Distribuição por Idade da Loja', font: { size: 14 } },
                 yaxis: { title: 'Quantidade' },
                 height: 350
             }, { responsive: true });
 
-            // Time to first seller histogram
             if (profile.timeToFirstSeller.length > 0) {
                 Plotly.newPlot('profile-chart2', [{
                     x: profile.timeToFirstSeller,
                     type: 'histogram',
                     nbinsx: 30,
-                    marker: { color: COLORS.participants }
+                    marker: { color: CHART_COLORS.primary }
                 }], {
-                    title: 'Tempo até First Seller (dias)',
+                    ...PLOTLY_LAYOUT,
+                    title: { text: 'Tempo até First Seller (dias)', font: { size: 14 } },
                     xaxis: { title: 'Dias' },
-                    yaxis: { title: 'Quantidade de Lojas' },
+                    yaxis: { title: 'Quantidade' },
                     height: 350
                 }, { responsive: true });
             }
 
-            // Status at webinar
             const statusLabels = Object.keys(profile.statusAtWebinar).filter(s => profile.statusAtWebinar[s] > 0);
             const statusValues = statusLabels.map(s => profile.statusAtWebinar[s]);
 
@@ -1667,13 +1862,14 @@
                 labels: statusLabels.map(s => STATUS_LABELS[s] || s),
                 values: statusValues,
                 type: 'pie',
-                marker: { colors: statusLabels.map(s => STATUS_COLORS[s] || COLORS.control) }
+                marker: { colors: statusLabels.map(s => STATUS_COLORS[s] || CHART_COLORS.secondary) }
             }], {
-                title: 'Status no Momento do Webinar',
-                height: 350
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Status no Momento do Webinar', font: { size: 14 } },
+                height: 350,
+                showlegend: true
             }, { responsive: true });
 
-            // Participation type
             const partLabels = Object.keys(profile.participationType).filter(p => profile.participationType[p] > 0);
             const partValues = partLabels.map(p => profile.participationType[p]);
 
@@ -1681,13 +1877,14 @@
                 labels: partLabels.map(p => p.charAt(0).toUpperCase() + p.slice(1)),
                 values: partValues,
                 type: 'pie',
-                marker: { colors: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'] }
+                marker: { colors: [CHART_COLORS.primary, '#8B5CF6', '#A78BFA', '#C4B5FD'] }
             }], {
-                title: 'Tipo de Participação',
-                height: 350
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Tipo de Participação', font: { size: 14 } },
+                height: 350,
+                showlegend: true
             }, { responsive: true });
 
-            // Webinar count distribution
             const countLabels = ['1', '2', '3', '4', '5+'];
             const countValues = countLabels.map(l => profile.webinarCountDist[l] || 0);
 
@@ -1695,35 +1892,35 @@
                 x: countLabels,
                 y: countValues,
                 type: 'bar',
-                marker: { color: COLORS.secondary },
+                marker: { color: CHART_COLORS.primary },
                 text: countValues.map(v => v.toLocaleString()),
                 textposition: 'outside'
             }], {
-                title: 'Quantidade de Webinars por Loja',
-                xaxis: { title: 'Webinars Participados' },
-                yaxis: { title: 'Quantidade de Lojas' },
+                ...PLOTLY_LAYOUT,
+                title: { text: 'Webinars por Loja', font: { size: 14 } },
+                xaxis: { title: 'Webinars' },
+                yaxis: { title: 'Lojas' },
                 height: 350
             }, { responsive: true });
 
-            // Top webinars
             if (profile.topWebinars.length > 0) {
                 Plotly.newPlot('profile-chart6', [{
-                    y: profile.topWebinars.map(w => w[0].substring(0, 40) + '...'),
+                    y: profile.topWebinars.map(w => w[0].substring(0, 35) + '...'),
                     x: profile.topWebinars.map(w => w[1]),
                     type: 'bar',
                     orientation: 'h',
-                    marker: { color: COLORS.participants },
+                    marker: { color: CHART_COLORS.primary },
                     text: profile.topWebinars.map(w => w[1]),
                     textposition: 'outside'
                 }], {
-                    title: 'Top 10 Webinars (por Participação)',
+                    ...PLOTLY_LAYOUT,
+                    title: { text: 'Top 10 Webinars', font: { size: 14 } },
                     xaxis: { title: 'Participações' },
-                    margin: { l: 250 },
+                    margin: { l: 220, r: 20, t: 50, b: 50 },
                     height: 400
                 }, { responsive: true });
             }
 
-            // Insights
             document.getElementById('profile-insights').innerHTML = `
                 <div class="summary-box">
                     <h4>📋 Insights do Perfil</h4>
