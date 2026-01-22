@@ -711,33 +711,25 @@
         }
 
         function analyzeFirstSeller(participants, webinarData) {
-            // Análise por mês
+            // Usar participants (lojas únicas) e agrupar por mês da primeira participação
+            // participants já tem first_webinar_month definido
+            
             const byMonth = {};
             const monthOrder = [];
             
-            webinarData.forEach(row => {
-                const month = row.webinar_month;
+            participants.forEach(p => {
+                const month = p.first_webinar_month;
                 if (!month) return;
                 
                 if (!byMonth[month]) {
                     byMonth[month] = {
                         month,
-                        stores: new Map(),
-                        webinarDate: row.webinar_month_date
+                        stores: []
                     };
                     monthOrder.push(month);
                 }
                 
-                // Só conta primeira participação de cada loja no mês
-                if (!byMonth[month].stores.has(row.store_id)) {
-                    byMonth[month].stores.set(row.store_id, {
-                        field_is_empty: row.field_is_empty,
-                        first_seller_after_webinar: row.first_seller_after_webinar,
-                        had_no_first_seller_at_webinar: row.had_no_first_seller_at_webinar,
-                        first_seller_date: row.first_seller_date,
-                        webinar_date: row.webinar_month_date
-                    });
-                }
+                byMonth[month].stores.push(p);
             });
 
             // Ordenar meses
@@ -746,36 +738,21 @@
                 return getNum(a) - getNum(b);
             });
 
-            // Buscar status atual e dados das lojas
-            const storeData = new Map();
-            participants.forEach(p => {
-                storeData.set(p.store_id, {
-                    current_status: p.current_status,
-                    first_seller_after_webinar: p.first_seller_after_webinar
-                });
-            });
-
             const monthlyData = sortedMonths.map(month => {
                 const data = byMonth[month];
-                let total = 0;
-                let withoutFirstSeller = 0;  // campo vazio + first_seller após webinar
+                let total = data.stores.length;
+                let withoutFirstSeller = 0;
                 let fieldEmpty = 0;
                 let afterWebinar = 0;
 
-                data.stores.forEach((rowData, storeId) => {
-                    total++;
-                    
-                    // Denominador: não tinha FS no momento do webinar
-                    // = campo vazio OU first_seller posterior ao webinar
-                    if (rowData.had_no_first_seller_at_webinar) {
+                data.stores.forEach(store => {
+                    if (store.had_no_first_seller_at_webinar) {
                         withoutFirstSeller++;
-                        
-                        if (rowData.field_is_empty) fieldEmpty++;
-                        if (rowData.first_seller_after_webinar) afterWebinar++;
+                        if (store.field_is_empty) fieldEmpty++;
+                        if (store.first_seller_after_webinar) afterWebinar++;
                     }
                 });
 
-                // Numerador = APENAS quem teve first_seller APÓS o webinar
                 const converted = afterWebinar;
                 const rate = withoutFirstSeller > 0 ? (converted / withoutFirstSeller * 100) : 0;
 
@@ -791,18 +768,26 @@
                 };
             });
 
-            // Totais gerais
+            // Totais gerais (lojas únicas)
             const totalFieldEmpty = participants.filter(p => p.field_is_empty).length;
             const totalAfterWebinar = participants.filter(p => p.first_seller_after_webinar).length;
             const totalWithoutFS = participants.filter(p => p.had_no_first_seller_at_webinar).length;
-            
-            // Numerador = APENAS quem teve first_seller APÓS o webinar
             const totalConverted = totalAfterWebinar;
             const overallRate = totalWithoutFS > 0 ? (totalConverted / totalWithoutFS * 100) : 0;
 
-            console.log('H1 Results:', { 
-                totalWithoutFS, totalConverted, overallRate, 
-                totalFieldEmpty, totalAfterWebinar, monthlyData 
+            // Verificar consistência
+            const sumTotal = monthlyData.reduce((sum, m) => sum + m.total, 0);
+            const sumWithoutFS = monthlyData.reduce((sum, m) => sum + m.withoutFirstSeller, 0);
+            const sumConverted = monthlyData.reduce((sum, m) => sum + m.converted, 0);
+            
+            console.log('H1 Consistency Check:', { 
+                totalParticipants: participants.length,
+                sumTotalFromMonths: sumTotal,
+                totalWithoutFS, 
+                sumWithoutFSFromMonths: sumWithoutFS,
+                totalConverted,
+                sumConvertedFromMonths: sumConverted,
+                allMatch: participants.length === sumTotal && totalWithoutFS === sumWithoutFS && totalConverted === sumConverted
             });
 
             return {
