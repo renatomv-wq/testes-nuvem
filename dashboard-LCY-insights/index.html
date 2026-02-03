@@ -1646,103 +1646,154 @@
         <div id="perfil" class="tab-content">
             <h2 class="section-title">Perfil dos Participantes de Webinar</h2>
             
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">Total de Participantes</div>
+                    <div class="card-value">2,895</div>
+                    <div class="card-subtitle">lojas com cobertura de webinar</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Com Status Definido</div>
+                    <div class="card-value">1,577</div>
+                    <div class="card-subtitle">participantes com seller status</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Sem Status (Não Informado)</div>
+                    <div class="card-value">1,318</div>
+                    <div class="card-subtitle">participantes sem classificação</div>
+                </div>
+            </div>
+            
+            <h3 class="section-title" style="margin-top: 30px;">📊 Status de Seller dos Participantes</h3>
+            
             <div class="two-columns">
                 <div class="card">
-                    <div class="card-title">📊 Status de Seller</div>
+                    <div class="card-title">🎯 Distribuição por Status</div>
+                    <div class="chart-container">
+                        <canvas id="chartParticipantesStatus"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">📈 Pirâmide dos Participantes</div>
                     <table>
                         <thead>
                             <tr>
                                 <th>Status</th>
-                                <th>Lojas</th>
+                                <th>Participantes</th>
                                 <th>%</th>
                             </tr>
                         </thead>
                         <tbody>
                             
                             <tr>
-                                <td>not informed</td>
-                                <td>1,318</td>
                                 <td>
-                                    <div>45.5%</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 45.5%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
-                                    </div>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #ef4444;"></span>
+                                    <strong>No Seller</strong>
                                 </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>struggling-seller</td>
-                                <td>358</td>
-                                <td>
-                                    <div>12.4%</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 12.4%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>tiny-seller</td>
-                                <td>320</td>
-                                <td>
-                                    <div>11.1%</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 11.1%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>no-seller</td>
                                 <td>304</td>
                                 <td>
-                                    <div>10.5%</div>
+                                    <div>19.3%</div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 10.5%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                                        <div class="progress-fill" style="width: 48.25%; background: linear-gradient(90deg, 
+                                            #ef4444, #dc2626);"></div>
                                     </div>
                                 </td>
                             </tr>
                             
                             <tr>
-                                <td>small-seller</td>
+                                <td>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #f97316;"></span>
+                                    <strong>Struggling</strong>
+                                </td>
+                                <td>358</td>
+                                <td>
+                                    <div>22.7%</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 56.75%; background: linear-gradient(90deg, 
+                                            #f97316, #ea580c);"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #fbbf24;"></span>
+                                    <strong>Tiny</strong>
+                                </td>
+                                <td>320</td>
+                                <td>
+                                    <div>20.3%</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 50.75%; background: linear-gradient(90deg, 
+                                            #fbbf24, #eab308);"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #84cc16;"></span>
+                                    <strong>Small</strong>
+                                </td>
                                 <td>282</td>
                                 <td>
-                                    <div>9.7%</div>
+                                    <div>17.9%</div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 9.7%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                                        <div class="progress-fill" style="width: 44.75%; background: linear-gradient(90deg, 
+                                            #84cc16, #65a30d);"></div>
                                     </div>
                                 </td>
                             </tr>
                             
                             <tr>
-                                <td>medium-seller</td>
+                                <td>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #22c55e;"></span>
+                                    <strong>Medium</strong>
+                                </td>
                                 <td>200</td>
                                 <td>
-                                    <div>6.9%</div>
+                                    <div>12.7%</div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 6.9%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                                        <div class="progress-fill" style="width: 31.75%; background: linear-gradient(90deg, 
+                                            #22c55e, #16a34a);"></div>
                                     </div>
                                 </td>
                             </tr>
                             
                             <tr>
-                                <td>top-seller</td>
-                                <td>59</td>
                                 <td>
-                                    <div>2.0%</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 2.0%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
-                                    </div>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #14b8a6;"></span>
+                                    <strong>Large</strong>
                                 </td>
-                            </tr>
-                            
-                            <tr>
-                                <td>large-seller</td>
                                 <td>54</td>
                                 <td>
-                                    <div>1.9%</div>
+                                    <div>3.4%</div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 1.9%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                                        <div class="progress-fill" style="width: 8.5%; background: linear-gradient(90deg, 
+                                            #14b8a6, #0d9488);"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        #667eea;"></span>
+                                    <strong>Top</strong>
+                                </td>
+                                <td>59</td>
+                                <td>
+                                    <div>3.7%</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 9.25%; background: linear-gradient(90deg, 
+                                            #667eea, #764ba2);"></div>
                                     </div>
                                 </td>
                             </tr>
@@ -1750,7 +1801,297 @@
                         </tbody>
                     </table>
                 </div>
-                
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">🔍 Comparativo: Participantes vs Base Geral</div>
+                <p style="color: #888; margin-bottom: 15px; font-size: 13px;">
+                    O <strong>Índice</strong> mostra a representatividade: 100 = igual à base, &gt;100 = sobre-representado nos webinars, &lt;100 = sub-representado
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>% nos Webinars</th>
+                            <th>% na Base Geral</th>
+                            <th>Diferença</th>
+                            <th>Índice</th>
+                            <th>Interpretação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #ef4444;"></span>
+                                <strong>No Seller</strong>
+                            </td>
+                            <td>19.3%</td>
+                            <td>0.0%</td>
+                            <td class="positive">+19.3pp</td>
+                            <td>
+                                <span style="background: rgba(248, 113, 113, 0.2); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #f87171;">
+                                    0
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                📉 Menos engajados que a média
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #f97316;"></span>
+                                <strong>Struggling</strong>
+                            </td>
+                            <td>22.7%</td>
+                            <td>22.7%</td>
+                            <td class="">-0.0pp</td>
+                            <td>
+                                <span style="background: rgba(255,255,255,0.1); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #888;">
+                                    100
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                ➡️ Alinhado com a base
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #fbbf24;"></span>
+                                <strong>Tiny</strong>
+                            </td>
+                            <td>20.3%</td>
+                            <td>31.3%</td>
+                            <td class="negative">-11.0pp</td>
+                            <td>
+                                <span style="background: rgba(248, 113, 113, 0.2); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #f87171;">
+                                    65
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                📉 Menos engajados que a média
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #84cc16;"></span>
+                                <strong>Small</strong>
+                            </td>
+                            <td>17.9%</td>
+                            <td>26.3%</td>
+                            <td class="negative">-8.4pp</td>
+                            <td>
+                                <span style="background: rgba(248, 113, 113, 0.2); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #f87171;">
+                                    68
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                📉 Menos engajados que a média
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #22c55e;"></span>
+                                <strong>Medium</strong>
+                            </td>
+                            <td>12.7%</td>
+                            <td>14.2%</td>
+                            <td class="negative">-1.5pp</td>
+                            <td>
+                                <span style="background: rgba(248, 113, 113, 0.2); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #f87171;">
+                                    89
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                📉 Menos engajados que a média
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #14b8a6;"></span>
+                                <strong>Large</strong>
+                            </td>
+                            <td>3.4%</td>
+                            <td>2.9%</td>
+                            <td class="positive">+0.5pp</td>
+                            <td>
+                                <span style="background: rgba(74, 222, 128, 0.2); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #4ade80;">
+                                    117
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                📈 Mais engajados que a média
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #667eea;"></span>
+                                <strong>Top</strong>
+                            </td>
+                            <td>3.7%</td>
+                            <td>2.6%</td>
+                            <td class="positive">+1.2pp</td>
+                            <td>
+                                <span style="background: rgba(74, 222, 128, 0.2); 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: #4ade80;">
+                                    147
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                📈 Mais engajados que a média
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">💰 Performance dos Participantes por Status</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Participantes</th>
+                            <th>GMV Médio</th>
+                            <th>Pedidos Médio</th>
+                            <th>Prob. Churn</th>
+                            <th>Média Webinars</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #ef4444;"></span>
+                                <strong>No Seller</strong>
+                            </td>
+                            <td>304</td>
+                            <td>R$ 0.00</td>
+                            <td>0.0</td>
+                            <td><span class="neutral">24.91%</span></td>
+                            <td>1.7 webinars</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #f97316;"></span>
+                                <strong>Struggling</strong>
+                            </td>
+                            <td>358</td>
+                            <td>R$ 31.44</td>
+                            <td>1.0</td>
+                            <td><span class="neutral">23.0%</span></td>
+                            <td>1.7 webinars</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #fbbf24;"></span>
+                                <strong>Tiny</strong>
+                            </td>
+                            <td>320</td>
+                            <td>R$ 191.86</td>
+                            <td>5.4</td>
+                            <td><span class="positive">15.63%</span></td>
+                            <td>1.6 webinars</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #84cc16;"></span>
+                                <strong>Small</strong>
+                            </td>
+                            <td>282</td>
+                            <td>R$ 1,204.65</td>
+                            <td>25.9</td>
+                            <td><span class="positive">7.11%</span></td>
+                            <td>1.5 webinars</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #22c55e;"></span>
+                                <strong>Medium</strong>
+                            </td>
+                            <td>200</td>
+                            <td>R$ 5,159.81</td>
+                            <td>111.5</td>
+                            <td><span class="positive">3.1%</span></td>
+                            <td>1.8 webinars</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #14b8a6;"></span>
+                                <strong>Large</strong>
+                            </td>
+                            <td>54</td>
+                            <td>R$ 16,605.25</td>
+                            <td>358.0</td>
+                            <td><span class="positive">1.84%</span></td>
+                            <td>1.4 webinars</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    #667eea;"></span>
+                                <strong>Top</strong>
+                            </td>
+                            <td>59</td>
+                            <td>R$ 51,436.81</td>
+                            <td>1261.3</td>
+                            <td><span class="positive">1.13%</span></td>
+                            <td>1.5 webinars</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="insight-box success">
+                <h4>💡 Insights sobre Quem Estamos Atingindo</h4>
+                <p>• Analise os <strong>índices acima de 100</strong> para ver quais perfis estão mais engajados com webinars<br>
+                • Perfis com <strong>índice abaixo de 90</strong> representam oportunidades de aumentar a cobertura<br>
+                • A coluna "Média de Webinars" mostra quais perfis são mais recorrentes nas ações de educação</p>
+            </div>
+            
+            <h3 class="section-title" style="margin-top: 30px;">📋 Outros Atributos dos Participantes</h3>
+            
+            <div class="two-columns">
                 <div class="card">
                     <div class="card-title">⏱️ Tempo de Loja (Aging)</div>
                     <table>
@@ -1843,15 +2184,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            
-            <div class="two-columns" style="margin-top: 20px;">
-                <div class="card">
-                    <div class="card-title">🏷️ Verticais (Segmentos)</div>
-                    <div class="chart-container">
-                        <canvas id="chartVerticais"></canvas>
-                    </div>
-                </div>
                 
                 <div class="card">
                     <div class="card-title">📋 Planos</div>
@@ -1933,6 +2265,13 @@
                             
                         </tbody>
                     </table>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">🏷️ Verticais (Segmentos)</div>
+                <div class="chart-container">
+                    <canvas id="chartVerticais"></canvas>
                 </div>
             </div>
         </div>
@@ -2413,6 +2752,39 @@
                         indexAxis: 'y',
                         plugins: { legend: { display: false } },
                         scales: { x: { ticks: { callback: value => value + '%' } } }
+                    }
+                });
+            }
+            
+            // Participantes Status Chart
+            const ctxPartStatus = document.getElementById('chartParticipantesStatus');
+            if (ctxPartStatus && !ctxPartStatus.chart) {
+                const partStatusData = [{"status": "no-seller", "label": "No Seller", "count": 304, "pct": 19.3}, {"status": "struggling-seller", "label": "Struggling", "count": 358, "pct": 22.7}, {"status": "tiny-seller", "label": "Tiny", "count": 320, "pct": 20.3}, {"status": "small-seller", "label": "Small", "count": 282, "pct": 17.9}, {"status": "medium-seller", "label": "Medium", "count": 200, "pct": 12.7}, {"status": "large-seller", "label": "Large", "count": 54, "pct": 3.4}, {"status": "top-seller", "label": "Top", "count": 59, "pct": 3.7}];
+                const statusColors = {
+                    'no-seller': '#ef4444',
+                    'struggling-seller': '#f97316',
+                    'tiny-seller': '#fbbf24',
+                    'small-seller': '#84cc16',
+                    'medium-seller': '#22c55e',
+                    'large-seller': '#14b8a6',
+                    'top-seller': '#667eea'
+                };
+                ctxPartStatus.chart = new Chart(ctxPartStatus, {
+                    type: 'doughnut',
+                    data: {
+                        labels: partStatusData.map(d => d.label + ' (' + d.pct + '%)'),
+                        datasets: [{
+                            data: partStatusData.map(d => d.count),
+                            backgroundColor: partStatusData.map(d => statusColors[d.status] || '#888'),
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' }
+                        }
                     }
                 });
             }

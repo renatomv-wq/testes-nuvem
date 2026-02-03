@@ -1565,34 +1565,176 @@ html_content = f'''<!DOCTYPE html>
         <div id="perfil" class="tab-content">
             <h2 class="section-title">Perfil dos Participantes de Webinar</h2>
             
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">Total de Participantes</div>
+                    <div class="card-value">{dashboard_data['participantes_status']['total_participantes']:,}</div>
+                    <div class="card-subtitle">lojas com cobertura de webinar</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Com Status Definido</div>
+                    <div class="card-value">{dashboard_data['participantes_status']['com_status']:,}</div>
+                    <div class="card-subtitle">participantes com seller status</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Sem Status (Não Informado)</div>
+                    <div class="card-value">{dashboard_data['participantes_status']['sem_status']:,}</div>
+                    <div class="card-subtitle">participantes sem classificação</div>
+                </div>
+            </div>
+            
+            <h3 class="section-title" style="margin-top: 30px;">📊 Status de Seller dos Participantes</h3>
+            
             <div class="two-columns">
                 <div class="card">
-                    <div class="card-title">📊 Status de Seller</div>
+                    <div class="card-title">🎯 Distribuição por Status</div>
+                    <div class="chart-container">
+                        <canvas id="chartParticipantesStatus"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">📈 Pirâmide dos Participantes</div>
                     <table>
                         <thead>
                             <tr>
                                 <th>Status</th>
-                                <th>Lojas</th>
+                                <th>Participantes</th>
                                 <th>%</th>
                             </tr>
                         </thead>
                         <tbody>
                             {''.join([f"""
                             <tr>
-                                <td>{item['status']}</td>
+                                <td>
+                                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; background: 
+                                        {'#ef4444' if item['status'] == 'no-seller' else 
+                                         '#f97316' if item['status'] == 'struggling-seller' else 
+                                         '#fbbf24' if item['status'] == 'tiny-seller' else 
+                                         '#84cc16' if item['status'] == 'small-seller' else 
+                                         '#22c55e' if item['status'] == 'medium-seller' else 
+                                         '#14b8a6' if item['status'] == 'large-seller' else 
+                                         '#667eea'};"></span>
+                                    <strong>{item['label']}</strong>
+                                </td>
                                 <td>{item['count']:,}</td>
                                 <td>
                                     <div>{item['pct']}%</div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {min(item['pct'], 100)}%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                                        <div class="progress-fill" style="width: {min(item['pct']*2.5, 100)}%; background: linear-gradient(90deg, 
+                                            {'#ef4444, #dc2626' if item['status'] == 'no-seller' else 
+                                             '#f97316, #ea580c' if item['status'] == 'struggling-seller' else 
+                                             '#fbbf24, #eab308' if item['status'] == 'tiny-seller' else 
+                                             '#84cc16, #65a30d' if item['status'] == 'small-seller' else 
+                                             '#22c55e, #16a34a' if item['status'] == 'medium-seller' else 
+                                             '#14b8a6, #0d9488' if item['status'] == 'large-seller' else 
+                                             '#667eea, #764ba2'});"></div>
                                     </div>
                                 </td>
                             </tr>
-                            """ for item in dashboard_data['perfil_status']])}
+                            """ for item in dashboard_data['participantes_status']['distribuicao']])}
                         </tbody>
                     </table>
                 </div>
-                
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">🔍 Comparativo: Participantes vs Base Geral</div>
+                <p style="color: #888; margin-bottom: 15px; font-size: 13px;">
+                    O <strong>Índice</strong> mostra a representatividade: 100 = igual à base, &gt;100 = sobre-representado nos webinars, &lt;100 = sub-representado
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>% nos Webinars</th>
+                            <th>% na Base Geral</th>
+                            <th>Diferença</th>
+                            <th>Índice</th>
+                            <th>Interpretação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {''.join([f"""
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    {'#ef4444' if item['status'] == 'no-seller' else 
+                                     '#f97316' if item['status'] == 'struggling-seller' else 
+                                     '#fbbf24' if item['status'] == 'tiny-seller' else 
+                                     '#84cc16' if item['status'] == 'small-seller' else 
+                                     '#22c55e' if item['status'] == 'medium-seller' else 
+                                     '#14b8a6' if item['status'] == 'large-seller' else 
+                                     '#667eea'};"></span>
+                                <strong>{item['label']}</strong>
+                            </td>
+                            <td>{item['pct_webinar']}%</td>
+                            <td>{item['pct_base']}%</td>
+                            <td class="{'positive' if item['diff_pp'] > 0 else 'negative' if item['diff_pp'] < 0 else ''}">{'+' if item['diff_pp'] > 0 else ''}{item['diff_pp']}pp</td>
+                            <td>
+                                <span style="background: {'rgba(74, 222, 128, 0.2)' if item['indice'] > 110 else 'rgba(248, 113, 113, 0.2)' if item['indice'] < 90 else 'rgba(255,255,255,0.1)'}; 
+                                             padding: 4px 10px; border-radius: 4px; font-weight: 600;
+                                             color: {'#4ade80' if item['indice'] > 110 else '#f87171' if item['indice'] < 90 else '#888'};">
+                                    {int(item['indice'])}
+                                </span>
+                            </td>
+                            <td style="font-size: 12px; color: #888;">
+                                {'📈 Mais engajados que a média' if item['indice'] > 110 else '📉 Menos engajados que a média' if item['indice'] < 90 else '➡️ Alinhado com a base'}
+                            </td>
+                        </tr>
+                        """ for item in dashboard_data['participantes_status']['comparativo_base']])}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">💰 Performance dos Participantes por Status</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Participantes</th>
+                            <th>GMV Médio</th>
+                            <th>Pedidos Médio</th>
+                            <th>Prob. Churn</th>
+                            <th>Média Webinars</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {''.join([f"""
+                        <tr>
+                            <td>
+                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: 
+                                    {'#ef4444' if item['status'] == 'no-seller' else 
+                                     '#f97316' if item['status'] == 'struggling-seller' else 
+                                     '#fbbf24' if item['status'] == 'tiny-seller' else 
+                                     '#84cc16' if item['status'] == 'small-seller' else 
+                                     '#22c55e' if item['status'] == 'medium-seller' else 
+                                     '#14b8a6' if item['status'] == 'large-seller' else 
+                                     '#667eea'};"></span>
+                                <strong>{item['label']}</strong>
+                            </td>
+                            <td>{item['count']:,}</td>
+                            <td>R$ {item['gmv_medio']:,.2f}</td>
+                            <td>{item['orders_medio']}</td>
+                            <td><span class="{'positive' if item['churn_prob'] < 20 else 'neutral' if item['churn_prob'] < 40 else 'negative'}">{item['churn_prob']}%</span></td>
+                            <td>{item['qtd_webinars']} webinars</td>
+                        </tr>
+                        """ for item in dashboard_data['participantes_performance']])}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="insight-box success">
+                <h4>💡 Insights sobre Quem Estamos Atingindo</h4>
+                <p>• Analise os <strong>índices acima de 100</strong> para ver quais perfis estão mais engajados com webinars<br>
+                • Perfis com <strong>índice abaixo de 90</strong> representam oportunidades de aumentar a cobertura<br>
+                • A coluna "Média de Webinars" mostra quais perfis são mais recorrentes nas ações de educação</p>
+            </div>
+            
+            <h3 class="section-title" style="margin-top: 30px;">📋 Outros Atributos dos Participantes</h3>
+            
+            <div class="two-columns">
                 <div class="card">
                     <div class="card-title">⏱️ Tempo de Loja (Aging)</div>
                     <table>
@@ -1618,15 +1760,6 @@ html_content = f'''<!DOCTYPE html>
                             """ for item in dashboard_data['perfil_aging']])}
                         </tbody>
                     </table>
-                </div>
-            </div>
-            
-            <div class="two-columns" style="margin-top: 20px;">
-                <div class="card">
-                    <div class="card-title">🏷️ Verticais (Segmentos)</div>
-                    <div class="chart-container">
-                        <canvas id="chartVerticais"></canvas>
-                    </div>
                 </div>
                 
                 <div class="card">
@@ -1654,6 +1787,13 @@ html_content = f'''<!DOCTYPE html>
                             """ for item in dashboard_data['perfil_planos']])}
                         </tbody>
                     </table>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">🏷️ Verticais (Segmentos)</div>
+                <div class="chart-container">
+                    <canvas id="chartVerticais"></canvas>
                 </div>
             </div>
         </div>
@@ -2035,6 +2175,39 @@ html_content = f'''<!DOCTYPE html>
                         indexAxis: 'y',
                         plugins: {{ legend: {{ display: false }} }},
                         scales: {{ x: {{ ticks: {{ callback: value => value + '%' }} }} }}
+                    }}
+                }});
+            }}
+            
+            // Participantes Status Chart
+            const ctxPartStatus = document.getElementById('chartParticipantesStatus');
+            if (ctxPartStatus && !ctxPartStatus.chart) {{
+                const partStatusData = {json.dumps(dashboard_data['participantes_status']['distribuicao'])};
+                const statusColors = {{
+                    'no-seller': '#ef4444',
+                    'struggling-seller': '#f97316',
+                    'tiny-seller': '#fbbf24',
+                    'small-seller': '#84cc16',
+                    'medium-seller': '#22c55e',
+                    'large-seller': '#14b8a6',
+                    'top-seller': '#667eea'
+                }};
+                ctxPartStatus.chart = new Chart(ctxPartStatus, {{
+                    type: 'doughnut',
+                    data: {{
+                        labels: partStatusData.map(d => d.label + ' (' + d.pct + '%)'),
+                        datasets: [{{
+                            data: partStatusData.map(d => d.count),
+                            backgroundColor: partStatusData.map(d => statusColors[d.status] || '#888'),
+                            borderWidth: 0
+                        }}]
+                    }},
+                    options: {{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {{
+                            legend: {{ position: 'right' }}
+                        }}
                     }}
                 }});
             }}
