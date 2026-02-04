@@ -220,10 +220,69 @@ print(f"  ✅ Base atual ({mes_atual}): {len(lojas_ativas):,} lojas pagantes")
 
 # Projeto Webinars
 webinars_df = load_projeto('webinars', ALT_WEBINAR_PATH)
+webinar_funil = {'total_registros': 0, 'total_live': 0, 'total_ondemand': 0, 'total_participaram': 0, 'por_mes': []}
+
 if webinars_df is not None:
     webinars_com_cobertura = webinars_df[webinars_df['Cobertura'].str.strip() == 'Com cobertura'].copy()
     ids_webinar = set(webinars_com_cobertura['store_id'].unique())
     print(f"  ✅ Lojas com Webinar: {len(ids_webinar):,}")
+    
+    # Análise do funil
+    print("  📊 Analisando funil de webinars...")
+    
+    # Contagem por status (na base completa, não só com cobertura)
+    status_counts = webinars_df['webinar_status'].value_counts()
+    webinar_funil['total_registros'] = int(status_counts.get('registered', 0))
+    webinar_funil['total_live'] = int(status_counts.get('live', 0))
+    webinar_funil['total_ondemand'] = int(status_counts.get('on-demand', 0))
+    webinar_funil['total_participaram'] = webinar_funil['total_live'] + webinar_funil['total_ondemand']
+    
+    # Total geral (todos os registros únicos)
+    webinar_funil['total_geral'] = len(webinars_df)
+    
+    # Percentuais
+    total = webinar_funil['total_geral']
+    if total > 0:
+        webinar_funil['pct_live'] = round(webinar_funil['total_live'] / total * 100, 1)
+        webinar_funil['pct_ondemand'] = round(webinar_funil['total_ondemand'] / total * 100, 1)
+        webinar_funil['pct_participaram'] = round(webinar_funil['total_participaram'] / total * 100, 1)
+    
+    # Análise mensal
+    if 'Data do Webinar (mês)' in webinars_df.columns:
+        mes_col = 'Data do Webinar (mês)'
+        meses = webinars_df[mes_col].dropna().unique()
+        
+        for mes in sorted(meses):
+            df_mes = webinars_df[webinars_df[mes_col] == mes]
+            total_mes = len(df_mes)
+            
+            if total_mes > 0:
+                status_mes = df_mes['webinar_status'].value_counts()
+                registros = int(status_mes.get('registered', 0))
+                live = int(status_mes.get('live', 0))
+                ondemand = int(status_mes.get('on-demand', 0))
+                participaram = live + ondemand
+                
+                # Extrair nome curto do mês
+                mes_nome = mes.replace('Month ', '').split(' - ')[0] if 'Month' in str(mes) else str(mes)
+                
+                webinar_funil['por_mes'].append({
+                    'mes': mes,
+                    'mes_curto': mes_nome,
+                    'total': total_mes,
+                    'registros': registros,
+                    'live': live,
+                    'ondemand': ondemand,
+                    'participaram': participaram,
+                    'pct_live': round(live / total_mes * 100, 1) if total_mes > 0 else 0,
+                    'pct_ondemand': round(ondemand / total_mes * 100, 1) if total_mes > 0 else 0,
+                    'pct_participaram': round(participaram / total_mes * 100, 1) if total_mes > 0 else 0,
+                })
+        
+        # Ordenar por mês
+        webinar_funil['por_mes'].sort(key=lambda x: x['mes'])
+    
+    print(f"  ✅ Funil: {webinar_funil['total_geral']:,} total → {webinar_funil['total_live']:,} live ({webinar_funil.get('pct_live', 0)}%) + {webinar_funil['total_ondemand']:,} on-demand ({webinar_funil.get('pct_ondemand', 0)}%)")
 else:
     ids_webinar = set()
 
@@ -606,6 +665,7 @@ for col in MERCHANT_COLS:
 dashboard_data['webinars'] = {
     'total_participantes': len(com_webinar),
     'pct_base': round(len(com_webinar) / len(lojas_ativas) * 100, 2),
+    'funil': webinar_funil,  # Dados do funil
     'performance': {
         'gmv_com': round(com_webinar['gmv_mes'].mean(), 2),
         'gmv_sem': round(sem_webinar['gmv_mes'].mean(), 2),
@@ -1017,9 +1077,24 @@ html_content = f'''<!DOCTYPE html>
         
         <!-- WEBINARS -->
         <div id="webinars" class="tab-content">
-            <h2 class="section-title">Projeto: Webinars</h2>
+            <h2 class="section-title">Funil de Webinars</h2>
+            <div class="grid grid-5">
+                <div class="card"><div class="card-title">Total Registros</div><div class="card-value gradient">{dashboard_data['webinars']['funil']['total_geral']:,}</div><div class="card-subtitle">inscrições</div></div>
+                <div class="card"><div class="card-title">Ao Vivo</div><div class="card-value positive">{dashboard_data['webinars']['funil']['total_live']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['funil'].get('pct_live', 0)}% do total</div></div>
+                <div class="card"><div class="card-title">On Demand</div><div class="card-value">{dashboard_data['webinars']['funil']['total_ondemand']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['funil'].get('pct_ondemand', 0)}% do total</div></div>
+                <div class="card"><div class="card-title">Total Participaram</div><div class="card-value positive">{dashboard_data['webinars']['funil']['total_participaram']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['funil'].get('pct_participaram', 0)}% do total</div></div>
+                <div class="card"><div class="card-title">Lojas na Base</div><div class="card-value">{dashboard_data['webinars']['total_participantes']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['pct_base']}% da base ativa</div></div>
+            </div>
+            
+            <h2 class="section-title">Participação Mensal</h2>
+            <div class="card">
+                <div class="card-title">% de Participação por Mês (sobre total de registros)</div>
+                <div class="chart-container" style="height:320px;"><canvas id="chartFunilMensal"></canvas></div>
+            </div>
+            
+            <h2 class="section-title">Impacto na Base</h2>
             <div class="grid grid-4">
-                <div class="card"><div class="card-title">Participantes</div><div class="card-value gradient">{dashboard_data['webinars']['total_participantes']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['pct_base']}%</div></div>
+                <div class="card"><div class="card-title">Lojas com Cobertura</div><div class="card-value gradient">{dashboard_data['webinars']['total_participantes']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['pct_base']}% da base</div></div>
                 <div class="card"><div class="card-title">GMV</div><div class="card-value positive">+{dashboard_data['webinars']['performance']['gmv_diff_pct']}%</div><div class="card-subtitle">vs sem webinar</div></div>
                 <div class="card"><div class="card-title">Churn</div><div class="card-value positive">{dashboard_data['webinars']['churn']['diff_pp']}pp</div><div class="card-subtitle">vs sem webinar</div></div>
                 <div class="card"><div class="card-title">Pareada</div><div class="card-value positive">+{dashboard_data['webinars']['analise_pareada']['gmv_diff_pct']}%</div><div class="card-subtitle">mesmo perfil</div></div>
@@ -1173,6 +1248,45 @@ html_content = f'''<!DOCTYPE html>
                     type: 'line',
                     data: {{ labels: data.risco_evolucao.map(d => d.mes), datasets: [{{ label: 'Prob. Média (%)', data: data.risco_evolucao.map(d => d.prob_media), borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', fill: true, tension: 0.4 }}] }},
                     options: {{ responsive: true, maintainAspectRatio: false, scales: {{ y: {{ min: 0, max: 100 }} }} }}
+                }});
+            }}
+            
+            // Funil Mensal de Webinars
+            const ctxFunilMensal = document.getElementById('chartFunilMensal');
+            if (ctxFunilMensal && !ctxFunilMensal.chart && data.webinars.funil.por_mes && data.webinars.funil.por_mes.length > 0) {{
+                const funilData = data.webinars.funil.por_mes;
+                ctxFunilMensal.chart = new Chart(ctxFunilMensal, {{
+                    type: 'bar',
+                    data: {{
+                        labels: funilData.map(d => d.mes_curto),
+                        datasets: [
+                            {{ label: '% Ao Vivo', data: funilData.map(d => d.pct_live), backgroundColor: '#4ade80', borderRadius: 4 }},
+                            {{ label: '% On Demand', data: funilData.map(d => d.pct_ondemand), backgroundColor: '#3b82f6', borderRadius: 4 }},
+                            {{ label: '% Total Participação', data: funilData.map(d => d.pct_participaram), backgroundColor: 'rgba(139, 92, 246, 0.5)', borderColor: '#8b5cf6', borderWidth: 2, type: 'line', tension: 0.4 }}
+                        ]
+                    }},
+                    options: {{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {{
+                            legend: {{ position: 'top' }},
+                            tooltip: {{
+                                callbacks: {{
+                                    afterBody: function(context) {{
+                                        const idx = context[0].dataIndex;
+                                        const d = funilData[idx];
+                                        return `Total: ${{d.total.toLocaleString()}} registros`;
+                                    }}
+                                }}
+                            }}
+                        }},
+                        scales: {{
+                            y: {{
+                                max: 100,
+                                ticks: {{ callback: v => v + '%' }}
+                            }}
+                        }}
+                    }}
                 }});
             }}
         }}
