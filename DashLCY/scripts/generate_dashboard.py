@@ -436,7 +436,7 @@ for q in RISK_QUARTILES:
            (lojas_com_churn['predictive_churn_probability'] <= q['max'])
     count = len(lojas_com_churn[mask])
     pct = round(count / len(lojas_com_churn) * 100, 1) if len(lojas_com_churn) > 0 else 0
-    gmv = lojas_com_churn[mask]['gmv_mes'].sum()
+    gmv = lojas_com_churn[mask]['gmv_mes_local'].sum()
     
     risk_quartiles_data.append({
         'name': q['name'],
@@ -545,7 +545,7 @@ sem_webinar = lojas_ativas[lojas_ativas['tem_webinar'] == False]
 dashboard_data = {}
 
 # Resumo
-gmv_total = lojas_ativas['gmv_mes'].sum()
+gmv_total = lojas_ativas['gmv_mes_local'].sum()
 n_sellers = len(lojas_sellers)
 pct_sellers = n_sellers / len(lojas_ativas) * 100 if len(lojas_ativas) > 0 else 0
 n_cobertas = len(lojas_cobertas)
@@ -556,7 +556,7 @@ dashboard_data['resumo'] = {
     'total_lojas_sellers': n_sellers,
     'pct_sellers': round(pct_sellers, 1),
     'gmv_total': round(gmv_total, 2),
-    'gmv_medio': round(lojas_ativas['gmv_mes'].mean(), 2),
+    'gmv_medio': round(lojas_ativas['gmv_mes_local'].mean(), 2),
     'orders_total': int(lojas_ativas['orders_mes'].sum()),
     'n_cobertas': n_cobertas,
     'pct_cobertura': round(pct_cobertura, 1),
@@ -596,8 +596,8 @@ for status in STATUS_ORDER:
             'label': STATUS_LABELS.get(status, status),
             'count': len(subset),
             'pct': round(len(subset) / len(lojas_com_status) * 100, 1) if len(lojas_com_status) > 0 else 0,
-            'gmv_medio': round(subset['gmv_mes'].mean(), 2),
-            'gmv_total': round(subset['gmv_mes'].sum(), 2),
+            'gmv_medio': round(subset['gmv_mes_local'].mean(), 2),
+            'gmv_total': round(subset['gmv_mes_local'].sum(), 2),
             'orders_medio': round(subset['orders_mes'].mean(), 1),
             'churn_prob': round(subset['predictive_churn_probability'].mean() * 100, 2)
         })
@@ -667,9 +667,9 @@ dashboard_data['webinars'] = {
     'pct_base': round(len(com_webinar) / len(lojas_ativas) * 100, 2),
     'funil': webinar_funil,  # Dados do funil
     'performance': {
-        'gmv_com': round(com_webinar['gmv_mes'].mean(), 2),
-        'gmv_sem': round(sem_webinar['gmv_mes'].mean(), 2),
-        'gmv_diff_pct': round((com_webinar['gmv_mes'].mean() - sem_webinar['gmv_mes'].mean()) / sem_webinar['gmv_mes'].mean() * 100, 1) if sem_webinar['gmv_mes'].mean() > 0 else 0,
+        'gmv_com': round(com_webinar['gmv_mes_local'].mean(), 2),
+        'gmv_sem': round(sem_webinar['gmv_mes_local'].mean(), 2),
+        'gmv_diff_pct': round((com_webinar['gmv_mes_local'].mean() - sem_webinar['gmv_mes_local'].mean()) / sem_webinar['gmv_mes_local'].mean() * 100, 1) if sem_webinar['gmv_mes_local'].mean() > 0 else 0,
         'orders_com': round(com_webinar['orders_mes'].mean(), 1),
         'orders_sem': round(sem_webinar['orders_mes'].mean(), 1),
     },
@@ -688,6 +688,37 @@ dashboard_data['webinars'] = {
 dashboard_data['webinars']['churn']['diff_pp'] = round(
     dashboard_data['webinars']['churn']['prob_com'] - dashboard_data['webinars']['churn']['prob_sem'], 2
 )
+
+# Análise de risco por quartil: com vs sem webinar
+print("  📊 Calculando risco por quartil (com vs sem webinar)...")
+com_webinar_churn = com_webinar[com_webinar['predictive_churn_probability'] > 0]
+sem_webinar_churn = sem_webinar[sem_webinar['predictive_churn_probability'] > 0]
+
+risk_quartiles_webinar = []
+for q in RISK_QUARTILES:
+    # Com webinar
+    mask_com = (com_webinar_churn['predictive_churn_probability'] > q['min']) & \
+               (com_webinar_churn['predictive_churn_probability'] <= q['max'])
+    count_com = len(com_webinar_churn[mask_com])
+    pct_com = round(count_com / len(com_webinar_churn) * 100, 1) if len(com_webinar_churn) > 0 else 0
+    
+    # Sem webinar
+    mask_sem = (sem_webinar_churn['predictive_churn_probability'] > q['min']) & \
+               (sem_webinar_churn['predictive_churn_probability'] <= q['max'])
+    count_sem = len(sem_webinar_churn[mask_sem])
+    pct_sem = round(count_sem / len(sem_webinar_churn) * 100, 1) if len(sem_webinar_churn) > 0 else 0
+    
+    risk_quartiles_webinar.append({
+        'name': q['name'],
+        'color': q['color'],
+        'count_com': count_com,
+        'pct_com': pct_com,
+        'count_sem': count_sem,
+        'pct_sem': pct_sem,
+        'diff_pp': round(pct_com - pct_sem, 1)
+    })
+
+dashboard_data['webinars']['risk_quartiles_comparison'] = risk_quartiles_webinar
 
 # Perfil por status
 participantes_com_status = com_webinar[com_webinar['status_seller'] != 'not informed']
@@ -736,8 +767,8 @@ for grupo in lojas_pareamento['grupo'].unique():
     sem_web = subset[subset['tem_webinar'] == False]
     
     if len(com_web) >= 5 and len(sem_web) >= 5:
-        gmv_com = com_web['gmv_mes'].mean()
-        gmv_sem = sem_web['gmv_mes'].mean()
+        gmv_com = com_web['gmv_mes_local'].mean()
+        gmv_sem = sem_web['gmv_mes_local'].mean()
         churn_com = com_web['predictive_churn_probability'].mean() * 100
         churn_sem = sem_web['predictive_churn_probability'].mean() * 100
         
@@ -788,6 +819,17 @@ else:
         'churn_com': 0, 'churn_sem': 0, 'churn_diff_pp': 0, 'grupos': []
     }
 
+# Churn pareado (média ponderada dos grupos pareados)
+churn_pareado_com = dashboard_data['webinars']['analise_pareada']['churn_com']
+churn_pareado_sem = dashboard_data['webinars']['analise_pareada']['churn_sem']
+churn_pareado_diff = dashboard_data['webinars']['analise_pareada']['churn_diff_pp']
+
+dashboard_data['webinars']['churn_pareado'] = {
+    'churn_com': churn_pareado_com,
+    'churn_sem': churn_pareado_sem,
+    'diff_pp': churn_pareado_diff
+}
+
 # =============================================================================
 # GERAR HTML
 # =============================================================================
@@ -796,6 +838,88 @@ print("\n🎨 Gerando HTML...")
 # Helpers para tabelas
 ns_rows = ''.join([f"<tr><td>{m['mes']}</td><td>{m['total_new_sellers']:,}</td><td>{m['com_lifecycle']}</td><td class='{'positive' if m['pct_cobertura']>5 else 'neutral' if m['pct_cobertura']>2 else ''}'>{m['pct_cobertura']}%</td></tr>" for m in dashboard_data['new_sellers']['por_mes'][:6]])
 
+# Helper para gerar setas de tendência
+def generate_trend_arrow(current_value, previous_value, is_lower_better=False):
+    """Gera HTML de seta de tendência comparando valores"""
+    if previous_value is None or previous_value == 0:
+        return ''
+    
+    diff = current_value - previous_value
+    pct_change = abs(diff / previous_value * 100) if previous_value != 0 else 0
+    
+    # Se não houve mudança significativa
+    if abs(pct_change) < 0.5:
+        return ''
+    
+    # Determina se a mudança é positiva ou negativa
+    if is_lower_better:
+        is_positive = diff < 0
+    else:
+        is_positive = diff > 0
+    
+    arrow_class = 'up' if is_positive else 'down'
+    arrow_svg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5H7z"/></svg>' if is_positive else '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/></svg>'
+    
+    return f'<span class="trend-arrow {arrow_class}">{arrow_svg}{abs(diff):.1f}pp</span>'
+
+# Para comparativo de período anterior (se disponível)
+# Por agora, usamos dados do mês anterior se existir
+previous_period_data = None
+if len(meses_disponiveis) >= 2:
+    mes_anterior = meses_disponiveis[1]
+    base_anterior = bases_mensais[mes_anterior]
+    
+    # Calcular métricas do período anterior
+    base_anterior_ids = set(base_anterior[id_col if id_col in base_anterior.columns else 'id_store' if 'id_store' in base_anterior.columns else 'store_id'].unique())
+    
+    com_webinar_ant = base_anterior[base_anterior[id_col if id_col in base_anterior.columns else 'id_store' if 'id_store' in base_anterior.columns else 'store_id'].isin(ids_webinar)]
+    sem_webinar_ant = base_anterior[~base_anterior[id_col if id_col in base_anterior.columns else 'id_store' if 'id_store' in base_anterior.columns else 'store_id'].isin(ids_webinar)]
+    
+    churn_com_ant = com_webinar_ant[com_webinar_ant['predictive_churn_probability'] > 0]['predictive_churn_probability'].mean() * 100 if len(com_webinar_ant[com_webinar_ant['predictive_churn_probability'] > 0]) > 0 else 0
+    churn_sem_ant = sem_webinar_ant[sem_webinar_ant['predictive_churn_probability'] > 0]['predictive_churn_probability'].mean() * 100 if len(sem_webinar_ant[sem_webinar_ant['predictive_churn_probability'] > 0]) > 0 else 0
+    gmv_com_ant = com_webinar_ant['gmv_mes_local'].mean() if len(com_webinar_ant) > 0 else 0
+    gmv_sem_ant = sem_webinar_ant['gmv_mes_local'].mean() if len(sem_webinar_ant) > 0 else 0
+    gmv_diff_pct_ant = ((gmv_com_ant - gmv_sem_ant) / gmv_sem_ant * 100) if gmv_sem_ant > 0 else 0
+    churn_diff_ant = churn_com_ant - churn_sem_ant
+    
+    previous_period_data = {
+        'mes': mes_anterior,
+        'gmv_diff_pct': round(gmv_diff_pct_ant, 1),
+        'churn_diff_pp': round(churn_diff_ant, 2),
+        'churn_com': round(churn_com_ant, 2),
+        'churn_sem': round(churn_sem_ant, 2),
+        'participantes': len(com_webinar_ant)
+    }
+    dashboard_data['webinars']['periodo_anterior'] = previous_period_data
+    print(f"  📅 Período anterior ({mes_anterior}): GMV diff {gmv_diff_pct_ant:.1f}%, Churn diff {churn_diff_ant:.2f}pp")
+
+# Gerar HTML das setas de tendência para webinars
+trend_gmv = ''
+trend_churn = ''
+trend_pareada = ''
+trend_churn_pareada = ''
+
+if previous_period_data:
+    # GMV: maior é melhor
+    current_gmv_diff = dashboard_data['webinars']['performance']['gmv_diff_pct']
+    prev_gmv_diff = previous_period_data['gmv_diff_pct']
+    if prev_gmv_diff != 0:
+        gmv_change = current_gmv_diff - prev_gmv_diff
+        if abs(gmv_change) >= 1:
+            arrow_class = 'up' if gmv_change > 0 else 'down'
+            arrow_svg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5H7z"/></svg>' if gmv_change > 0 else '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/></svg>'
+            trend_gmv = f'<span class="trend-arrow {arrow_class}">{arrow_svg}{abs(gmv_change):.0f}pp</span>'
+    
+    # Churn: menor é melhor (diff negativo é bom)
+    current_churn_diff = dashboard_data['webinars']['churn']['diff_pp']
+    prev_churn_diff = previous_period_data['churn_diff_pp']
+    churn_change = current_churn_diff - prev_churn_diff  # Se ficou mais negativo, melhorou
+    if abs(churn_change) >= 0.5:
+        is_better = churn_change < 0  # Mais negativo = melhor
+        arrow_class = 'up' if is_better else 'down'
+        arrow_svg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5H7z"/></svg>' if is_better else '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/></svg>'
+        trend_churn = f'<span class="trend-arrow {arrow_class}">{arrow_svg}{abs(churn_change):.1f}pp</span>'
+
 def generate_afinidade_rows():
     """Gera rows da tabela de afinidade de produtos"""
     rows = []
@@ -803,6 +927,194 @@ def generate_afinidade_rows():
         relacionados = ', '.join([f"{p['produto']} ({p['pct']}%)" for p in a['produtos_relacionados']])
         rows.append(f"<tr><td><strong>{a['produto']}</strong></td><td>{a['total_clientes']:,}</td><td>{relacionados}</td></tr>")
     return ''.join(rows)
+
+# =============================================================================
+# GERAR INSIGHTS AUTOMÁTICOS PARA CADA ABA
+# =============================================================================
+print("💡 Gerando insights automáticos...")
+
+def generate_insights_html(insights, title="Principais Insights"):
+    """Gera HTML de uma seção de insights"""
+    if not insights:
+        return ''
+    
+    items = ''.join([f'<li>{i}</li>' for i in insights])
+    return f'''
+    <div class="insights-section">
+        <h2 class="section-title">💡 {title}</h2>
+        <div class="insights-box">
+            <ul class="insights-list">{items}</ul>
+        </div>
+    </div>
+    '''
+
+# Insights do Resumo Executivo
+insights_resumo = []
+pct_sellers = dashboard_data['resumo']['pct_sellers']
+pct_cobertura = dashboard_data['resumo']['pct_cobertura']
+churn_medio = dashboard_data['resumo']['churn_prob_media']
+
+if pct_sellers < 25:
+    insights_resumo.append(f"<strong>Oportunidade:</strong> Apenas {pct_sellers}% das lojas são sellers ativos. Há grande potencial de ativação na base.")
+else:
+    insights_resumo.append(f"<strong>Destaque:</strong> {pct_sellers}% das lojas são sellers ativos, um bom nível de engajamento.")
+
+if pct_cobertura < 5:
+    insights_resumo.append(f"<strong>Atenção:</strong> Cobertura de Lifecycle está em {pct_cobertura}%. Expandir ações pode trazer ganhos significativos.")
+elif pct_cobertura < 15:
+    insights_resumo.append(f"<strong>Progresso:</strong> Cobertura de {pct_cobertura}% - há espaço para crescimento das ações de Lifecycle.")
+
+if churn_medio > 30:
+    insights_resumo.append(f"<strong>Alerta:</strong> Risco médio de churn está em {churn_medio}%. Priorizar ações de retenção.")
+elif churn_medio > 20:
+    insights_resumo.append(f"<strong>Monitorar:</strong> Risco médio de {churn_medio}% requer atenção contínua.")
+
+# Insights sobre quartis de risco
+alto_risco = next((q for q in dashboard_data['risk_quartiles'] if q['name'] == 'Alto Risco'), None)
+if alto_risco and alto_risco['pct'] > 5:
+    insights_resumo.append(f"<strong>Foco:</strong> {alto_risco['count']:,} lojas ({alto_risco['pct']}%) estão em alto risco de churn. GMV em risco: R$ {alto_risco['gmv_total']/1000000:.1f}M.")
+
+# Insights da Visão da Base
+insights_base = []
+status_dist = dashboard_data['status_base']['distribuicao']
+
+# Encontrar status com maior e menor churn
+if status_dist:
+    maior_churn = max(status_dist, key=lambda x: x['churn_prob'])
+    menor_churn = min([s for s in status_dist if s['churn_prob'] > 0], key=lambda x: x['churn_prob'])
+    
+    insights_base.append(f"<strong>Maior risco:</strong> Lojas <em>{maior_churn['label']}</em> têm {maior_churn['churn_prob']}% de probabilidade de churn - foco em retenção para este segmento.")
+    insights_base.append(f"<strong>Mais estáveis:</strong> Lojas <em>{menor_churn['label']}</em> têm apenas {menor_churn['churn_prob']}% de risco - modelo de sucesso a ser replicado.")
+    
+    # Top 2 status por volume
+    top_status = sorted(status_dist, key=lambda x: x['count'], reverse=True)[:2]
+    insights_base.append(f"<strong>Composição:</strong> {top_status[0]['label']} ({top_status[0]['pct']}%) e {top_status[1]['label']} ({top_status[1]['pct']}%) representam quase metade da base.")
+    
+    # Status com maior GMV
+    maior_gmv = max(status_dist, key=lambda x: x['gmv_total'])
+    insights_base.append(f"<strong>Receita:</strong> Lojas <em>{maior_gmv['label']}</em> geram R$ {maior_gmv['gmv_total']/1000000:.1f}M em GMV ({maior_gmv['count']:,} lojas com ticket médio de R$ {maior_gmv['gmv_medio']:,.0f}).")
+
+# Insights de Merchant Services
+insights_ms = []
+ms_data = dashboard_data['merchant_services']
+
+insights_ms.append(f"<strong>Adoção média:</strong> Lojas têm em média {ms_data['media']:.1f} produtos de Merchant Services.")
+
+# Produto mais adotado
+mais_adotado = max([p for p in ms_data['por_produto'] if p['pct'] > 0], key=lambda x: x['pct'], default=None)
+if mais_adotado:
+    insights_ms.append(f"<strong>Líder:</strong> {mais_adotado['produto']} é o produto mais adotado com {mais_adotado['pct']}% de penetração ({mais_adotado['lojas']:,} lojas).")
+
+# Maior oportunidade de cross-sell
+if ms_data['cross_sell']:
+    maior_potencial = max([c for c in ms_data['cross_sell'] if c['ja_tem'] > 0], key=lambda x: x['potencial'], default=None)
+    if maior_potencial:
+        insights_ms.append(f"<strong>Cross-sell:</strong> {maior_potencial['produto']} tem potencial de {maior_potencial['potencial']:,} novas adoções entre lojas que já usam outros produtos.")
+
+# Lojas sem nenhum produto
+sem_produto = next((d for d in ms_data['distribuicao'] if d['qtd'] == 0), None)
+if sem_produto and sem_produto['pct'] > 5:
+    insights_ms.append(f"<strong>Oportunidade:</strong> {sem_produto['count']:,} lojas ({sem_produto['pct']}%) não usam nenhum produto MS - grande potencial de first-sell.")
+
+# Combinação mais comum
+if ms_data['combinacoes']:
+    combo_top = ms_data['combinacoes'][0]
+    insights_ms.append(f"<strong>Combo popular:</strong> \"{combo_top['combo']}\" é a combinação mais comum com {combo_top['count']:,} lojas ({combo_top['pct']}%).")
+
+# Insights de Risco de Churn
+insights_risco = []
+churn_data = dashboard_data['churn']
+
+# Status mais crítico
+if churn_data['por_status']:
+    mais_critico = max(churn_data['por_status'], key=lambda x: x['prob_media'])
+    menos_critico = min(churn_data['por_status'], key=lambda x: x['prob_media'])
+    
+    insights_risco.append(f"<strong>Segmento crítico:</strong> {mais_critico['label']} tem {mais_critico['prob_media']}% de risco médio - {mais_critico['lojas']:,} lojas precisam de atenção.")
+    insights_risco.append(f"<strong>Benchmark:</strong> {menos_critico['label']} tem apenas {menos_critico['prob_media']}% de risco - entender o que diferencia este grupo.")
+
+# Distribuição de quartis
+sem_risco = next((q for q in dashboard_data['risk_quartiles'] if q['name'] == 'Sem Risco'), None)
+alto_risco = next((q for q in dashboard_data['risk_quartiles'] if q['name'] == 'Alto Risco'), None)
+if sem_risco and alto_risco:
+    insights_risco.append(f"<strong>Polarização:</strong> {sem_risco['pct']}% das lojas estão sem risco enquanto {alto_risco['pct']}% estão em alto risco - estratégias diferenciadas são necessárias.")
+
+# GMV em risco
+medio_risco = next((q for q in dashboard_data['risk_quartiles'] if q['name'] == 'Médio Risco'), None)
+if medio_risco and alto_risco:
+    gmv_em_risco = medio_risco['gmv_total'] + alto_risco['gmv_total']
+    insights_risco.append(f"<strong>Impacto financeiro:</strong> R$ {gmv_em_risco/1000000:.1f}M de GMV está concentrado em lojas de médio e alto risco.")
+
+# Insights de Cobertura
+insights_cobertura = []
+cobertura_data = dashboard_data['cobertura_projetos']
+
+projetos_ativos = [p for p in cobertura_data if p['status'] == 'ativo']
+projetos_breve = [p for p in cobertura_data if p['status'] == 'em breve']
+
+if projetos_ativos:
+    total_cobertas = sum(p['lojas'] for p in projetos_ativos)
+    insights_cobertura.append(f"<strong>Alcance atual:</strong> {len(projetos_ativos)} projeto(s) ativo(s) impactando {total_cobertas:,} lojas.")
+
+if projetos_breve:
+    insights_cobertura.append(f"<strong>Pipeline:</strong> {len(projetos_breve)} projeto(s) em desenvolvimento que vão expandir a cobertura.")
+
+lojas_nao_impactadas = dashboard_data['resumo']['total_lojas_ativas'] - dashboard_data['resumo']['n_cobertas']
+insights_cobertura.append(f"<strong>Espaço para crescer:</strong> {lojas_nao_impactadas:,} lojas ainda não foram impactadas por nenhuma ação de Lifecycle.")
+
+# Se cobertura < 10%
+if pct_cobertura < 10:
+    insights_cobertura.append(f"<strong>Prioridade:</strong> Com apenas {pct_cobertura}% de cobertura, há grande oportunidade de escalar as ações atuais.")
+
+# Insights de Webinars
+insights_webinars = []
+web_data = dashboard_data['webinars']
+
+# Impacto em GMV
+gmv_diff = web_data['performance']['gmv_diff_pct']
+if gmv_diff > 100:
+    insights_webinars.append(f"<strong>Impacto em vendas:</strong> Lojas com webinar têm GMV {gmv_diff}% maior que lojas sem webinar - resultado expressivo.")
+elif gmv_diff > 50:
+    insights_webinars.append(f"<strong>Impacto em vendas:</strong> Lojas com webinar têm GMV {gmv_diff}% maior que lojas sem webinar.")
+
+# Impacto em Churn
+churn_diff = web_data['churn']['diff_pp']
+if churn_diff < -5:
+    insights_webinars.append(f"<strong>Retenção:</strong> Webinars reduzem o risco de churn em {abs(churn_diff):.1f}pp - ferramenta eficaz de retenção.")
+
+# Análise pareada
+if web_data['analise_pareada']['total_grupos'] > 0:
+    gmv_pareado = web_data['analise_pareada']['gmv_diff_pct']
+    churn_pareado = web_data['churn_pareado']['diff_pp']
+    insights_webinars.append(f"<strong>Evidência causal:</strong> Na análise pareada (mesmo perfil), webinars entregam +{gmv_pareado}% em GMV e {churn_pareado:.1f}pp em churn.")
+
+# Funil
+funil = web_data['funil']
+if funil['total_geral'] > 0:
+    taxa_participacao = funil.get('pct_participaram', 0)
+    insights_webinars.append(f"<strong>Conversão:</strong> {taxa_participacao}% dos inscritos participam (live ou on-demand) - {funil['total_participaram']:,} de {funil['total_geral']:,} registros.")
+
+# Risco por quartil
+risk_comp = web_data.get('risk_quartiles_comparison', [])
+if risk_comp:
+    alto_risco_web = next((q for q in risk_comp if q['name'] == 'Alto Risco'), None)
+    if alto_risco_web and alto_risco_web['diff_pp'] < -2:
+        insights_webinars.append(f"<strong>Proteção:</strong> Apenas {alto_risco_web['pct_com']}% das lojas com webinar estão em alto risco vs {alto_risco_web['pct_sem']}% sem webinar (diferença de {alto_risco_web['diff_pp']}pp).")
+
+# Top status beneficiado
+perfil = web_data.get('perfil_status', [])
+if perfil:
+    mais_engajado = max([p for p in perfil if p['indice'] > 100], key=lambda x: x['indice'], default=None)
+    if mais_engajado:
+        insights_webinars.append(f"<strong>Perfil engajado:</strong> {mais_engajado['label']} tem índice {int(mais_engajado['indice'])} de participação - {mais_engajado['pct_webinar']}% dos participantes vs {mais_engajado['pct_base']}% da base.")
+
+# Gerar HTML dos insights
+insights_resumo_html = generate_insights_html(insights_resumo)
+insights_base_html = generate_insights_html(insights_base)
+insights_ms_html = generate_insights_html(insights_ms)
+insights_risco_html = generate_insights_html(insights_risco)
+insights_cobertura_html = generate_insights_html(insights_cobertura)
+insights_webinars_html = generate_insights_html(insights_webinars)
 
 matriz_html = ''
 if matriz_transicao['disponivel']:
@@ -935,8 +1247,42 @@ html_content = f'''<!DOCTYPE html>
         .comparison-item {{ flex: 1; }}
         .comparison-label {{ font-size: 10px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }}
         .comparison-value {{ font-size: 22px; font-weight: 600; }}
-        @media (max-width: 1000px) {{ .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix {{ grid-template-columns: 1fr 1fr; }} }}
-        @media (max-width: 600px) {{ .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix {{ grid-template-columns: 1fr; }} }}
+        .trend-arrow {{ display: inline-flex; align-items: center; font-size: 14px; margin-left: 8px; font-weight: 600; }}
+        .trend-arrow.up {{ color: #4ade80; }}
+        .trend-arrow.down {{ color: #f87171; }}
+        .trend-arrow svg {{ width: 16px; height: 16px; margin-right: 2px; }}
+        .card-value-row {{ display: flex; align-items: center; flex-wrap: wrap; }}
+        .insights-section {{ margin-top: 32px; }}
+        .insights-box {{
+            background: linear-gradient(145deg, #1e3a5f 0%, #1e293b 100%);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }}
+        .insights-list {{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }}
+        .insights-list li {{
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 14px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }}
+        .insights-list li:last-child {{ border-bottom: none; }}
+        .insights-list li strong {{ color: #3b82f6; }}
+        .insights-list li em {{ color: #fbbf24; font-style: normal; }}
+        .quartile-comparison {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }}
+        .quartile-card {{ padding: 16px; border-radius: 10px; text-align: center; }}
+        .quartile-card h4 {{ font-size: 12px; font-weight: 600; margin-bottom: 12px; }}
+        .quartile-row {{ display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }}
+        .quartile-row:last-child {{ border-bottom: none; }}
+        .quartile-label {{ font-size: 10px; color: #94a3b8; }}
+        .quartile-value {{ font-size: 14px; font-weight: 600; }}
+        @media (max-width: 1000px) {{ .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ grid-template-columns: 1fr 1fr; }} }}
+        @media (max-width: 600px) {{ .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ grid-template-columns: 1fr; }} }}
     </style>
 </head>
 <body>
@@ -981,6 +1327,8 @@ html_content = f'''<!DOCTYPE html>
             <div class="risk-matrix">
                 {''.join([f'<div class="risk-card" style="background:{q["color"]}20;border:2px solid {q["color"]};"><h3 style="color:{q["color"]};">{q["count"]:,}</h3><p style="color:{q["color"]};font-weight:600;">{q["name"]}</p><p>{q["pct"]}%</p></div>' for q in dashboard_data['risk_quartiles']])}
             </div>
+            
+            {insights_resumo_html}
         </div>
         
         <!-- BASE -->
@@ -993,6 +1341,8 @@ html_content = f'''<!DOCTYPE html>
             
             <h2 class="section-title">Matriz de Transição</h2>
             {matriz_html}
+            
+            {insights_base_html}
         </div>
         
         <!-- MERCHANT SERVICES -->
@@ -1046,6 +1396,8 @@ html_content = f'''<!DOCTYPE html>
                     </table>
                 </div>
             </div>
+            
+            {insights_ms_html}
         </div>
         
         <!-- RISCO -->
@@ -1061,6 +1413,8 @@ html_content = f'''<!DOCTYPE html>
             </div>
             
             {'<div class="insight-box warning"><h4>📈 Evolução do Risco</h4><p>Carregue bases de múltiplos meses para ver a evolução</p></div>' if len(risco_evolucao) <= 1 else f'<h2 class="section-title">Evolução do Risco</h2><div class="card"><div class="chart-container"><canvas id="chartRiscoEvolucao"></canvas></div></div>'}
+            
+            {insights_risco_html}
         </div>
         
         <!-- COBERTURA -->
@@ -1073,6 +1427,8 @@ html_content = f'''<!DOCTYPE html>
             <div class="card">
                 <table><thead><tr><th>Projeto</th><th>Status</th><th>Lojas</th><th>%</th></tr></thead><tbody>{''.join([f'<tr><td><strong>{p["projeto"]}</strong></td><td><span class="badge {"badge-positive" if p["status"]=="ativo" else ""}">{p["status"]}</span></td><td>{p["lojas"]:,}</td><td>{p["pct"]}%</td></tr>' for p in dashboard_data['cobertura_projetos']])}</tbody></table>
             </div>
+            
+            {insights_cobertura_html}
         </div>
         
         <!-- WEBINARS -->
@@ -1093,11 +1449,21 @@ html_content = f'''<!DOCTYPE html>
             </div>
             
             <h2 class="section-title">Impacto na Base</h2>
-            <div class="grid grid-4">
+            <div class="grid grid-5">
                 <div class="card"><div class="card-title">Lojas com Cobertura</div><div class="card-value gradient">{dashboard_data['webinars']['total_participantes']:,}</div><div class="card-subtitle">{dashboard_data['webinars']['pct_base']}% da base</div></div>
-                <div class="card"><div class="card-title">GMV</div><div class="card-value positive">+{dashboard_data['webinars']['performance']['gmv_diff_pct']}%</div><div class="card-subtitle">vs sem webinar</div></div>
-                <div class="card"><div class="card-title">Churn</div><div class="card-value positive">{dashboard_data['webinars']['churn']['diff_pp']}pp</div><div class="card-subtitle">vs sem webinar</div></div>
-                <div class="card"><div class="card-title">Pareada</div><div class="card-value positive">+{dashboard_data['webinars']['analise_pareada']['gmv_diff_pct']}%</div><div class="card-subtitle">mesmo perfil</div></div>
+                <div class="card"><div class="card-title">GMV</div><div class="card-value-row"><span class="card-value positive">+{dashboard_data['webinars']['performance']['gmv_diff_pct']}%</span>{trend_gmv}</div><div class="card-subtitle">vs sem webinar</div></div>
+                <div class="card"><div class="card-title">Churn</div><div class="card-value-row"><span class="card-value positive">{dashboard_data['webinars']['churn']['diff_pp']}pp</span>{trend_churn}</div><div class="card-subtitle">vs sem webinar</div></div>
+                <div class="card"><div class="card-title">GMV Pareado</div><div class="card-value positive">+{dashboard_data['webinars']['analise_pareada']['gmv_diff_pct']}%</div><div class="card-subtitle">mesmo perfil</div></div>
+                <div class="card"><div class="card-title">Churn Pareado</div><div class="card-value positive">{dashboard_data['webinars']['churn_pareado']['diff_pp']}pp</div><div class="card-subtitle">mesmo perfil</div></div>
+            </div>
+            
+            <h2 class="section-title">Risco Preditivo: Com vs Sem Webinar</h2>
+            <div class="insight-box">
+                <h4>Distribuição por Quartil de Risco</h4>
+                <p>Comparação da distribuição de lojas em cada faixa de risco entre lojas <strong>com webinar</strong> e <strong>sem webinar</strong>. Diferenças negativas nos quartis de maior risco indicam que webinars ajudam a reduzir o risco.</p>
+            </div>
+            <div class="quartile-comparison">
+                {''.join([f'<div class="quartile-card" style="background:{q["color"]}15;border:2px solid {q["color"]};"><h4 style="color:{q["color"]};">{q["name"]}</h4><div class="quartile-row"><span class="quartile-label">Com Webinar</span><span class="quartile-value" style="color:{q["color"]};">{q["pct_com"]}%</span></div><div class="quartile-row"><span class="quartile-label">Sem Webinar</span><span class="quartile-value">{q["pct_sem"]}%</span></div><div class="quartile-row"><span class="quartile-label">Diferença</span><span class="quartile-value {"positive" if q["diff_pp"]<0 else "negative" if q["diff_pp"]>0 else ""}">{("+" if q["diff_pp"]>0 else "")}{q["diff_pp"]}pp</span></div></div>' for q in dashboard_data['webinars']['risk_quartiles_comparison']])}
             </div>
             
             <h2 class="section-title">Impacto em New Sellers</h2>
@@ -1156,6 +1522,8 @@ html_content = f'''<!DOCTYPE html>
             <div class="card">
                 <table><thead><tr><th>#</th><th>Webinar</th><th>Participantes</th></tr></thead><tbody>{''.join([f'<tr><td>{i+1}</td><td>{w["nome"]}</td><td>{w["participantes"]:,}</td></tr>' for i, w in enumerate(dashboard_data['webinars']['top_webinars'][:10])])}</tbody></table>
             </div>
+            
+            {insights_webinars_html}
         </div>
     </div>
     
