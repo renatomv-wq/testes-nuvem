@@ -431,12 +431,48 @@ print("\n🚨 Analisando Risco...")
 lojas_com_churn = lojas_ativas[lojas_ativas['predictive_churn_probability'] > 0]
 
 risk_quartiles_data = []
+risk_quartiles_lojas = {}  # Armazena lista de lojas por quartil
+
 for q in RISK_QUARTILES:
     mask = (lojas_com_churn['predictive_churn_probability'] > q['min']) & \
            (lojas_com_churn['predictive_churn_probability'] <= q['max'])
-    count = len(lojas_com_churn[mask])
+    lojas_quartil = lojas_com_churn[mask].copy()
+    count = len(lojas_quartil)
     pct = round(count / len(lojas_com_churn) * 100, 1) if len(lojas_com_churn) > 0 else 0
-    gmv = lojas_com_churn[mask]['gmv_mes_local'].sum()
+    gmv = lojas_quartil['gmv_mes_local'].sum()
+    
+    # Estatísticas do quartil
+    stats = {
+        'gmv_medio': round(lojas_quartil['gmv_mes_local'].mean(), 2) if count > 0 else 0,
+        'orders_medio': round(lojas_quartil['orders_mes'].mean(), 1) if count > 0 else 0,
+        'prob_media': round(lojas_quartil['predictive_churn_probability'].mean() * 100, 2) if count > 0 else 0,
+        'aging_medio': round(lojas_quartil['aging_clean'].mean(), 0) if count > 0 else 0,
+    }
+    
+    # Distribuição por status no quartil
+    status_dist = lojas_quartil['status_seller'].value_counts().to_dict()
+    status_dist_formatted = {STATUS_LABELS.get(k, k): v for k, v in status_dist.items()}
+    
+    # Lista de lojas (top 500 por GMV para não sobrecarregar)
+    lojas_lista = lojas_quartil.nlargest(500, 'gmv_mes_local')[[
+        id_col, 'store_name', 'status_seller', 'gmv_mes_local', 'orders_mes', 
+        'predictive_churn_probability', 'aging', 'main_user'
+    ]].copy()
+    lojas_lista['predictive_churn_probability'] = (lojas_lista['predictive_churn_probability'] * 100).round(2)
+    lojas_lista['gmv_mes_local'] = lojas_lista['gmv_mes_local'].round(2)
+    lojas_lista['status_seller'] = lojas_lista['status_seller'].map(lambda x: STATUS_LABELS.get(x, x))
+    lojas_lista = lojas_lista.rename(columns={
+        id_col: 'store_id',
+        'store_name': 'nome',
+        'status_seller': 'status',
+        'gmv_mes_local': 'gmv',
+        'orders_mes': 'pedidos',
+        'predictive_churn_probability': 'prob_churn',
+        'aging': 'idade_dias',
+        'main_user': 'email'
+    })
+    
+    risk_quartiles_lojas[q['name']] = lojas_lista.to_dict('records')
     
     risk_quartiles_data.append({
         'name': q['name'],
@@ -444,7 +480,9 @@ for q in RISK_QUARTILES:
         'count': count,
         'pct': pct,
         'gmv_total': round(gmv, 2),
-        'prob_range': f"{int(q['min']*100)}%-{int(q['max']*100)}%"
+        'prob_range': f"{int(q['min']*100)}%-{int(q['max']*100)}%",
+        'stats': stats,
+        'status_distribution': status_dist_formatted
     })
 
 # Evolução do risco por mês
@@ -488,18 +526,42 @@ ms_combinacoes = [
 
 # Oportunidades de Cross-sell
 cross_sell = []
+cross_sell_lojas = {}  # Armazena lista de lojas por produto
+
 for col in MERCHANT_COLS:
     # Lojas que NÃO tem o produto
     sem_produto = lojas_ativas[lojas_ativas[col] == False]
     if len(sem_produto) > 0:
         # Dessas, quantas tem pelo menos 1 outro produto
-        sem_produto_com_outros = sem_produto[sem_produto['qtd_merchant_services'] >= 1]
+        sem_produto_com_outros = sem_produto[sem_produto['qtd_merchant_services'] >= 1].copy()
+        
+        # Lista de lojas potenciais (top 500 por GMV)
+        lojas_potenciais = sem_produto_com_outros.nlargest(500, 'gmv_mes_local')[[
+            id_col, 'store_name', 'status_seller', 'gmv_mes_local', 'orders_mes',
+            'qtd_merchant_services', 'combo_produtos', 'main_user'
+        ]].copy()
+        lojas_potenciais['gmv_mes_local'] = lojas_potenciais['gmv_mes_local'].round(2)
+        lojas_potenciais['status_seller'] = lojas_potenciais['status_seller'].map(lambda x: STATUS_LABELS.get(x, x))
+        lojas_potenciais = lojas_potenciais.rename(columns={
+            id_col: 'store_id',
+            'store_name': 'nome',
+            'status_seller': 'status',
+            'gmv_mes_local': 'gmv',
+            'orders_mes': 'pedidos',
+            'qtd_merchant_services': 'produtos_atuais',
+            'combo_produtos': 'produtos',
+            'main_user': 'email'
+        })
+        
+        cross_sell_lojas[col] = lojas_potenciais.to_dict('records')
+        
         cross_sell.append({
             'produto': PRODUTO_NAMES[col],
             'codigo': col,
             'potencial': len(sem_produto_com_outros),
             'pct_potencial': round(len(sem_produto_com_outros) / len(lojas_ativas) * 100, 1),
-            'ja_tem': int(lojas_ativas[col].sum())
+            'ja_tem': int(lojas_ativas[col].sum()),
+            'gmv_potencial': round(sem_produto_com_outros['gmv_mes_local'].sum(), 2)
         })
 
 cross_sell.sort(key=lambda x: x['potencial'], reverse=True)
@@ -567,6 +629,7 @@ dashboard_data['resumo'] = {
 dashboard_data['new_sellers'] = new_sellers_analysis
 dashboard_data['matriz_transicao'] = matriz_transicao
 dashboard_data['risk_quartiles'] = risk_quartiles_data
+dashboard_data['risk_quartiles_lojas'] = risk_quartiles_lojas
 dashboard_data['risco_evolucao'] = risco_evolucao
 
 # Cobertura por projeto
@@ -612,6 +675,7 @@ dashboard_data['merchant_services'] = {
     'por_produto': ms_por_produto,
     'combinacoes': ms_combinacoes,
     'cross_sell': cross_sell,
+    'cross_sell_lojas': cross_sell_lojas,  # Lista de lojas para download
     'afinidade': afinidade_produtos  # Produtos relacionados (quem tem X também tem Y)
 }
 
@@ -1581,6 +1645,144 @@ html_content = f'''<!DOCTYPE html>
         .quartile-label {{ font-size: 0.625rem; color: var(--nimbus-neutral-text-low); }}
         .quartile-value {{ font-size: 0.875rem; font-weight: 600; }}
         
+        /* Modal */
+        .modal-overlay {{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: var(--spacing-4);
+        }}
+        .modal-overlay.active {{ display: flex; }}
+        .modal {{
+            background: var(--nimbus-neutral-surface);
+            border-radius: var(--radius-lg);
+            max-width: 900px;
+            width: 100%;
+            max-height: 85vh;
+            overflow: hidden;
+            border: 1px solid var(--nimbus-neutral-interactive);
+            display: flex;
+            flex-direction: column;
+        }}
+        .modal-header {{
+            padding: var(--spacing-5);
+            border-bottom: 1px solid var(--nimbus-neutral-interactive);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        .modal-header h3 {{ font-size: 1.125rem; font-weight: 600; }}
+        .modal-close {{
+            background: none;
+            border: none;
+            color: var(--nimbus-neutral-text-low);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: var(--spacing-2);
+            line-height: 1;
+        }}
+        .modal-close:hover {{ color: var(--nimbus-neutral-text-high); }}
+        .modal-body {{
+            padding: var(--spacing-5);
+            overflow-y: auto;
+            flex: 1;
+        }}
+        .modal-stats {{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-5);
+        }}
+        .modal-stat {{
+            background: var(--nimbus-neutral-surface-highlight);
+            padding: var(--spacing-4);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }}
+        .modal-stat-label {{ font-size: 0.625rem; color: var(--nimbus-neutral-text-low); text-transform: uppercase; letter-spacing: 0.08em; }}
+        .modal-stat-value {{ font-size: 1.25rem; font-weight: 600; margin-top: var(--spacing-1); }}
+        .modal-table-container {{
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid var(--nimbus-neutral-interactive);
+            border-radius: var(--radius-md);
+        }}
+        .modal-table {{ margin: 0; }}
+        .modal-table th {{ position: sticky; top: 0; background: var(--nimbus-neutral-surface); }}
+        .modal-footer {{
+            padding: var(--spacing-4) var(--spacing-5);
+            border-top: 1px solid var(--nimbus-neutral-interactive);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        
+        /* Buttons */
+        .btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }}
+        .btn-primary {{
+            background: var(--nimbus-primary-interactive);
+            color: white;
+        }}
+        .btn-primary:hover {{ background: var(--nimbus-primary-interactive-hover); }}
+        .btn-secondary {{
+            background: var(--nimbus-neutral-interactive);
+            color: var(--nimbus-neutral-text-high);
+        }}
+        .btn-secondary:hover {{ background: var(--nimbus-neutral-surface-highlight); }}
+        .btn svg {{ width: 16px; height: 16px; }}
+        
+        /* Clickable Cards */
+        .risk-card.clickable {{
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }}
+        .risk-card.clickable:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }}
+        .cross-sell-row {{
+            cursor: pointer;
+            transition: background 0.2s;
+        }}
+        .cross-sell-row:hover {{
+            background: var(--nimbus-neutral-surface-highlight) !important;
+        }}
+        .download-icon {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            background: var(--nimbus-primary-surface);
+            color: var(--nimbus-primary-interactive);
+            cursor: pointer;
+            transition: all 0.2s;
+        }}
+        .download-icon:hover {{
+            background: var(--nimbus-primary-interactive);
+            color: white;
+        }}
+        
         /* Responsive */
         @media (max-width: 1000px) {{ 
             .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ 
@@ -1677,11 +1879,12 @@ html_content = f'''<!DOCTYPE html>
             </div>
             
             <h2 class="section-title">Oportunidades de Cross-Sell</h2>
+            <p class="text-muted" style="margin-top:-8px;margin-bottom:16px;">Clique no botão de download para baixar a lista de lojas potenciais</p>
             <div class="card">
                 <table>
-                    <thead><tr><th>Produto</th><th>Já tem</th><th>Potencial (lojas com outros produtos)</th><th>% Base</th></tr></thead>
+                    <thead><tr><th>Produto</th><th>Já tem</th><th>Potencial</th><th>GMV Potencial</th><th>% Base</th><th>Ação</th></tr></thead>
                     <tbody>
-                        {''.join([f'<tr><td><strong>{c["produto"]}</strong></td><td>{c["ja_tem"]:,}</td><td class="positive">{c["potencial"]:,}</td><td>{c["pct_potencial"]}%</td></tr>' for c in dashboard_data['merchant_services']['cross_sell']])}
+                        {''.join([f'<tr class="cross-sell-row"><td><strong>{c["produto"]}</strong></td><td>{c["ja_tem"]:,}</td><td class="positive">{c["potencial"]:,}</td><td>R$ {c["gmv_potencial"]/1000000:.1f}M</td><td>{c["pct_potencial"]}%</td><td><span class="download-icon" onclick="downloadCrossSell(&quot;{c["codigo"]}&quot;, &quot;{c["produto"]}&quot;)" title="Baixar lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span></td></tr>' for c in dashboard_data['merchant_services']['cross_sell']])}
                     </tbody>
                 </table>
             </div>
@@ -1715,8 +1918,9 @@ html_content = f'''<!DOCTYPE html>
         <!-- RISCO -->
         <div id="risco" class="tab-content">
             <h2 class="section-title">Matriz de Quartis de Risco</h2>
+            <p class="text-muted" style="margin-top:-8px;margin-bottom:16px;">Clique em um quartil para ver detalhes e baixar a lista de lojas</p>
             <div class="risk-matrix">
-                {''.join([f'<div class="risk-card" style="background:{q["color"]}20;border:2px solid {q["color"]};"><h3 style="color:{q["color"]};">{q["count"]:,}</h3><p style="color:{q["color"]};font-weight:600;">{q["name"]}</p><p>{q["pct"]}% | GMV: R$ {q["gmv_total"]/1000000:.1f}M</p></div>' for q in dashboard_data['risk_quartiles']])}
+                {''.join([f'<div class="risk-card clickable" onclick="showRiskModal(&quot;{q["name"]}&quot;)" style="background:{q["color"]}20;border:2px solid {q["color"]};"><h3 style="color:{q["color"]};">{q["count"]:,}</h3><p style="color:{q["color"]};font-weight:600;">{q["name"]}</p><p>{q["pct"]}% | GMV: R$ {q["gmv_total"]/1000000:.1f}M</p></div>' for q in dashboard_data['risk_quartiles']])}
             </div>
             
             <div class="two-columns">
@@ -1839,6 +2043,45 @@ html_content = f'''<!DOCTYPE html>
         </div>
     </div>
     
+    <!-- Modal de Detalhes -->
+    <div id="riskModal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Detalhes do Quartil</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-stats" id="modalStats"></div>
+                <h4 style="margin-bottom:12px;font-size:0.875rem;">Distribuição por Status</h4>
+                <div id="modalStatusDist" style="margin-bottom:20px;"></div>
+                <h4 style="margin-bottom:12px;font-size:0.875rem;">Lista de Lojas (Top 500 por GMV)</h4>
+                <div class="modal-table-container">
+                    <table class="modal-table" id="modalTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Status</th>
+                                <th>GMV</th>
+                                <th>Pedidos</th>
+                                <th>Prob. Churn</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="modalCount" class="text-muted"></span>
+                <button class="btn btn-primary" id="downloadBtn" onclick="downloadCurrentList()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar Lista CSV
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         const data = {json.dumps(dashboard_data, ensure_ascii=False)};
         
@@ -1879,6 +2122,142 @@ html_content = f'''<!DOCTYPE html>
         Chart.defaults.color = '#888888';
         Chart.defaults.borderColor = '#2a2a2a';
         Chart.defaults.font.family = "'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+        
+        /* ========================================
+           MODAL E DOWNLOAD FUNCTIONS
+           ======================================== */
+        
+        let currentDownloadData = null;
+        let currentDownloadName = '';
+        
+        function showRiskModal(quartilName) {{
+            const quartil = data.risk_quartiles.find(q => q.name === quartilName);
+            const lojas = data.risk_quartiles_lojas[quartilName] || [];
+            
+            if (!quartil) return;
+            
+            // Título
+            document.getElementById('modalTitle').innerHTML = `<span style="color:${{quartil.color}}">●</span> ${{quartilName}} - ${{quartil.prob_range}}`;
+            
+            // Stats
+            const stats = quartil.stats || {{}};
+            document.getElementById('modalStats').innerHTML = `
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Total Lojas</div>
+                    <div class="modal-stat-value">${{quartil.count.toLocaleString()}}</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">GMV Total</div>
+                    <div class="modal-stat-value">R$ ${{(quartil.gmv_total/1000000).toFixed(1)}}M</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">GMV Médio</div>
+                    <div class="modal-stat-value">R$ ${{stats.gmv_medio?.toLocaleString() || '0'}}</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-label">Prob. Média</div>
+                    <div class="modal-stat-value">${{stats.prob_media || 0}}%</div>
+                </div>
+            `;
+            
+            // Distribuição por status
+            const statusDist = quartil.status_distribution || {{}};
+            let statusHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+            for (const [status, count] of Object.entries(statusDist)) {{
+                statusHtml += `<span style="background:var(--nimbus-neutral-surface-highlight);padding:4px 12px;border-radius:100px;font-size:0.75rem;">${{status}}: <strong>${{count.toLocaleString()}}</strong></span>`;
+            }}
+            statusHtml += '</div>';
+            document.getElementById('modalStatusDist').innerHTML = statusHtml;
+            
+            // Tabela de lojas
+            let tableHtml = '';
+            lojas.forEach(loja => {{
+                tableHtml += `<tr>
+                    <td>${{loja.store_id}}</td>
+                    <td>${{loja.nome || '-'}}</td>
+                    <td>${{loja.status || '-'}}</td>
+                    <td>R$ ${{loja.gmv?.toLocaleString() || '0'}}</td>
+                    <td>${{loja.pedidos || 0}}</td>
+                    <td class="${{loja.prob_churn > 50 ? 'negative' : loja.prob_churn > 25 ? 'neutral' : 'positive'}}">${{loja.prob_churn || 0}}%</td>
+                    <td style="font-size:0.75rem;">${{loja.email || '-'}}</td>
+                </tr>`;
+            }});
+            document.getElementById('modalTableBody').innerHTML = tableHtml;
+            
+            // Footer
+            document.getElementById('modalCount').textContent = `Mostrando ${{lojas.length}} de ${{quartil.count.toLocaleString()}} lojas`;
+            
+            // Salvar dados para download
+            currentDownloadData = lojas;
+            currentDownloadName = `lojas_${{quartilName.toLowerCase().replace(/ /g, '_')}}_${{new Date().toISOString().split('T')[0]}}`;
+            
+            // Mostrar modal
+            document.getElementById('riskModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }}
+        
+        function closeModal() {{
+            document.getElementById('riskModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }}
+        
+        function closeModalOnOverlay(event) {{
+            if (event.target.classList.contains('modal-overlay')) {{
+                closeModal();
+            }}
+        }}
+        
+        function downloadCurrentList() {{
+            if (!currentDownloadData || currentDownloadData.length === 0) {{
+                alert('Não há dados para download');
+                return;
+            }}
+            downloadCSV(currentDownloadData, currentDownloadName);
+        }}
+        
+        function downloadCrossSell(codigo, produto) {{
+            const lojas = data.merchant_services.cross_sell_lojas[codigo] || [];
+            if (lojas.length === 0) {{
+                alert('Não há dados para download');
+                return;
+            }}
+            const filename = `cross_sell_${{codigo}}_${{new Date().toISOString().split('T')[0]}}`;
+            downloadCSV(lojas, filename);
+        }}
+        
+        function downloadCSV(dataArray, filename) {{
+            if (!dataArray || dataArray.length === 0) return;
+            
+            const NL = String.fromCharCode(10);
+            const headers = Object.keys(dataArray[0]);
+            
+            let csv = headers.join(';') + NL;
+            dataArray.forEach(row => {{
+                const values = headers.map(h => {{
+                    let val = row[h] ?? '';
+                    if (typeof val === 'string' && (val.includes(';') || val.includes('"') || val.includes(NL))) {{
+                        val = '"' + val.replace(/"/g, '""') + '"';
+                    }}
+                    return val;
+                }});
+                csv += values.join(';') + NL;
+            }});
+            
+            const BOM = String.fromCharCode(0xFEFF);
+            const blob = new Blob([BOM + csv], {{ type: 'text/csv;charset=utf-8;' }});
+            
+            // Download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename + '.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }}
+        
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(e) {{
+            if (e.key === 'Escape') closeModal();
+        }});
         
         function initCharts() {{
             // Status Base
