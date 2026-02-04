@@ -5,110 +5,388 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Impacto - Lifecycle BR</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Geist Font from Vercel (Nimbus Typography) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+    <style>
+        /* ========================================
+           NIMBUS DESIGN SYSTEM - DARK THEME
+           Fonte: Geist | Cores: Nimbus + Semáforo
+           ======================================== */
+        
+        :root {
+            /* Nimbus Primary */
+            --nimbus-primary-surface: #1a2744;
+            --nimbus-primary-surface-highlight: #96c1fc;
+            --nimbus-primary-interactive: #0059d5;
+            --nimbus-primary-interactive-hover: #00429f;
+            --nimbus-primary-text-low: #96c1fc;
+            --nimbus-primary-text-high: #eef5ff;
+            
+            /* Nimbus Neutral (Dark Theme) */
+            --nimbus-neutral-background: #0a0a0a;
+            --nimbus-neutral-surface: #141414;
+            --nimbus-neutral-surface-highlight: #1f1f1f;
+            --nimbus-neutral-interactive: #2a2a2a;
+            --nimbus-neutral-text-disabled: #6d6d6d;
+            --nimbus-neutral-text-low: #888888;
+            --nimbus-neutral-text-high: #f6f6f6;
+            
+            /* Semáforo - Success (Verde) */
+            --success-surface: rgba(0, 200, 123, 0.1);
+            --success-interactive: #00c87b;
+            --success-text: #7af7c7;
+            
+            /* Semáforo - Warning (Amarelo/Laranja) */
+            --warning-surface: rgba(200, 123, 0, 0.1);
+            --warning-interactive: #c87b00;
+            --warning-text: #f7c77a;
+            
+            /* Semáforo - Danger (Vermelho) */
+            --danger-surface: rgba(200, 0, 3, 0.1);
+            --danger-interactive: #c80003;
+            --danger-text: #f77a7c;
+            
+            /* Spacing */
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', arial, sans-serif;
+            background: var(--nimbus-neutral-background);
             min-height: 100vh;
-            color: #e2e8f0;
+            color: var(--nimbus-neutral-text-high);
+            font-size: 14px;
+            line-height: 1.5;
         }
+        
+        /* Header */
         .header {
-            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
-            padding: 24px 40px;
+            background: linear-gradient(90deg, var(--nimbus-primary-interactive) 0%, #00347d 100%);
+            padding: var(--spacing-6) 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .header h1 { font-size: 24px; font-weight: 700; }
-        .header p { opacity: 0.9; font-size: 13px; margin-top: 4px; }
+        .header h1 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+        .header p { 
+            opacity: 0.85; 
+            font-size: 0.875rem; 
+            margin-top: var(--spacing-1);
+            font-weight: 400;
+        }
+        
+        /* Tabs Navigation */
         .tabs {
             display: flex;
-            background: #0f172a;
+            background: var(--nimbus-neutral-surface);
             padding: 0 40px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--nimbus-neutral-interactive);
             overflow-x: auto;
         }
         .tab {
-            padding: 14px 20px;
+            padding: var(--spacing-4) var(--spacing-5);
             cursor: pointer;
             border-bottom: 3px solid transparent;
             font-weight: 500;
-            color: #64748b;
+            color: var(--nimbus-neutral-text-low);
             white-space: nowrap;
-            font-size: 14px;
-            transition: all 0.2s;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
         }
-        .tab:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
-        .tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
-        .tab.disabled { color: #475569; cursor: not-allowed; }
-        .badge { background: #334155; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 6px; }
-        .badge.soon { background: #854d0e; color: #fef3c7; }
-        .content { padding: 30px 40px; max-width: 1600px; margin: 0 auto; }
+        .tab:hover { 
+            color: var(--nimbus-neutral-text-high); 
+            background: var(--nimbus-neutral-surface-highlight); 
+        }
+        .tab.active { 
+            color: var(--nimbus-primary-interactive); 
+            border-bottom-color: var(--nimbus-primary-interactive);
+            font-weight: 600;
+        }
+        .tab.disabled { 
+            color: var(--nimbus-neutral-text-disabled); 
+            cursor: not-allowed; 
+        }
+        
+        /* Badges */
+        .badge { 
+            background: var(--nimbus-neutral-interactive); 
+            padding: 2px 8px; 
+            border-radius: 100px; 
+            font-size: 0.6875rem; 
+            margin-left: var(--spacing-2);
+            font-weight: 500;
+        }
+        .badge.soon { 
+            background: var(--warning-surface); 
+            color: var(--warning-text);
+            border: 1px solid var(--warning-interactive);
+        }
+        
+        /* Content Area */
+        .content { 
+            padding: var(--spacing-8) 40px; 
+            max-width: 1600px; 
+            margin: 0 auto; 
+        }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        
+        /* Grid System */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: var(--spacing-4); 
+            margin-bottom: var(--spacing-6); 
+        }
         .grid-2 { grid-template-columns: repeat(2, 1fr); }
         .grid-3 { grid-template-columns: repeat(3, 1fr); }
         .grid-4 { grid-template-columns: repeat(4, 1fr); }
         .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        
+        /* Cards */
         .card {
-            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: var(--nimbus-neutral-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            border: 1px solid var(--nimbus-neutral-interactive);
+            transition: border-color 0.2s ease;
         }
-        .card-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }
-        .card-value { font-size: 28px; font-weight: 700; color: #f8fafc; }
-        .card-value.gradient { background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-subtitle { font-size: 12px; color: #64748b; margin-top: 4px; }
-        .positive { color: #4ade80; }
-        .negative { color: #f87171; }
-        .neutral { color: #fbbf24; }
-        .section-title { font-size: 16px; font-weight: 600; margin: 28px 0 16px 0; padding-bottom: 10px; border-bottom: 1px solid #334155; }
+        .card:hover {
+            border-color: var(--nimbus-neutral-text-disabled);
+        }
+        .card-title { 
+            font-size: 0.6875rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em; 
+            color: var(--nimbus-neutral-text-low); 
+            margin-bottom: var(--spacing-2);
+            font-weight: 500;
+        }
+        .card-value { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: var(--nimbus-neutral-text-high);
+            letter-spacing: -0.02em;
+        }
+        .card-value.gradient { 
+            background: linear-gradient(90deg, var(--nimbus-primary-interactive), var(--nimbus-primary-surface-highlight)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-subtitle { 
+            font-size: 0.75rem; 
+            color: var(--nimbus-neutral-text-low); 
+            margin-top: var(--spacing-1); 
+        }
+        
+        /* Status Colors - Semáforo */
+        .positive { color: var(--success-text); }
+        .negative { color: var(--danger-text); }
+        .neutral { color: var(--warning-text); }
+        
+        /* Section Titles */
+        .section-title { 
+            font-size: 1rem; 
+            font-weight: 600; 
+            margin: var(--spacing-8) 0 var(--spacing-4) 0; 
+            padding-bottom: var(--spacing-3); 
+            border-bottom: 1px solid var(--nimbus-neutral-interactive);
+            color: var(--nimbus-neutral-text-high);
+        }
+        
+        /* Charts */
         .chart-container { position: relative; height: 280px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; font-size: 13px; }
-        th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
-        tr:hover { background: rgba(255,255,255,0.02); }
-        .insight-box {
-            background: rgba(59, 130, 246, 0.1);
-            border-left: 4px solid #3b82f6;
-            padding: 14px 18px;
-            border-radius: 0 8px 8px 0;
-            margin: 16px 0;
+        
+        /* Tables */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: var(--spacing-3); 
         }
-        .insight-box h4 { color: #3b82f6; margin-bottom: 6px; font-size: 13px; }
-        .insight-box p { font-size: 12px; color: #94a3b8; line-height: 1.5; }
-        .insight-box.warning { border-left-color: #f59e0b; }
-        .insight-box.warning h4 { color: #f59e0b; }
-        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .risk-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
-        .risk-card { padding: 16px; border-radius: 10px; text-align: center; }
-        .risk-card h3 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-        .risk-card p { font-size: 11px; }
-        .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-        .upgrade-card { background: rgba(74,222,128,0.15); border: 1px solid #4ade80; }
-        .upgrade-card .card-value { color: #4ade80; }
-        .stable-card { background: rgba(148,163,184,0.15); border: 1px solid #94a3b8; }
-        .stable-card .card-value { color: #94a3b8; }
-        .downgrade-card { background: rgba(248,113,113,0.15); border: 1px solid #f87171; }
-        .downgrade-card .card-value { color: #f87171; }
+        th, td { 
+            padding: var(--spacing-3); 
+            text-align: left; 
+            border-bottom: 1px solid var(--nimbus-neutral-interactive); 
+            font-size: 0.8125rem; 
+        }
+        th { 
+            font-size: 0.625rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em; 
+            color: var(--nimbus-neutral-text-low);
+            font-weight: 600;
+        }
+        tr:hover { background: var(--nimbus-neutral-surface-highlight); }
+        
+        /* Insight Boxes */
+        .insight-box {
+            background: var(--nimbus-primary-surface);
+            border-left: 4px solid var(--nimbus-primary-interactive);
+            padding: var(--spacing-4) var(--spacing-5);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: var(--spacing-4) 0;
+        }
+        .insight-box h4 { 
+            color: var(--nimbus-primary-surface-highlight); 
+            margin-bottom: var(--spacing-2); 
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+        .insight-box p { 
+            font-size: 0.75rem; 
+            color: var(--nimbus-neutral-text-low); 
+            line-height: 1.6; 
+        }
+        .insight-box.warning { 
+            background: var(--warning-surface);
+            border-left-color: var(--warning-interactive); 
+        }
+        .insight-box.warning h4 { color: var(--warning-text); }
+        
+        /* Two Columns Layout */
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-5); }
+        
+        /* Risk Matrix */
+        .risk-matrix { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: var(--spacing-3); 
+            margin: var(--spacing-4) 0; 
+        }
+        .risk-card { 
+            padding: var(--spacing-4); 
+            border-radius: var(--radius-md); 
+            text-align: center; 
+        }
+        .risk-card h3 { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            margin-bottom: var(--spacing-2);
+            letter-spacing: -0.02em;
+        }
+        .risk-card p { font-size: 0.6875rem; }
+        
+        /* Status Dot */
+        .status-dot { 
+            display: inline-block; 
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%; 
+            margin-right: var(--spacing-2); 
+        }
+        
+        /* Transition Cards */
+        .upgrade-card { 
+            background: var(--success-surface); 
+            border: 1px solid var(--success-interactive); 
+        }
+        .upgrade-card .card-value { color: var(--success-text); }
+        
+        .stable-card { 
+            background: var(--nimbus-neutral-surface-highlight); 
+            border: 1px solid var(--nimbus-neutral-text-disabled); 
+        }
+        .stable-card .card-value { color: var(--nimbus-neutral-text-low); }
+        
+        .downgrade-card { 
+            background: var(--danger-surface); 
+            border: 1px solid var(--danger-interactive); 
+        }
+        .downgrade-card .card-value { color: var(--danger-text); }
+        
+        /* Utilities */
         .text-center { text-align: center; }
-        .text-muted { color: #64748b; font-size: 12px; margin-top: 12px; }
-        code { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
-        .comparison { display: flex; gap: 24px; margin-top: 12px; }
+        .text-muted { color: var(--nimbus-neutral-text-low); font-size: 0.75rem; margin-top: var(--spacing-3); }
+        code { 
+            background: var(--nimbus-neutral-interactive); 
+            padding: 2px 6px; 
+            border-radius: var(--radius-sm); 
+            font-size: 0.6875rem;
+            font-family: 'Geist Mono', monospace;
+        }
+        
+        /* Comparison */
+        .comparison { display: flex; gap: var(--spacing-6); margin-top: var(--spacing-3); }
         .comparison-item { flex: 1; }
-        .comparison-label { font-size: 10px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
-        .comparison-value { font-size: 22px; font-weight: 600; }
-        .trend-arrow { display: inline-flex; align-items: center; font-size: 14px; margin-left: 8px; font-weight: 600; }
-        .trend-arrow.up { color: #4ade80; }
-        .trend-arrow.down { color: #f87171; }
+        .comparison-label { 
+            font-size: 0.625rem; 
+            color: var(--nimbus-neutral-text-low); 
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: var(--spacing-1); 
+        }
+        .comparison-value { font-size: 1.375rem; font-weight: 600; }
+        
+        /* Trend Arrows */
+        .trend-arrow { 
+            display: inline-flex; 
+            align-items: center; 
+            font-size: 0.875rem; 
+            margin-left: var(--spacing-2); 
+            font-weight: 600; 
+        }
+        .trend-arrow.up { color: var(--success-text); }
+        .trend-arrow.down { color: var(--danger-text); }
         .trend-arrow svg { width: 16px; height: 16px; margin-right: 2px; }
         .card-value-row { display: flex; align-items: center; flex-wrap: wrap; }
-        .insights-section { margin-top: 32px; }
+        
+        /* Insights Section */
+        .insights-section { margin-top: var(--spacing-8); }
         .insights-box {
-            background: linear-gradient(145deg, #1e3a5f 0%, #1e293b 100%);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: var(--nimbus-primary-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            border: 1px solid rgba(0, 89, 213, 0.3);
         }
         .insights-list {
             list-style: none;
@@ -116,24 +394,58 @@
             margin: 0;
         }
         .insights-list li {
-            padding: 12px 0;
+            padding: var(--spacing-3) 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 14px;
+            font-size: 0.875rem;
             line-height: 1.6;
-            color: #cbd5e1;
+            color: var(--nimbus-neutral-text-low);
         }
         .insights-list li:last-child { border-bottom: none; }
-        .insights-list li strong { color: #3b82f6; }
-        .insights-list li em { color: #fbbf24; font-style: normal; }
-        .quartile-comparison { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
-        .quartile-card { padding: 16px; border-radius: 10px; text-align: center; }
-        .quartile-card h4 { font-size: 12px; font-weight: 600; margin-bottom: 12px; }
-        .quartile-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .insights-list li strong { color: var(--nimbus-primary-surface-highlight); }
+        .insights-list li em { color: var(--warning-text); font-style: normal; }
+        
+        /* Quartile Comparison */
+        .quartile-comparison { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: var(--spacing-3); 
+            margin: var(--spacing-4) 0; 
+        }
+        .quartile-card { 
+            padding: var(--spacing-4); 
+            border-radius: var(--radius-md); 
+            text-align: center; 
+        }
+        .quartile-card h4 { 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            margin-bottom: var(--spacing-3); 
+        }
+        .quartile-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: var(--spacing-2) 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
         .quartile-row:last-child { border-bottom: none; }
-        .quartile-label { font-size: 10px; color: #94a3b8; }
-        .quartile-value { font-size: 14px; font-weight: 600; }
-        @media (max-width: 1000px) { .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 600px) { .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison { grid-template-columns: 1fr; } }
+        .quartile-label { font-size: 0.625rem; color: var(--nimbus-neutral-text-low); }
+        .quartile-value { font-size: 0.875rem; font-weight: 600; }
+        
+        /* Responsive */
+        @media (max-width: 1000px) { 
+            .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison { 
+                grid-template-columns: 1fr 1fr; 
+            } 
+        }
+        @media (max-width: 600px) { 
+            .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison { 
+                grid-template-columns: 1fr; 
+            }
+            .content { padding: var(--spacing-4); }
+            .header { padding: var(--spacing-4); }
+            .tabs { padding: 0 var(--spacing-4); }
+        }
     </style>
 </head>
 <body>
@@ -194,7 +506,7 @@
             <h2 class="section-title">Distribuição por Status</h2>
             <div class="two-columns">
                 <div class="card"><div class="card-title">Pirâmide de Status</div><div class="chart-container"><canvas id="chartStatusBase"></canvas></div></div>
-                <div class="card"><div class="card-title">Performance por Status</div><table><thead><tr><th>Status</th><th>Lojas</th><th>GMV Médio</th><th>Churn</th></tr></thead><tbody><tr><td><span class="status-dot" style="background:#ef4444;"></span><strong>No Seller</strong></td><td>10,447</td><td>R$ 0</td><td class="neutral">33.75%</td></tr><tr><td><span class="status-dot" style="background:#f97316;"></span><strong>Struggling</strong></td><td>10,255</td><td>R$ 279</td><td class="neutral">30.44%</td></tr><tr><td><span class="status-dot" style="background:#fbbf24;"></span><strong>Tiny</strong></td><td>8,688</td><td>R$ 1,554</td><td class="positive">24.43%</td></tr><tr><td><span class="status-dot" style="background:#84cc16;"></span><strong>Small</strong></td><td>6,976</td><td>R$ 6,738</td><td class="positive">13.74%</td></tr><tr><td><span class="status-dot" style="background:#22c55e;"></span><strong>Medium</strong></td><td>3,750</td><td>R$ 30,941</td><td class="positive">6.19%</td></tr><tr><td><span class="status-dot" style="background:#14b8a6;"></span><strong>Large</strong></td><td>771</td><td>R$ 91,682</td><td class="positive">3.85%</td></tr><tr><td><span class="status-dot" style="background:#3b82f6;"></span><strong>Top</strong></td><td>673</td><td>R$ 290,983</td><td class="positive">3.63%</td></tr></tbody></table></div>
+                <div class="card"><div class="card-title">Performance por Status</div><table><thead><tr><th>Status</th><th>Lojas</th><th>GMV Médio</th><th>Churn</th></tr></thead><tbody><tr><td><span class="status-dot" style="background:#c80003;"></span><strong>No Seller</strong></td><td>10,447</td><td>R$ 0</td><td class="neutral">33.75%</td></tr><tr><td><span class="status-dot" style="background:#c87b00;"></span><strong>Struggling</strong></td><td>10,255</td><td>R$ 279</td><td class="neutral">30.44%</td></tr><tr><td><span class="status-dot" style="background:#f7c77a;"></span><strong>Tiny</strong></td><td>8,688</td><td>R$ 1,554</td><td class="positive">24.43%</td></tr><tr><td><span class="status-dot" style="background:#7af7c7;"></span><strong>Small</strong></td><td>6,976</td><td>R$ 6,738</td><td class="positive">13.74%</td></tr><tr><td><span class="status-dot" style="background:#00c87b;"></span><strong>Medium</strong></td><td>3,750</td><td>R$ 30,941</td><td class="positive">6.19%</td></tr><tr><td><span class="status-dot" style="background:#00935b;"></span><strong>Large</strong></td><td>771</td><td>R$ 91,682</td><td class="positive">3.85%</td></tr><tr><td><span class="status-dot" style="background:#0059d5;"></span><strong>Top</strong></td><td>673</td><td>R$ 290,983</td><td class="positive">3.63%</td></tr></tbody></table></div>
             </div>
             
             <h2 class="section-title">Matriz de Transição</h2>
@@ -422,7 +734,31 @@
     
     <script>
         const data = {"resumo": {"total_lojas_ativas": 103321, "total_lojas_sellers": 20858, "pct_sellers": 20.2, "gmv_total": 445905553.07, "gmv_medio": 4315.73, "orders_total": 1813617, "n_cobertas": 2895, "pct_cobertura": 2.8, "data_base": "2024-12", "churn_prob_media": 28.53}, "new_sellers": {"total": 1278, "por_mes": [{"mes": "2026-01", "total_new_sellers": 1278, "com_lifecycle": 29, "pct_cobertura": 2.27}], "soma_total": 1278}, "matriz_transicao": {"disponivel": false, "mes_anterior": null, "mes_atual": "2024-12", "upgrade": 0, "downgrade": 0, "estavel": 0, "pct_upgrade": 0, "pct_downgrade": 0, "pct_estavel": 0, "detalhes": []}, "risk_quartiles": [{"name": "Sem Risco", "color": "#22c55e", "count": 44942, "pct": 54.1, "gmv_total": 416491845.07, "prob_range": "0%-25%"}, {"name": "Baixo Risco", "color": "#fbbf24", "count": 20518, "pct": 24.7, "gmv_total": 10667313.0, "prob_range": "25%-50%"}, {"name": "Médio Risco", "color": "#f97316", "count": 11966, "pct": 14.4, "gmv_total": 6702667.09, "prob_range": "50%-75%"}, {"name": "Alto Risco", "color": "#ef4444", "count": 5708, "pct": 6.9, "gmv_total": 8486586.36, "prob_range": "75%-101%"}], "risco_evolucao": [{"mes": "2024-12", "prob_media": 28.53, "lojas": 83134}], "cobertura_projetos": [{"projeto": "Webinars", "lojas": 2895, "pct": 2.8, "status": "ativo"}, {"projeto": "Onboarding", "lojas": 0, "pct": 0, "status": "em breve"}, {"projeto": "Human in the Loop", "lojas": 0, "pct": 0, "status": "em breve"}, {"projeto": "Atrai e Cresce", "lojas": 0, "pct": 0, "status": "em breve"}], "status_base": {"total_com_status": 41560, "distribuicao": [{"status": "no-seller", "label": "No Seller", "count": 10447, "pct": 25.1, "gmv_medio": 0.0, "gmv_total": 0.0, "orders_medio": 0.0, "churn_prob": 33.75}, {"status": "struggling-seller", "label": "Struggling", "count": 10255, "pct": 24.7, "gmv_medio": 278.76, "gmv_total": 2858641.41, "orders_medio": 1.0, "churn_prob": 30.44}, {"status": "tiny-seller", "label": "Tiny", "count": 8688, "pct": 20.9, "gmv_medio": 1553.82, "gmv_total": 13499612.26, "orders_medio": 5.6, "churn_prob": 24.43}, {"status": "small-seller", "label": "Small", "count": 6976, "pct": 16.8, "gmv_medio": 6737.6, "gmv_total": 47001463.18, "orders_medio": 24.6, "churn_prob": 13.74}, {"status": "medium-seller", "label": "Medium", "count": 3750, "pct": 9.0, "gmv_medio": 30940.53, "gmv_total": 116026987.3, "orders_medio": 117.2, "churn_prob": 6.19}, {"status": "large-seller", "label": "Large", "count": 771, "pct": 1.9, "gmv_medio": 91682.47, "gmv_total": 70687181.83, "orders_medio": 353.5, "churn_prob": 3.85}, {"status": "top-seller", "label": "Top", "count": 673, "pct": 1.6, "gmv_medio": 290983.16, "gmv_total": 195831667.09, "orders_medio": 1294.4, "churn_prob": 3.63}]}, "merchant_services": {"media": 1.43, "distribuicao": [{"qtd": 0, "count": 11016, "pct": 10.7}, {"qtd": 1, "count": 45766, "pct": 44.3}, {"qtd": 2, "count": 38074, "pct": 36.9}, {"qtd": 3, "count": 8465, "pct": 8.2}], "por_produto": [{"produto": "Nuvem Marketing", "codigo": "nuvemmarketing", "lojas": 0, "pct": 0.0}, {"produto": "Nuvem Pago", "codigo": "nuvempago", "lojas": 48241, "pct": 46.7}, {"produto": "Nuvem Chat", "codigo": "nuvemchat", "lojas": 17067, "pct": 16.5}, {"produto": "Nuvem Envio", "codigo": "nuvemenvio", "lojas": 82001, "pct": 79.4}, {"produto": "PDV", "codigo": "pdv", "lojas": 0, "pct": 0.0}], "combinacoes": [{"combo": "Nuvem Envio", "count": 37210, "pct": 36.0}, {"combo": "Nuvem Envio + Nuvem Pago", "count": 30750, "pct": 29.8}, {"combo": "Nenhum", "count": 11016, "pct": 10.7}, {"combo": "Nuvem Chat + Nuvem Envio + Nuvem Pago", "count": 8465, "pct": 8.2}, {"combo": "Nuvem Pago", "count": 7278, "pct": 7.0}, {"combo": "Nuvem Chat + Nuvem Envio", "count": 5576, "pct": 5.4}, {"combo": "Nuvem Chat + Nuvem Pago", "count": 1748, "pct": 1.7}, {"combo": "Nuvem Chat", "count": 1278, "pct": 1.2}], "cross_sell": [{"produto": "Nuvem Marketing", "codigo": "nuvemmarketing", "potencial": 92305, "pct_potencial": 89.3, "ja_tem": 0}, {"produto": "PDV", "codigo": "pdv", "potencial": 92305, "pct_potencial": 89.3, "ja_tem": 0}, {"produto": "Nuvem Chat", "codigo": "nuvemchat", "potencial": 75238, "pct_potencial": 72.8, "ja_tem": 17067}, {"produto": "Nuvem Pago", "codigo": "nuvempago", "potencial": 44064, "pct_potencial": 42.6, "ja_tem": 48241}, {"produto": "Nuvem Envio", "codigo": "nuvemenvio", "potencial": 10304, "pct_potencial": 10.0, "ja_tem": 82001}], "afinidade": [{"produto": "Nuvem Pago", "codigo": "nuvempago", "total_clientes": 48241, "produtos_relacionados": [{"produto": "Nuvem Envio", "pct": 81.3}, {"produto": "Nuvem Chat", "pct": 21.2}, {"produto": "Nuvem Marketing", "pct": 0.0}]}, {"produto": "Nuvem Chat", "codigo": "nuvemchat", "total_clientes": 17067, "produtos_relacionados": [{"produto": "Nuvem Envio", "pct": 82.3}, {"produto": "Nuvem Pago", "pct": 59.8}, {"produto": "Nuvem Marketing", "pct": 0.0}]}, {"produto": "Nuvem Envio", "codigo": "nuvemenvio", "total_clientes": 82001, "produtos_relacionados": [{"produto": "Nuvem Pago", "pct": 47.8}, {"produto": "Nuvem Chat", "pct": 17.1}, {"produto": "Nuvem Marketing", "pct": 0.0}]}]}, "churn": {"lojas_com_dados": 83134, "prob_media": 28.53, "por_status": [{"status": "no-seller", "label": "No Seller", "prob_media": 34.73, "lojas": 10153}, {"status": "struggling-seller", "label": "Struggling", "prob_media": 31.18, "lojas": 10009}, {"status": "tiny-seller", "label": "Tiny", "prob_media": 24.7, "lojas": 8592}, {"status": "small-seller", "label": "Small", "prob_media": 13.81, "lojas": 6939}, {"status": "medium-seller", "label": "Medium", "prob_media": 6.21, "lojas": 3738}, {"status": "large-seller", "label": "Large", "prob_media": 3.86, "lojas": 769}, {"status": "top-seller", "label": "Top", "prob_media": 3.64, "lojas": 671}]}, "webinars": {"total_participantes": 2895, "pct_base": 2.8, "funil": {"total_registros": 13192, "total_live": 5089, "total_ondemand": 1445, "total_participaram": 6534, "por_mes": [{"mes": "Month 06 - June 2025", "mes_curto": "06", "total": 3185, "registros": 2119, "live": 829, "ondemand": 237, "participaram": 1066, "pct_live": 26.0, "pct_ondemand": 7.4, "pct_participaram": 33.5}, {"mes": "Month 07 - July 2025", "mes_curto": "07", "total": 2055, "registros": 1486, "live": 447, "ondemand": 122, "participaram": 569, "pct_live": 21.8, "pct_ondemand": 5.9, "pct_participaram": 27.7}, {"mes": "Month 08 - August 2025", "mes_curto": "08", "total": 2120, "registros": 1595, "live": 326, "ondemand": 199, "participaram": 525, "pct_live": 15.4, "pct_ondemand": 9.4, "pct_participaram": 24.8}, {"mes": "Month 09 - September 2025", "mes_curto": "09", "total": 4062, "registros": 2243, "live": 1478, "ondemand": 341, "participaram": 1819, "pct_live": 36.4, "pct_ondemand": 8.4, "pct_participaram": 44.8}, {"mes": "Month 10 - October 2025", "mes_curto": "10", "total": 3446, "registros": 2349, "live": 939, "ondemand": 158, "participaram": 1097, "pct_live": 27.2, "pct_ondemand": 4.6, "pct_participaram": 31.8}, {"mes": "Month 11 - November 2025", "mes_curto": "11", "total": 3727, "registros": 2597, "live": 834, "ondemand": 296, "participaram": 1130, "pct_live": 22.4, "pct_ondemand": 7.9, "pct_participaram": 30.3}, {"mes": "Month 12 - December 2025", "mes_curto": "12", "total": 1131, "registros": 803, "live": 236, "ondemand": 92, "participaram": 328, "pct_live": 20.9, "pct_ondemand": 8.1, "pct_participaram": 29.0}], "total_geral": 19726, "pct_live": 25.8, "pct_ondemand": 7.3, "pct_participaram": 33.1}, "performance": {"gmv_com": 11307.14, "gmv_sem": 4114.19, "gmv_diff_pct": 174.8, "orders_com": 43.3, "orders_sem": 16.8}, "churn": {"prob_com": 20.63, "prob_sem": 28.81, "diff_pp": -8.18}, "merchant_services": {"com_webinar": {"media": 1.79, "por_produto": [{"produto": "Nuvem Marketing", "pct": 0.0}, {"produto": "Nuvem Pago", "pct": 70.5}, {"produto": "Nuvem Chat", "pct": 27.1}, {"produto": "Nuvem Envio", "pct": 81.7}, {"produto": "PDV", "pct": 0.0}]}, "sem_webinar": {"media": 1.42, "por_produto": [{"produto": "Nuvem Marketing", "pct": 0.0, "diff": 0.0}, {"produto": "Nuvem Pago", "pct": 46.0, "diff": 24.5}, {"produto": "Nuvem Chat", "pct": 16.2, "diff": 10.9}, {"produto": "Nuvem Envio", "pct": 79.3, "diff": 2.4}, {"produto": "PDV", "pct": 0.0, "diff": 0.0}]}, "diff_media": 0.37}, "new_sellers_impacto": [{"mes": "2026-01", "total_new_sellers": 1278, "com_lifecycle": 29, "pct_cobertura": 2.27}], "risk_quartiles_comparison": [{"name": "Sem Risco", "color": "#22c55e", "count_com": 1955, "pct_com": 68.2, "count_sem": 42987, "pct_sem": 53.6, "diff_pp": 14.6}, {"name": "Baixo Risco", "color": "#fbbf24", "count_com": 556, "pct_com": 19.4, "count_sem": 19962, "pct_sem": 24.9, "diff_pp": -5.5}, {"name": "Médio Risco", "color": "#f97316", "count_com": 257, "pct_com": 9.0, "count_sem": 11709, "pct_sem": 14.6, "diff_pp": -5.6}, {"name": "Alto Risco", "color": "#ef4444", "count_com": 100, "pct_com": 3.5, "count_sem": 5608, "pct_sem": 7.0, "diff_pp": -3.5}], "perfil_status": [{"status": "no-seller", "label": "No Seller", "count": 304, "pct_webinar": 19.3, "pct_base": 25.1, "indice": 77.0}, {"status": "struggling-seller", "label": "Struggling", "count": 358, "pct_webinar": 22.7, "pct_base": 24.7, "indice": 92.0}, {"status": "tiny-seller", "label": "Tiny", "count": 320, "pct_webinar": 20.3, "pct_base": 20.9, "indice": 97.0}, {"status": "small-seller", "label": "Small", "count": 282, "pct_webinar": 17.9, "pct_base": 16.8, "indice": 107.0}, {"status": "medium-seller", "label": "Medium", "count": 200, "pct_webinar": 12.7, "pct_base": 9.0, "indice": 141.0}, {"status": "large-seller", "label": "Large", "count": 54, "pct_webinar": 3.4, "pct_base": 1.9, "indice": 185.0}, {"status": "top-seller", "label": "Top", "count": 59, "pct_webinar": 3.7, "pct_base": 1.6, "indice": 231.0}], "top_webinars": [{"nome": "Esquenta D2C Summit 1609", "participantes": 672}, {"nome": "Estratégias para a sua loja vender em poucos dias- 0306", "participantes": 576}, {"nome": "Google + Nuvemshop: como atrair visitantes qualificados e transformar tráfego em vendas 28/10", "participantes": 429}, {"nome": "Do vídeo à venda: como usar o TikTok pra impulsionar seu e-commerce 1811", "participantes": 417}, {"nome": "Layout de Loja Virtual: Como encantar seus clientes e vender mais 2511", "participantes": 395}, {"nome": "O futuro do seu e-commerce começa agora 2110", "participantes": 385}, {"nome": "Nuvem Chat Evolua seu atendimento com a IA que conversa como a sua marca 1006", "participantes": 375}, {"nome": "Atraindo visitantes: prepare sua loja para a Black Friday 2609", "participantes": 370}, {"nome": "Frete e estoque sem complicação sua operação pronta para a Black Friday 1809", "participantes": 357}, {"nome": "Da vitrine ao carrinho: preparando sua loja para a Black Friday e Natal 0909", "participantes": 347}], "analise_pareada": {"total_grupos": 25, "gmv_com": 20757.23, "gmv_sem": 10256.51, "gmv_diff_pct": 102.4, "churn_com": 14.96, "churn_sem": 24.48, "churn_diff_pp": -9.51, "grupos": [{"grupo": "top-seller | 91-365 dias", "status": "Top", "idade": "91-365 dias", "n_com": 9, "n_sem": 78, "gmv_com": 523110.51, "gmv_sem": 236312.99, "gmv_diff_pct": 121.4, "churn_com": 0.93, "churn_sem": 4.29, "churn_diff_pp": -3.36}, {"grupo": "small-seller | 91-365 dias", "status": "Small", "idade": "91-365 dias", "n_com": 52, "n_sem": 1379, "gmv_com": 9118.56, "gmv_sem": 6528.82, "gmv_diff_pct": 39.7, "churn_com": 8.23, "churn_sem": 16.94, "churn_diff_pp": -8.7}, {"grupo": "large-seller | 1-2 anos", "status": "Large", "idade": "1-2 anos", "n_com": 13, "n_sem": 141, "gmv_com": 116429.0, "gmv_sem": 85646.73, "gmv_diff_pct": 35.9, "churn_com": 2.91, "churn_sem": 3.0, "churn_diff_pp": -0.08}, {"grupo": "small-seller | 0-90 dias", "status": "Small", "idade": "0-90 dias", "n_com": 7, "n_sem": 224, "gmv_com": 7239.2, "gmv_sem": 5915.17, "gmv_diff_pct": 22.4, "churn_com": 24.58, "churn_sem": 24.54, "churn_diff_pp": 0.04}, {"grupo": "large-seller | 2+ anos", "status": "Large", "idade": "2+ anos", "n_com": 31, "n_sem": 478, "gmv_com": 104045.57, "gmv_sem": 92246.99, "gmv_diff_pct": 12.8, "churn_com": 1.43, "churn_sem": 3.71, "churn_diff_pp": -2.28}, {"grupo": "medium-seller | 91-365 dias", "status": "Medium", "idade": "91-365 dias", "n_com": 30, "n_sem": 543, "gmv_com": 34889.73, "gmv_sem": 30971.06, "gmv_diff_pct": 12.7, "churn_com": 4.9, "churn_sem": 8.88, "churn_diff_pp": -3.98}, {"grupo": "small-seller | 1-2 anos", "status": "Small", "idade": "1-2 anos", "n_com": 79, "n_sem": 1586, "gmv_com": 7013.03, "gmv_sem": 6447.65, "gmv_diff_pct": 8.8, "churn_com": 6.79, "churn_sem": 15.21, "churn_diff_pp": -8.42}, {"grupo": "medium-seller | 2+ anos", "status": "Medium", "idade": "2+ anos", "n_com": 128, "n_sem": 2116, "gmv_com": 33709.07, "gmv_sem": 32255.74, "gmv_diff_pct": 4.5, "churn_com": 2.83, "churn_sem": 5.19, "churn_diff_pp": -2.36}, {"grupo": "no-seller | 2+ anos", "status": "No Seller", "idade": "2+ anos", "n_com": 81, "n_sem": 3151, "gmv_com": 0.0, "gmv_sem": 0.0, "gmv_diff_pct": 0, "churn_com": 22.7, "churn_sem": 30.76, "churn_diff_pp": -8.05}, {"grupo": "no-seller | 1-2 anos", "status": "No Seller", "idade": "1-2 anos", "n_com": 54, "n_sem": 2200, "gmv_com": 0.0, "gmv_sem": 0.0, "gmv_diff_pct": 0, "churn_com": 24.59, "churn_sem": 34.93, "churn_diff_pp": -10.35}, {"grupo": "no-seller | 91-365 dias", "status": "No Seller", "idade": "91-365 dias", "n_com": 120, "n_sem": 3256, "gmv_com": 0.0, "gmv_sem": 0.0, "gmv_diff_pct": 0, "churn_com": 25.46, "churn_sem": 35.75, "churn_diff_pp": -10.29}, {"grupo": "no-seller | 0-90 dias", "status": "No Seller", "idade": "0-90 dias", "n_com": 49, "n_sem": 1536, "gmv_com": 0.0, "gmv_sem": 0.0, "gmv_diff_pct": 0, "churn_com": 27.59, "churn_sem": 35.74, "churn_diff_pp": -8.15}, {"grupo": "small-seller | 2+ anos", "status": "Small", "idade": "2+ anos", "n_com": 144, "n_sem": 3505, "gmv_com": 6890.02, "gmv_sem": 6954.7, "gmv_diff_pct": -0.9, "churn_com": 6.03, "churn_sem": 11.66, "churn_diff_pp": -5.63}, {"grupo": "top-seller | 2+ anos", "status": "Top", "idade": "2+ anos", "n_com": 36, "n_sem": 410, "gmv_com": 276183.58, "gmv_sem": 288264.15, "gmv_diff_pct": -4.2, "churn_com": 0.81, "churn_sem": 2.67, "churn_diff_pp": -1.86}, {"grupo": "top-seller | 1-2 anos", "status": "Top", "idade": "1-2 anos", "n_com": 14, "n_sem": 118, "gmv_com": 273253.3, "gmv_sem": 331129.39, "gmv_diff_pct": -17.5, "churn_com": 2.09, "churn_sem": 7.45, "churn_diff_pp": -5.36}, {"grupo": "medium-seller | 1-2 anos", "status": "Medium", "idade": "1-2 anos", "n_com": 42, "n_sem": 822, "gmv_com": 21949.57, "gmv_sem": 27628.46, "gmv_diff_pct": -20.6, "churn_com": 2.61, "churn_sem": 6.96, "churn_diff_pp": -4.35}, {"grupo": "struggling-seller | 1-2 anos", "status": "Struggling", "idade": "1-2 anos", "n_com": 92, "n_sem": 2534, "gmv_com": 207.08, "gmv_sem": 261.42, "gmv_diff_pct": -20.8, "churn_com": 21.46, "churn_sem": 31.25, "churn_diff_pp": -9.79}, {"grupo": "tiny-seller | 2+ anos", "status": "Tiny", "idade": "2+ anos", "n_com": 130, "n_sem": 3816, "gmv_com": 1279.27, "gmv_sem": 1621.78, "gmv_diff_pct": -21.1, "churn_com": 12.1, "churn_sem": 21.11, "churn_diff_pp": -9.0}, {"grupo": "large-seller | 91-365 dias", "status": "Large", "idade": "91-365 dias", "n_com": 10, "n_sem": 92, "gmv_com": 72192.27, "gmv_sem": 95040.75, "gmv_diff_pct": -24.0, "churn_com": 1.71, "churn_sem": 7.05, "churn_diff_pp": -5.35}, {"grupo": "tiny-seller | 1-2 anos", "status": "Tiny", "idade": "1-2 anos", "n_com": 100, "n_sem": 2061, "gmv_com": 1056.75, "gmv_sem": 1416.21, "gmv_diff_pct": -25.4, "churn_com": 17.97, "churn_sem": 26.32, "churn_diff_pp": -8.35}, {"grupo": "tiny-seller | 0-90 dias", "status": "Tiny", "idade": "0-90 dias", "n_com": 16, "n_sem": 391, "gmv_com": 1345.25, "gmv_sem": 1809.0, "gmv_diff_pct": -25.6, "churn_com": 25.36, "churn_sem": 32.53, "churn_diff_pp": -7.18}, {"grupo": "tiny-seller | 91-365 dias", "status": "Tiny", "idade": "91-365 dias", "n_com": 74, "n_sem": 2100, "gmv_com": 1089.44, "gmv_sem": 1576.5, "gmv_diff_pct": -30.9, "churn_com": 16.58, "churn_sem": 28.45, "churn_diff_pp": -11.88}, {"grupo": "struggling-seller | 91-365 dias", "status": "Struggling", "idade": "91-365 dias", "n_com": 105, "n_sem": 2990, "gmv_com": 171.15, "gmv_sem": 252.07, "gmv_diff_pct": -32.1, "churn_com": 23.89, "churn_sem": 32.2, "churn_diff_pp": -8.31}, {"grupo": "struggling-seller | 2+ anos", "status": "Struggling", "idade": "2+ anos", "n_com": 137, "n_sem": 3706, "gmv_com": 207.77, "gmv_sem": 319.73, "gmv_diff_pct": -35.0, "churn_com": 22.88, "churn_sem": 28.72, "churn_diff_pp": -5.84}, {"grupo": "struggling-seller | 0-90 dias", "status": "Struggling", "idade": "0-90 dias", "n_com": 24, "n_sem": 667, "gmv_com": 130.04, "gmv_sem": 283.28, "gmv_diff_pct": -54.1, "churn_com": 25.67, "churn_sem": 32.95, "churn_diff_pp": -7.28}]}, "churn_pareado": {"churn_com": 14.96, "churn_sem": 24.48, "diff_pp": -9.51}}};
-        const statusColors = {'no-seller':'#ef4444','struggling-seller':'#f97316','tiny-seller':'#fbbf24','small-seller':'#84cc16','medium-seller':'#22c55e','large-seller':'#14b8a6','top-seller':'#3b82f6'};
+        
+        /* Nimbus Color Palette for Status */
+        const statusColors = {
+            'no-seller': '#c80003',      /* Danger - vermelho */
+            'struggling-seller': '#c87b00', /* Warning - laranja */
+            'tiny-seller': '#f7c77a',    /* Warning light */
+            'small-seller': '#7af7c7',   /* Success light */
+            'medium-seller': '#00c87b',  /* Success */
+            'large-seller': '#00935b',   /* Success dark */
+            'top-seller': '#0059d5'      /* Primary - azul Nimbus */
+        };
+        
+        /* Nimbus Chart Colors */
+        const nimbusColors = {
+            primary: '#0059d5',
+            primaryLight: '#96c1fc',
+            success: '#00c87b',
+            successLight: '#7af7c7',
+            warning: '#c87b00',
+            warningLight: '#f7c77a',
+            danger: '#c80003',
+            dangerLight: '#f77a7c',
+            neutral: '#888888',
+            neutralLight: '#b0b0b0'
+        };
         
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
@@ -432,8 +768,10 @@
             setTimeout(initCharts, 50);
         }
         
-        Chart.defaults.color = '#64748b';
-        Chart.defaults.borderColor = '#334155';
+        /* Chart.js Global Config - Nimbus Theme */
+        Chart.defaults.color = '#888888';
+        Chart.defaults.borderColor = '#2a2a2a';
+        Chart.defaults.font.family = "'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
         
         function initCharts() {
             // Status Base
@@ -451,7 +789,7 @@
             if (ctxChurn && !ctxChurn.chart) {
                 ctxChurn.chart = new Chart(ctxChurn, {
                     type: 'line',
-                    data: { labels: data.churn.por_status.map(d => d.label), datasets: [{ data: data.churn.por_status.map(d => d.prob_media), borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', fill: true, tension: 0.4 }] },
+                    data: { labels: data.churn.por_status.map(d => d.label), datasets: [{ data: data.churn.por_status.map(d => d.prob_media), borderColor: nimbusColors.danger, backgroundColor: 'rgba(200,0,3,0.1)', fill: true, tension: 0.4 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { max: 100 } } }
                 });
             }
@@ -471,7 +809,7 @@
             if (ctxMSDist && !ctxMSDist.chart) {
                 ctxMSDist.chart = new Chart(ctxMSDist, {
                     type: 'bar',
-                    data: { labels: data.merchant_services.distribuicao.map(d => d.qtd + ' produto(s)'), datasets: [{ data: data.merchant_services.distribuicao.map(d => d.count), backgroundColor: ['#64748b','#3b82f6','#8b5cf6','#ec4899','#f59e0b','#22c55e'], borderRadius: 4 }] },
+                    data: { labels: data.merchant_services.distribuicao.map(d => d.qtd + ' produto(s)'), datasets: [{ data: data.merchant_services.distribuicao.map(d => d.count), backgroundColor: [nimbusColors.neutral, nimbusColors.primary, nimbusColors.primaryLight, nimbusColors.success, nimbusColors.successLight], borderRadius: 4 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
             }
@@ -481,7 +819,7 @@
             if (ctxMSProd && !ctxMSProd.chart) {
                 ctxMSProd.chart = new Chart(ctxMSProd, {
                     type: 'bar',
-                    data: { labels: data.merchant_services.por_produto.map(d => d.produto), datasets: [{ data: data.merchant_services.por_produto.map(d => d.pct), backgroundColor: '#3b82f6', borderRadius: 4 }] },
+                    data: { labels: data.merchant_services.por_produto.map(d => d.produto), datasets: [{ data: data.merchant_services.por_produto.map(d => d.pct), backgroundColor: nimbusColors.primary, borderRadius: 4 }] },
                     options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { max: 100 } } }
                 });
             }
@@ -494,8 +832,8 @@
                     data: {
                         labels: data.webinars.merchant_services.com_webinar.por_produto.map(d => d.produto),
                         datasets: [
-                            { label: 'Com Webinar', data: data.webinars.merchant_services.com_webinar.por_produto.map(d => d.pct), backgroundColor: '#4ade80', borderRadius: 4 },
-                            { label: 'Sem Webinar', data: data.webinars.merchant_services.sem_webinar.por_produto.map(d => d.pct), backgroundColor: '#64748b', borderRadius: 4 }
+                            { label: 'Com Webinar', data: data.webinars.merchant_services.com_webinar.por_produto.map(d => d.pct), backgroundColor: nimbusColors.success, borderRadius: 4 },
+                            { label: 'Sem Webinar', data: data.webinars.merchant_services.sem_webinar.por_produto.map(d => d.pct), backgroundColor: nimbusColors.neutral, borderRadius: 4 }
                         ]
                     },
                     options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100 } } }
@@ -507,7 +845,7 @@
             if (ctxRiscoEvo && !ctxRiscoEvo.chart && data.risco_evolucao && data.risco_evolucao.length > 1) {
                 ctxRiscoEvo.chart = new Chart(ctxRiscoEvo, {
                     type: 'line',
-                    data: { labels: data.risco_evolucao.map(d => d.mes), datasets: [{ label: 'Prob. Média (%)', data: data.risco_evolucao.map(d => d.prob_media), borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', fill: true, tension: 0.4 }] },
+                    data: { labels: data.risco_evolucao.map(d => d.mes), datasets: [{ label: 'Prob. Média (%)', data: data.risco_evolucao.map(d => d.prob_media), borderColor: nimbusColors.danger, backgroundColor: 'rgba(200,0,3,0.1)', fill: true, tension: 0.4 }] },
                     options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
                 });
             }
@@ -521,9 +859,9 @@
                     data: {
                         labels: funilData.map(d => d.mes_curto),
                         datasets: [
-                            { label: '% Ao Vivo', data: funilData.map(d => d.pct_live), backgroundColor: '#4ade80', borderRadius: 4 },
-                            { label: '% On Demand', data: funilData.map(d => d.pct_ondemand), backgroundColor: '#3b82f6', borderRadius: 4 },
-                            { label: '% Total Participação', data: funilData.map(d => d.pct_participaram), backgroundColor: 'rgba(139, 92, 246, 0.5)', borderColor: '#8b5cf6', borderWidth: 2, type: 'line', tension: 0.4 }
+                            { label: '% Ao Vivo', data: funilData.map(d => d.pct_live), backgroundColor: nimbusColors.success, borderRadius: 4 },
+                            { label: '% On Demand', data: funilData.map(d => d.pct_ondemand), backgroundColor: nimbusColors.primary, borderRadius: 4 },
+                            { label: '% Total Participação', data: funilData.map(d => d.pct_participaram), backgroundColor: 'rgba(0,89,213,0.3)', borderColor: nimbusColors.primaryLight, borderWidth: 2, type: 'line', tension: 0.4 }
                         ]
                     },
                     options: {

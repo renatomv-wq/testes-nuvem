@@ -1154,110 +1154,388 @@ html_content = f'''<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Impacto - Lifecycle BR</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Geist Font from Vercel (Nimbus Typography) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        @font-face {{
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }}
+        @font-face {{
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }}
+        @font-face {{
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }}
+        @font-face {{
+            font-family: 'Geist';
+            src: url('https://assets.vercel.com/raw/upload/v1713981000/geist/Geist-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }}
+    </style>
+    <style>
+        /* ========================================
+           NIMBUS DESIGN SYSTEM - DARK THEME
+           Fonte: Geist | Cores: Nimbus + Semáforo
+           ======================================== */
+        
+        :root {{
+            /* Nimbus Primary */
+            --nimbus-primary-surface: #1a2744;
+            --nimbus-primary-surface-highlight: #96c1fc;
+            --nimbus-primary-interactive: #0059d5;
+            --nimbus-primary-interactive-hover: #00429f;
+            --nimbus-primary-text-low: #96c1fc;
+            --nimbus-primary-text-high: #eef5ff;
+            
+            /* Nimbus Neutral (Dark Theme) */
+            --nimbus-neutral-background: #0a0a0a;
+            --nimbus-neutral-surface: #141414;
+            --nimbus-neutral-surface-highlight: #1f1f1f;
+            --nimbus-neutral-interactive: #2a2a2a;
+            --nimbus-neutral-text-disabled: #6d6d6d;
+            --nimbus-neutral-text-low: #888888;
+            --nimbus-neutral-text-high: #f6f6f6;
+            
+            /* Semáforo - Success (Verde) */
+            --success-surface: rgba(0, 200, 123, 0.1);
+            --success-interactive: #00c87b;
+            --success-text: #7af7c7;
+            
+            /* Semáforo - Warning (Amarelo/Laranja) */
+            --warning-surface: rgba(200, 123, 0, 0.1);
+            --warning-interactive: #c87b00;
+            --warning-text: #f7c77a;
+            
+            /* Semáforo - Danger (Vermelho) */
+            --danger-surface: rgba(200, 0, 3, 0.1);
+            --danger-interactive: #c80003;
+            --danger-text: #f77a7c;
+            
+            /* Spacing */
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+        }}
+        
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', arial, sans-serif;
+            background: var(--nimbus-neutral-background);
             min-height: 100vh;
-            color: #e2e8f0;
+            color: var(--nimbus-neutral-text-high);
+            font-size: 14px;
+            line-height: 1.5;
         }}
+        
+        /* Header */
         .header {{
-            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
-            padding: 24px 40px;
+            background: linear-gradient(90deg, var(--nimbus-primary-interactive) 0%, #00347d 100%);
+            padding: var(--spacing-6) 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }}
-        .header h1 {{ font-size: 24px; font-weight: 700; }}
-        .header p {{ opacity: 0.9; font-size: 13px; margin-top: 4px; }}
+        .header h1 {{ 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }}
+        .header p {{ 
+            opacity: 0.85; 
+            font-size: 0.875rem; 
+            margin-top: var(--spacing-1);
+            font-weight: 400;
+        }}
+        
+        /* Tabs Navigation */
         .tabs {{
             display: flex;
-            background: #0f172a;
+            background: var(--nimbus-neutral-surface);
             padding: 0 40px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--nimbus-neutral-interactive);
             overflow-x: auto;
         }}
         .tab {{
-            padding: 14px 20px;
+            padding: var(--spacing-4) var(--spacing-5);
             cursor: pointer;
             border-bottom: 3px solid transparent;
             font-weight: 500;
-            color: #64748b;
+            color: var(--nimbus-neutral-text-low);
             white-space: nowrap;
-            font-size: 14px;
-            transition: all 0.2s;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
         }}
-        .tab:hover {{ color: #e2e8f0; background: rgba(255,255,255,0.05); }}
-        .tab.active {{ color: #3b82f6; border-bottom-color: #3b82f6; }}
-        .tab.disabled {{ color: #475569; cursor: not-allowed; }}
-        .badge {{ background: #334155; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 6px; }}
-        .badge.soon {{ background: #854d0e; color: #fef3c7; }}
-        .content {{ padding: 30px 40px; max-width: 1600px; margin: 0 auto; }}
+        .tab:hover {{ 
+            color: var(--nimbus-neutral-text-high); 
+            background: var(--nimbus-neutral-surface-highlight); 
+        }}
+        .tab.active {{ 
+            color: var(--nimbus-primary-interactive); 
+            border-bottom-color: var(--nimbus-primary-interactive);
+            font-weight: 600;
+        }}
+        .tab.disabled {{ 
+            color: var(--nimbus-neutral-text-disabled); 
+            cursor: not-allowed; 
+        }}
+        
+        /* Badges */
+        .badge {{ 
+            background: var(--nimbus-neutral-interactive); 
+            padding: 2px 8px; 
+            border-radius: 100px; 
+            font-size: 0.6875rem; 
+            margin-left: var(--spacing-2);
+            font-weight: 500;
+        }}
+        .badge.soon {{ 
+            background: var(--warning-surface); 
+            color: var(--warning-text);
+            border: 1px solid var(--warning-interactive);
+        }}
+        
+        /* Content Area */
+        .content {{ 
+            padding: var(--spacing-8) 40px; 
+            max-width: 1600px; 
+            margin: 0 auto; 
+        }}
         .tab-content {{ display: none; }}
         .tab-content.active {{ display: block; }}
-        .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }}
+        
+        /* Grid System */
+        .grid {{ 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: var(--spacing-4); 
+            margin-bottom: var(--spacing-6); 
+        }}
         .grid-2 {{ grid-template-columns: repeat(2, 1fr); }}
         .grid-3 {{ grid-template-columns: repeat(3, 1fr); }}
         .grid-4 {{ grid-template-columns: repeat(4, 1fr); }}
         .grid-5 {{ grid-template-columns: repeat(5, 1fr); }}
+        
+        /* Cards */
         .card {{
-            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: var(--nimbus-neutral-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            border: 1px solid var(--nimbus-neutral-interactive);
+            transition: border-color 0.2s ease;
         }}
-        .card-title {{ font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }}
-        .card-value {{ font-size: 28px; font-weight: 700; color: #f8fafc; }}
-        .card-value.gradient {{ background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
-        .card-subtitle {{ font-size: 12px; color: #64748b; margin-top: 4px; }}
-        .positive {{ color: #4ade80; }}
-        .negative {{ color: #f87171; }}
-        .neutral {{ color: #fbbf24; }}
-        .section-title {{ font-size: 16px; font-weight: 600; margin: 28px 0 16px 0; padding-bottom: 10px; border-bottom: 1px solid #334155; }}
+        .card:hover {{
+            border-color: var(--nimbus-neutral-text-disabled);
+        }}
+        .card-title {{ 
+            font-size: 0.6875rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em; 
+            color: var(--nimbus-neutral-text-low); 
+            margin-bottom: var(--spacing-2);
+            font-weight: 500;
+        }}
+        .card-value {{ 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: var(--nimbus-neutral-text-high);
+            letter-spacing: -0.02em;
+        }}
+        .card-value.gradient {{ 
+            background: linear-gradient(90deg, var(--nimbus-primary-interactive), var(--nimbus-primary-surface-highlight)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+        .card-subtitle {{ 
+            font-size: 0.75rem; 
+            color: var(--nimbus-neutral-text-low); 
+            margin-top: var(--spacing-1); 
+        }}
+        
+        /* Status Colors - Semáforo */
+        .positive {{ color: var(--success-text); }}
+        .negative {{ color: var(--danger-text); }}
+        .neutral {{ color: var(--warning-text); }}
+        
+        /* Section Titles */
+        .section-title {{ 
+            font-size: 1rem; 
+            font-weight: 600; 
+            margin: var(--spacing-8) 0 var(--spacing-4) 0; 
+            padding-bottom: var(--spacing-3); 
+            border-bottom: 1px solid var(--nimbus-neutral-interactive);
+            color: var(--nimbus-neutral-text-high);
+        }}
+        
+        /* Charts */
         .chart-container {{ position: relative; height: 280px; }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
-        th, td {{ padding: 10px 12px; text-align: left; border-bottom: 1px solid #334155; font-size: 13px; }}
-        th {{ font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }}
-        tr:hover {{ background: rgba(255,255,255,0.02); }}
-        .insight-box {{
-            background: rgba(59, 130, 246, 0.1);
-            border-left: 4px solid #3b82f6;
-            padding: 14px 18px;
-            border-radius: 0 8px 8px 0;
-            margin: 16px 0;
+        
+        /* Tables */
+        table {{ 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: var(--spacing-3); 
         }}
-        .insight-box h4 {{ color: #3b82f6; margin-bottom: 6px; font-size: 13px; }}
-        .insight-box p {{ font-size: 12px; color: #94a3b8; line-height: 1.5; }}
-        .insight-box.warning {{ border-left-color: #f59e0b; }}
-        .insight-box.warning h4 {{ color: #f59e0b; }}
-        .two-columns {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }}
-        .risk-matrix {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }}
-        .risk-card {{ padding: 16px; border-radius: 10px; text-align: center; }}
-        .risk-card h3 {{ font-size: 24px; font-weight: 700; margin-bottom: 6px; }}
-        .risk-card p {{ font-size: 11px; }}
-        .status-dot {{ display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }}
-        .upgrade-card {{ background: rgba(74,222,128,0.15); border: 1px solid #4ade80; }}
-        .upgrade-card .card-value {{ color: #4ade80; }}
-        .stable-card {{ background: rgba(148,163,184,0.15); border: 1px solid #94a3b8; }}
-        .stable-card .card-value {{ color: #94a3b8; }}
-        .downgrade-card {{ background: rgba(248,113,113,0.15); border: 1px solid #f87171; }}
-        .downgrade-card .card-value {{ color: #f87171; }}
+        th, td {{ 
+            padding: var(--spacing-3); 
+            text-align: left; 
+            border-bottom: 1px solid var(--nimbus-neutral-interactive); 
+            font-size: 0.8125rem; 
+        }}
+        th {{ 
+            font-size: 0.625rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em; 
+            color: var(--nimbus-neutral-text-low);
+            font-weight: 600;
+        }}
+        tr:hover {{ background: var(--nimbus-neutral-surface-highlight); }}
+        
+        /* Insight Boxes */
+        .insight-box {{
+            background: var(--nimbus-primary-surface);
+            border-left: 4px solid var(--nimbus-primary-interactive);
+            padding: var(--spacing-4) var(--spacing-5);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: var(--spacing-4) 0;
+        }}
+        .insight-box h4 {{ 
+            color: var(--nimbus-primary-surface-highlight); 
+            margin-bottom: var(--spacing-2); 
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }}
+        .insight-box p {{ 
+            font-size: 0.75rem; 
+            color: var(--nimbus-neutral-text-low); 
+            line-height: 1.6; 
+        }}
+        .insight-box.warning {{ 
+            background: var(--warning-surface);
+            border-left-color: var(--warning-interactive); 
+        }}
+        .insight-box.warning h4 {{ color: var(--warning-text); }}
+        
+        /* Two Columns Layout */
+        .two-columns {{ display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-5); }}
+        
+        /* Risk Matrix */
+        .risk-matrix {{ 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: var(--spacing-3); 
+            margin: var(--spacing-4) 0; 
+        }}
+        .risk-card {{ 
+            padding: var(--spacing-4); 
+            border-radius: var(--radius-md); 
+            text-align: center; 
+        }}
+        .risk-card h3 {{ 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            margin-bottom: var(--spacing-2);
+            letter-spacing: -0.02em;
+        }}
+        .risk-card p {{ font-size: 0.6875rem; }}
+        
+        /* Status Dot */
+        .status-dot {{ 
+            display: inline-block; 
+            width: 10px; 
+            height: 10px; 
+            border-radius: 50%; 
+            margin-right: var(--spacing-2); 
+        }}
+        
+        /* Transition Cards */
+        .upgrade-card {{ 
+            background: var(--success-surface); 
+            border: 1px solid var(--success-interactive); 
+        }}
+        .upgrade-card .card-value {{ color: var(--success-text); }}
+        
+        .stable-card {{ 
+            background: var(--nimbus-neutral-surface-highlight); 
+            border: 1px solid var(--nimbus-neutral-text-disabled); 
+        }}
+        .stable-card .card-value {{ color: var(--nimbus-neutral-text-low); }}
+        
+        .downgrade-card {{ 
+            background: var(--danger-surface); 
+            border: 1px solid var(--danger-interactive); 
+        }}
+        .downgrade-card .card-value {{ color: var(--danger-text); }}
+        
+        /* Utilities */
         .text-center {{ text-align: center; }}
-        .text-muted {{ color: #64748b; font-size: 12px; margin-top: 12px; }}
-        code {{ background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 11px; }}
-        .comparison {{ display: flex; gap: 24px; margin-top: 12px; }}
+        .text-muted {{ color: var(--nimbus-neutral-text-low); font-size: 0.75rem; margin-top: var(--spacing-3); }}
+        code {{ 
+            background: var(--nimbus-neutral-interactive); 
+            padding: 2px 6px; 
+            border-radius: var(--radius-sm); 
+            font-size: 0.6875rem;
+            font-family: 'Geist Mono', monospace;
+        }}
+        
+        /* Comparison */
+        .comparison {{ display: flex; gap: var(--spacing-6); margin-top: var(--spacing-3); }}
         .comparison-item {{ flex: 1; }}
-        .comparison-label {{ font-size: 10px; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }}
-        .comparison-value {{ font-size: 22px; font-weight: 600; }}
-        .trend-arrow {{ display: inline-flex; align-items: center; font-size: 14px; margin-left: 8px; font-weight: 600; }}
-        .trend-arrow.up {{ color: #4ade80; }}
-        .trend-arrow.down {{ color: #f87171; }}
+        .comparison-label {{ 
+            font-size: 0.625rem; 
+            color: var(--nimbus-neutral-text-low); 
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: var(--spacing-1); 
+        }}
+        .comparison-value {{ font-size: 1.375rem; font-weight: 600; }}
+        
+        /* Trend Arrows */
+        .trend-arrow {{ 
+            display: inline-flex; 
+            align-items: center; 
+            font-size: 0.875rem; 
+            margin-left: var(--spacing-2); 
+            font-weight: 600; 
+        }}
+        .trend-arrow.up {{ color: var(--success-text); }}
+        .trend-arrow.down {{ color: var(--danger-text); }}
         .trend-arrow svg {{ width: 16px; height: 16px; margin-right: 2px; }}
         .card-value-row {{ display: flex; align-items: center; flex-wrap: wrap; }}
-        .insights-section {{ margin-top: 32px; }}
+        
+        /* Insights Section */
+        .insights-section {{ margin-top: var(--spacing-8); }}
         .insights-box {{
-            background: linear-gradient(145deg, #1e3a5f 0%, #1e293b 100%);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: var(--nimbus-primary-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            border: 1px solid rgba(0, 89, 213, 0.3);
         }}
         .insights-list {{
             list-style: none;
@@ -1265,24 +1543,58 @@ html_content = f'''<!DOCTYPE html>
             margin: 0;
         }}
         .insights-list li {{
-            padding: 12px 0;
+            padding: var(--spacing-3) 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 14px;
+            font-size: 0.875rem;
             line-height: 1.6;
-            color: #cbd5e1;
+            color: var(--nimbus-neutral-text-low);
         }}
         .insights-list li:last-child {{ border-bottom: none; }}
-        .insights-list li strong {{ color: #3b82f6; }}
-        .insights-list li em {{ color: #fbbf24; font-style: normal; }}
-        .quartile-comparison {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }}
-        .quartile-card {{ padding: 16px; border-radius: 10px; text-align: center; }}
-        .quartile-card h4 {{ font-size: 12px; font-weight: 600; margin-bottom: 12px; }}
-        .quartile-row {{ display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }}
+        .insights-list li strong {{ color: var(--nimbus-primary-surface-highlight); }}
+        .insights-list li em {{ color: var(--warning-text); font-style: normal; }}
+        
+        /* Quartile Comparison */
+        .quartile-comparison {{ 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: var(--spacing-3); 
+            margin: var(--spacing-4) 0; 
+        }}
+        .quartile-card {{ 
+            padding: var(--spacing-4); 
+            border-radius: var(--radius-md); 
+            text-align: center; 
+        }}
+        .quartile-card h4 {{ 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            margin-bottom: var(--spacing-3); 
+        }}
+        .quartile-row {{ 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: var(--spacing-2) 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }}
         .quartile-row:last-child {{ border-bottom: none; }}
-        .quartile-label {{ font-size: 10px; color: #94a3b8; }}
-        .quartile-value {{ font-size: 14px; font-weight: 600; }}
-        @media (max-width: 1000px) {{ .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ grid-template-columns: 1fr 1fr; }} }}
-        @media (max-width: 600px) {{ .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ grid-template-columns: 1fr; }} }}
+        .quartile-label {{ font-size: 0.625rem; color: var(--nimbus-neutral-text-low); }}
+        .quartile-value {{ font-size: 0.875rem; font-weight: 600; }}
+        
+        /* Responsive */
+        @media (max-width: 1000px) {{ 
+            .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ 
+                grid-template-columns: 1fr 1fr; 
+            }} 
+        }}
+        @media (max-width: 600px) {{ 
+            .two-columns, .grid-3, .grid-4, .grid-5, .risk-matrix, .quartile-comparison {{ 
+                grid-template-columns: 1fr; 
+            }}
+            .content {{ padding: var(--spacing-4); }}
+            .header {{ padding: var(--spacing-4); }}
+            .tabs {{ padding: 0 var(--spacing-4); }}
+        }}
     </style>
 </head>
 <body>
@@ -1336,7 +1648,7 @@ html_content = f'''<!DOCTYPE html>
             <h2 class="section-title">Distribuição por Status</h2>
             <div class="two-columns">
                 <div class="card"><div class="card-title">Pirâmide de Status</div><div class="chart-container"><canvas id="chartStatusBase"></canvas></div></div>
-                <div class="card"><div class="card-title">Performance por Status</div><table><thead><tr><th>Status</th><th>Lojas</th><th>GMV Médio</th><th>Churn</th></tr></thead><tbody>{''.join([f'<tr><td><span class="status-dot" style="background:{["#ef4444","#f97316","#fbbf24","#84cc16","#22c55e","#14b8a6","#3b82f6"][STATUS_ORDER.index(s["status"]) if s["status"] in STATUS_ORDER else 0]};"></span><strong>{s["label"]}</strong></td><td>{s["count"]:,}</td><td>R$ {s["gmv_medio"]:,.0f}</td><td class="{"positive" if s["churn_prob"]<25 else "neutral" if s["churn_prob"]<45 else "negative"}">{s["churn_prob"]}%</td></tr>' for s in dashboard_data['status_base']['distribuicao']])}</tbody></table></div>
+                <div class="card"><div class="card-title">Performance por Status</div><table><thead><tr><th>Status</th><th>Lojas</th><th>GMV Médio</th><th>Churn</th></tr></thead><tbody>{''.join([f'<tr><td><span class="status-dot" style="background:{["#c80003","#c87b00","#f7c77a","#7af7c7","#00c87b","#00935b","#0059d5"][STATUS_ORDER.index(s["status"]) if s["status"] in STATUS_ORDER else 0]};"></span><strong>{s["label"]}</strong></td><td>{s["count"]:,}</td><td>R$ {s["gmv_medio"]:,.0f}</td><td class="{"positive" if s["churn_prob"]<25 else "neutral" if s["churn_prob"]<45 else "negative"}">{s["churn_prob"]}%</td></tr>' for s in dashboard_data['status_base']['distribuicao']])}</tbody></table></div>
             </div>
             
             <h2 class="section-title">Matriz de Transição</h2>
@@ -1529,7 +1841,31 @@ html_content = f'''<!DOCTYPE html>
     
     <script>
         const data = {json.dumps(dashboard_data, ensure_ascii=False)};
-        const statusColors = {{'no-seller':'#ef4444','struggling-seller':'#f97316','tiny-seller':'#fbbf24','small-seller':'#84cc16','medium-seller':'#22c55e','large-seller':'#14b8a6','top-seller':'#3b82f6'}};
+        
+        /* Nimbus Color Palette for Status */
+        const statusColors = {{
+            'no-seller': '#c80003',      /* Danger - vermelho */
+            'struggling-seller': '#c87b00', /* Warning - laranja */
+            'tiny-seller': '#f7c77a',    /* Warning light */
+            'small-seller': '#7af7c7',   /* Success light */
+            'medium-seller': '#00c87b',  /* Success */
+            'large-seller': '#00935b',   /* Success dark */
+            'top-seller': '#0059d5'      /* Primary - azul Nimbus */
+        }};
+        
+        /* Nimbus Chart Colors */
+        const nimbusColors = {{
+            primary: '#0059d5',
+            primaryLight: '#96c1fc',
+            success: '#00c87b',
+            successLight: '#7af7c7',
+            warning: '#c87b00',
+            warningLight: '#f7c77a',
+            danger: '#c80003',
+            dangerLight: '#f77a7c',
+            neutral: '#888888',
+            neutralLight: '#b0b0b0'
+        }};
         
         function showTab(id) {{
             document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
@@ -1539,8 +1875,10 @@ html_content = f'''<!DOCTYPE html>
             setTimeout(initCharts, 50);
         }}
         
-        Chart.defaults.color = '#64748b';
-        Chart.defaults.borderColor = '#334155';
+        /* Chart.js Global Config - Nimbus Theme */
+        Chart.defaults.color = '#888888';
+        Chart.defaults.borderColor = '#2a2a2a';
+        Chart.defaults.font.family = "'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
         
         function initCharts() {{
             // Status Base
@@ -1558,7 +1896,7 @@ html_content = f'''<!DOCTYPE html>
             if (ctxChurn && !ctxChurn.chart) {{
                 ctxChurn.chart = new Chart(ctxChurn, {{
                     type: 'line',
-                    data: {{ labels: data.churn.por_status.map(d => d.label), datasets: [{{ data: data.churn.por_status.map(d => d.prob_media), borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', fill: true, tension: 0.4 }}] }},
+                    data: {{ labels: data.churn.por_status.map(d => d.label), datasets: [{{ data: data.churn.por_status.map(d => d.prob_media), borderColor: nimbusColors.danger, backgroundColor: 'rgba(200,0,3,0.1)', fill: true, tension: 0.4 }}] }},
                     options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 100 }} }} }}
                 }});
             }}
@@ -1578,7 +1916,7 @@ html_content = f'''<!DOCTYPE html>
             if (ctxMSDist && !ctxMSDist.chart) {{
                 ctxMSDist.chart = new Chart(ctxMSDist, {{
                     type: 'bar',
-                    data: {{ labels: data.merchant_services.distribuicao.map(d => d.qtd + ' produto(s)'), datasets: [{{ data: data.merchant_services.distribuicao.map(d => d.count), backgroundColor: ['#64748b','#3b82f6','#8b5cf6','#ec4899','#f59e0b','#22c55e'], borderRadius: 4 }}] }},
+                    data: {{ labels: data.merchant_services.distribuicao.map(d => d.qtd + ' produto(s)'), datasets: [{{ data: data.merchant_services.distribuicao.map(d => d.count), backgroundColor: [nimbusColors.neutral, nimbusColors.primary, nimbusColors.primaryLight, nimbusColors.success, nimbusColors.successLight], borderRadius: 4 }}] }},
                     options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }} }}
                 }});
             }}
@@ -1588,7 +1926,7 @@ html_content = f'''<!DOCTYPE html>
             if (ctxMSProd && !ctxMSProd.chart) {{
                 ctxMSProd.chart = new Chart(ctxMSProd, {{
                     type: 'bar',
-                    data: {{ labels: data.merchant_services.por_produto.map(d => d.produto), datasets: [{{ data: data.merchant_services.por_produto.map(d => d.pct), backgroundColor: '#3b82f6', borderRadius: 4 }}] }},
+                    data: {{ labels: data.merchant_services.por_produto.map(d => d.produto), datasets: [{{ data: data.merchant_services.por_produto.map(d => d.pct), backgroundColor: nimbusColors.primary, borderRadius: 4 }}] }},
                     options: {{ indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ x: {{ max: 100 }} }} }}
                 }});
             }}
@@ -1601,8 +1939,8 @@ html_content = f'''<!DOCTYPE html>
                     data: {{
                         labels: data.webinars.merchant_services.com_webinar.por_produto.map(d => d.produto),
                         datasets: [
-                            {{ label: 'Com Webinar', data: data.webinars.merchant_services.com_webinar.por_produto.map(d => d.pct), backgroundColor: '#4ade80', borderRadius: 4 }},
-                            {{ label: 'Sem Webinar', data: data.webinars.merchant_services.sem_webinar.por_produto.map(d => d.pct), backgroundColor: '#64748b', borderRadius: 4 }}
+                            {{ label: 'Com Webinar', data: data.webinars.merchant_services.com_webinar.por_produto.map(d => d.pct), backgroundColor: nimbusColors.success, borderRadius: 4 }},
+                            {{ label: 'Sem Webinar', data: data.webinars.merchant_services.sem_webinar.por_produto.map(d => d.pct), backgroundColor: nimbusColors.neutral, borderRadius: 4 }}
                         ]
                     }},
                     options: {{ responsive: true, maintainAspectRatio: false, scales: {{ y: {{ max: 100 }} }} }}
@@ -1614,7 +1952,7 @@ html_content = f'''<!DOCTYPE html>
             if (ctxRiscoEvo && !ctxRiscoEvo.chart && data.risco_evolucao && data.risco_evolucao.length > 1) {{
                 ctxRiscoEvo.chart = new Chart(ctxRiscoEvo, {{
                     type: 'line',
-                    data: {{ labels: data.risco_evolucao.map(d => d.mes), datasets: [{{ label: 'Prob. Média (%)', data: data.risco_evolucao.map(d => d.prob_media), borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', fill: true, tension: 0.4 }}] }},
+                    data: {{ labels: data.risco_evolucao.map(d => d.mes), datasets: [{{ label: 'Prob. Média (%)', data: data.risco_evolucao.map(d => d.prob_media), borderColor: nimbusColors.danger, backgroundColor: 'rgba(200,0,3,0.1)', fill: true, tension: 0.4 }}] }},
                     options: {{ responsive: true, maintainAspectRatio: false, scales: {{ y: {{ min: 0, max: 100 }} }} }}
                 }});
             }}
@@ -1628,9 +1966,9 @@ html_content = f'''<!DOCTYPE html>
                     data: {{
                         labels: funilData.map(d => d.mes_curto),
                         datasets: [
-                            {{ label: '% Ao Vivo', data: funilData.map(d => d.pct_live), backgroundColor: '#4ade80', borderRadius: 4 }},
-                            {{ label: '% On Demand', data: funilData.map(d => d.pct_ondemand), backgroundColor: '#3b82f6', borderRadius: 4 }},
-                            {{ label: '% Total Participação', data: funilData.map(d => d.pct_participaram), backgroundColor: 'rgba(139, 92, 246, 0.5)', borderColor: '#8b5cf6', borderWidth: 2, type: 'line', tension: 0.4 }}
+                            {{ label: '% Ao Vivo', data: funilData.map(d => d.pct_live), backgroundColor: nimbusColors.success, borderRadius: 4 }},
+                            {{ label: '% On Demand', data: funilData.map(d => d.pct_ondemand), backgroundColor: nimbusColors.primary, borderRadius: 4 }},
+                            {{ label: '% Total Participação', data: funilData.map(d => d.pct_participaram), backgroundColor: 'rgba(0,89,213,0.3)', borderColor: nimbusColors.primaryLight, borderWidth: 2, type: 'line', tension: 0.4 }}
                         ]
                     }},
                     options: {{
