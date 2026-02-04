@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback da Comunidade | Nuvemshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://d26lpennugtm8s.cloudfront.net/assets/common/img/favicons/favicon-32x32.png" type="image/png">
+    <style>
+        :root {
+            /* Nuvemshop Brand Colors */
+            --ns-primary: #0066FF;
+            --ns-primary-hover: #0052CC;
+            --ns-primary-light: #E6F0FF;
+            --ns-primary-surface: #F0F7FF;
+            
+            --ns-secondary: #7B61FF;
+            --ns-secondary-light: #EDE9FF;
+            
+            --ns-success: #00B67A;
+            --ns-success-light: #E6F9F3;
+            
+            --ns-warning: #FFB800;
+            --ns-warning-light: #FFF8E6;
+            
+            --ns-danger: #FF4757;
+            --ns-danger-light: #FFECEE;
+            
+            /* Neutrals */
+            --ns-gray-50: #FAFAFA;
+            --ns-gray-100: #F5F5F5;
+            --ns-gray-200: #E5E5E5;
+            --ns-gray-300: #D4D4D4;
+            --ns-gray-400: #A3A3A3;
+            --ns-gray-500: #737373;
+            --ns-gray-600: #525252;
+            --ns-gray-700: #404040;
+            --ns-gray-800: #262626;
+            --ns-gray-900: #171717;
+            
+            --ns-white: #FFFFFF;
+            --ns-black: #000000;
+            
+            /* Typography */
+            --font-primary: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            /* Spacing */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --space-12: 48px;
+            --space-16: 64px;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 200ms ease;
+            --transition-slow: 300ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--ns-gray-50);
+            color: var(--ns-gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--ns-white);
+            border-bottom: 1px solid var(--ns-gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            text-decoration: none;
+            color: var(--ns-gray-900);
+        }
+
+        .navbar-logo {
+            height: 32px;
+            width: auto;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        /* Hero Section - Webinar Style */
+        .hero {
+            background: linear-gradient(135deg, #0B1A33 0%, #1a2d4d 50%, #0B1A33 100%);
+            color: var(--ns-white);
+            padding: var(--space-12) var(--space-6);
+            position: relative;
+            overflow: hidden;
+            min-height: 320px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 50%;
+            background: url('https://d26lpennugtm8s.cloudfront.net/stores/001/234/256/themes/flavor/1-simonesancho-belongbe-teasers-home.png') no-repeat center right;
+            background-size: contain;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--space-8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 580px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: rgba(255, 255, 255, 0.1);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            margin-bottom: var(--space-4);
+            backdrop-filter: blur(4px);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--space-4);
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            opacity: 0.85;
+            margin-bottom: var(--space-6);
+            max-width: 480px;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .btn-hero {
+            background: var(--ns-white);
+            color: #0B1A33;
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .btn-hero:hover {
+            background: var(--ns-gray-100);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-image {
+            flex-shrink: 0;
+            max-width: 520px;
+            flex: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                padding: var(--space-8) var(--space-6);
+                min-height: auto;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-image {
+                display: none;
+            }
+
+            .hero::before {
+                width: 100%;
+                opacity: 0.1;
+            }
+        }
+
+        /* Navbar Search */
+        .navbar-search {
+            flex: 1;
+            max-width: 320px;
+            position: relative;
+            margin: 0 var(--space-4);
+        }
+
+        .navbar-search-input {
+            width: 100%;
+            padding: var(--space-2) var(--space-4);
+            padding-left: var(--space-10);
+            border: 1px solid var(--ns-gray-200);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-family: var(--font-primary);
+            background: var(--ns-gray-50);
+            transition: all var(--transition-normal);
+        }
+
+        .navbar-search-input:focus {
+            outline: none;
+            border-color: var(--ns-primary);
+            background: var(--ns-white);
+            box-shadow: 0 0 0 3px var(--ns-primary-light);
+        }
+
+        .navbar-search-input::placeholder {
+            color: var(--ns-gray-400);
+        }
+
+        .navbar-search-icon {
+            position: absolute;
+            left: var(--space-3);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ns-gray-400);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-search {
+                display: none;
+            }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-lg);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--ns-primary);
+            color: var(--ns-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--ns-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-white {
+            background: var(--ns-white);
+            color: var(--ns-primary);
+        }
+
+        .btn-white:hover {
+            background: var(--ns-gray-100);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--ns-white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--ns-gray-100);
+            color: var(--ns-gray-700);
+            border: 1px solid var(--ns-gray-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--ns-gray-200);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--ns-gray-600);
+            padding: var(--space-2) var(--space-3);
+        }
+
+        .btn-ghost:hover {
+            background: var(--ns-gray-100);
+            color: var(--ns-gray-900);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: var(--radius-md);
+        }
+
+        .btn-sm {
+            padding: var(--space-2) var(--space-3);
+            font-size: 0.875rem;
+        }
+
+        .btn-lg {
+            padding: var(--space-4) var(--space-6);
+            font-size: 1rem;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-8) var(--space-6);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            gap: var(--space-4);
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--ns-gray-100);
+            border: 1px solid var(--ns-gray-200);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-family: var(--font-primary);
+            color: var(--ns-gray-600);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-chip:hover,
+        .filter-chip.active {
+            background: var(--ns-primary-light);
+            border-color: var(--ns-primary);
+            color: var(--ns-primary);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ns-gray-900);
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem;
+            color: var(--ns-gray-500);
+            margin-top: var(--space-1);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .card {
+            background: var(--ns-white);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--ns-gray-200);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            border-color: var(--ns-gray-300);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card-preview {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--ns-primary-light) 0%, var(--ns-secondary-light) 100%);
+            overflow: hidden;
+        }
+
+        .card-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: opacity var(--transition-normal);
+        }
+
+        .card-preview img.loading {
+            opacity: 0;
+        }
+
+        .card-preview-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .card-preview-placeholder svg {
+            width: 40px;
+            height: 40px;
+            color: var(--ns-primary);
+            opacity: 0.6;
+        }
+
+        .card-preview-placeholder span {
+            font-size: 0.75rem;
+            color: var(--ns-primary);
+            opacity: 0.6;
+        }
+
+        .card-preview-link {
+            position: absolute;
+            bottom: var(--space-2);
+            right: var(--space-2);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            text-decoration: none;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .card:hover .card-preview-link {
+            opacity: 1;
+        }
+
+        .card-content {
+            padding: var(--space-5);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            margin-bottom: var(--space-4);
+        }
+
+        .card-title {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--ns-gray-900);
+            margin-bottom: var(--space-2);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-description {
+            font-size: 0.875rem;
+            color: var(--ns-gray-500);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+
+        .card-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--ns-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            max-width: 100%;
+        }
+
+        .card-link:hover {
+            color: var(--ns-primary-hover);
+        }
+
+        .card-link svg {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+        }
+
+        .card-link span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--ns-gray-100);
+            margin-top: auto;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .card-meta {
+            font-size: 0.75rem;
+            color: var(--ns-gray-400);
+        }
+
+        .btn-delete-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--ns-gray-300);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-delete-icon:hover {
+            color: var(--ns-danger);
+            background: var(--ns-danger-light);
+        }
+
+        .delete-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ns-gray-900);
+            color: white;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-2);
+            z-index: 10;
+        }
+
+        .delete-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--ns-gray-900);
+        }
+
+        .btn-delete-icon:hover .delete-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .like-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: var(--ns-gray-50);
+            border: 1px solid var(--ns-gray-200);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--ns-gray-600);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: var(--font-primary);
+        }
+
+        .like-btn:hover {
+            background: var(--ns-danger-light);
+            border-color: var(--ns-danger);
+            color: var(--ns-danger);
+        }
+
+        .like-btn.liked {
+            background: var(--ns-danger-light);
+            border-color: var(--ns-danger);
+            color: var(--ns-danger);
+        }
+
+        .like-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: var(--space-4);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--ns-gray-100);
+        }
+
+        .comments-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--ns-gray-500);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: var(--space-2) 0;
+            font-family: var(--font-primary);
+            transition: color var(--transition-fast);
+        }
+
+        .comments-toggle:hover {
+            color: var(--ns-gray-700);
+        }
+
+        .comments-toggle .chevron {
+            transition: transform var(--transition-fast);
+        }
+
+        .comments-list {
+            margin-top: var(--space-3);
+            display: none;
+        }
+
+        .comments-list.open {
+            display: block;
+        }
+
+        .comment {
+            background: var(--ns-gray-50);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
+        }
+
+        .comment:last-child {
+            margin-bottom: 0;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--ns-gray-800);
+        }
+
+        .comment-date {
+            font-size: 0.75rem;
+            color: var(--ns-gray-400);
+        }
+
+        .comment-text {
+            font-size: 0.875rem;
+            color: var(--ns-gray-600);
+            line-height: 1.6;
+        }
+
+        .comment-footer {
+            display: flex;
+            align-items: center;
+            margin-top: var(--space-2);
+        }
+
+        .comment-like-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--ns-gray-400);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: var(--font-primary);
+        }
+
+        .comment-like-btn:hover {
+            color: var(--ns-danger);
+            background: var(--ns-danger-light);
+        }
+
+        .comment-like-btn.liked {
+            color: var(--ns-danger);
+        }
+
+        .comment-like-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--ns-white);
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: modalSlideIn 0.2s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-5) var(--space-6);
+            border-bottom: 1px solid var(--ns-gray-100);
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--ns-gray-900);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--ns-gray-400);
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--ns-gray-100);
+            color: var(--ns-gray-600);
+        }
+
+        .modal-body {
+            padding: var(--space-6);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-5);
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--ns-gray-700);
+            margin-bottom: var(--space-2);
+        }
+
+        .form-label .required {
+            color: var(--ns-danger);
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--ns-gray-400);
+            margin-top: var(--space-1);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            border: 1px solid var(--ns-gray-200);
+            border-radius: var(--radius-md);
+            font-size: 0.9375rem;
+            font-family: var(--font-primary);
+            transition: all var(--transition-normal);
+            background: var(--ns-white);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--ns-primary);
+            box-shadow: 0 0 0 3px var(--ns-primary-light);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--ns-gray-400);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: var(--space-3);
+            justify-content: flex-end;
+            padding: var(--space-5) var(--space-6);
+            border-top: 1px solid var(--ns-gray-100);
+            background: var(--ns-gray-50);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: var(--space-6);
+            right: var(--space-6);
+            background: var(--ns-gray-900);
+            color: var(--ns-white);
+            padding: var(--space-4) var(--space-5);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: var(--space-3);
+            z-index: 2000;
+            animation: toastSlideIn 0.3s ease;
+        }
+
+        .toast.active {
+            display: flex;
+        }
+
+        .toast.success {
+            background: var(--ns-success);
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-16) var(--space-6);
+            color: var(--ns-gray-500);
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--space-5);
+            background: var(--ns-gray-100);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--ns-gray-400);
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ns-gray-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .empty-state p {
+            margin-bottom: var(--space-6);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--ns-white);
+            border-top: 1px solid var(--ns-gray-200);
+            padding: var(--space-8) var(--space-6);
+            margin-top: var(--space-12);
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .footer-logo {
+            height: 24px;
+            width: auto;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--ns-gray-500);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-6);
+        }
+
+        .footer-link {
+            font-size: 0.875rem;
+            color: var(--ns-gray-500);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .footer-link:hover {
+            color: var(--ns-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: var(--space-8) var(--space-4);
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-stats {
+                gap: var(--space-6);
+            }
+
+            .filter-chips {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: var(--space-2);
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="navbar-brand">
+                <img src="assets/logo-nuvemshop.png" alt="Nuvemshop" class="navbar-logo">
+            </a>
+            <div class="navbar-search">
+                <svg class="navbar-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="navbar-search-input" placeholder="Buscar lojas..." id="searchInput" oninput="filterStores()">
+            </div>
+            <div class="navbar-actions">
+                <button class="btn btn-primary" onclick="openAddStoreModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Pedir feedback
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                    </svg>
+                    Comunidade Nuvemshop
+                </div>
+                <h1>Receba feedback da comunidade</h1>
+                <p>Compartilhe seu e-commerce e receba feedback e dicas valiosas de outros donos de e-commerce. Juntos, vamos fazer bonito.</p>
+                
+                <div class="hero-actions">
+                    <button class="btn-hero" onclick="openAddStoreModal()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Pedir feedback para minha loja
+                    </button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://d4avy5zjiurvu.cloudfront.net/content/2024/08/hero_geral_BR-1.webp" alt="Comunidade de e-commerce" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main" id="stores">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Lojas da Comunidade</h2>
+                <p class="section-subtitle">Explore e deixe seu feedback para ajudar outros lojistas</p>
+            </div>
+            <div class="filter-chips">
+                <button class="filter-chip active" onclick="filterByCategory('all', this)">Todas</button>
+                <button class="filter-chip" onclick="filterByCategory('recent', this)">Recentes</button>
+                <button class="filter-chip" onclick="filterByCategory('popular', this)">Populares</button>
+            </div>
+        </div>
+
+        <div class="cards-grid" id="storesGrid">
+            <!-- Cards serão inseridos via JavaScript -->
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+            <h3>Nenhuma loja encontrada</h3>
+            <p>Seja o primeiro a compartilhar sua loja e receber feedback da comunidade!</p>
+            <button class="btn btn-primary btn-lg" onclick="openAddStoreModal()">Pedir feedback para minha loja</button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="assets/logo-nuvemshop.png" alt="Nuvemshop" class="footer-logo">
+            </div>
+            <div class="footer-links">
+                <a href="https://www.nuvemshop.com.br/ajuda" class="footer-link" target="_blank">Central de Ajuda</a>
+                <a href="https://comunidade.nuvemshop.com.br" class="footer-link" target="_blank">Comunidade</a>
+                <a href="https://www.nuvemshop.com.br" class="footer-link" target="_blank">Nuvemshop</a>
+                <a href="#" class="footer-link" onclick="openAdminLogin(event)" style="opacity: 0.4; font-size: 0.75rem;">Gestão interna</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal: Adicionar Loja -->
+    <div class="modal-overlay" id="addStoreModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Pedir feedback para sua loja</h2>
+                <button class="modal-close" onclick="closeModal('addStoreModal')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="addStoreForm" onsubmit="submitStore(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Loja <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="storeName" required placeholder="Ex: Minha Loja Incrível">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">URL do Site <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="storeUrl" required placeholder="www.minhaloja.com.br ou minhaloja.lojavirtualnuvem.com.br">
+                        <p class="form-hint">Não precisa incluir https://</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Instagram</label>
+                        <input type="text" class="form-input" id="storeInstagram" placeholder="@minhaloja">
+                        <p class="form-hint">Opcional, mas recomendado para networking</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">O que você gostaria de feedback?</label>
+                        <textarea class="form-textarea" id="storeDescription" placeholder="Ex: Gostaria de feedback sobre a experiência de compra, layout da home, fotos dos produtos..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Seu Nome <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="ownerName" required placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Seu Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="ownerEmail" required placeholder="seu@email.com">
+                        <p class="form-hint">Não será exibido publicamente</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Seu WhatsApp <span class="required">*</span></label>
+                        <input type="tel" class="form-input" id="ownerWhatsapp" required placeholder="(11) 99999-9999">
+                        <p class="form-hint">Para outros lojistas entrarem em contato com você</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addStoreModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Publicar Loja</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Comentário -->
+    <div class="modal-overlay" id="addCommentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Enviar Feedback</h2>
+                <button class="modal-close" onclick="closeModal('addCommentModal')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="addCommentForm" onsubmit="submitComment(event)">
+                <input type="hidden" id="commentStoreId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Seu Nome <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="commentName" required placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Seu Email <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="commentEmail" required placeholder="seu@email.com">
+                        <p class="form-hint">Será compartilhado com o dono da loja para contato</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone/WhatsApp</label>
+                        <input type="tel" class="form-input" id="commentPhone" placeholder="(11) 99999-9999">
+                        <p class="form-hint">Opcional - para aprofundar o feedback</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Seu Feedback <span class="required">*</span></label>
+                        <textarea class="form-textarea" id="commentText" required placeholder="Compartilhe suas impressões, pontos de melhoria, pontos positivos..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCommentModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Enviar Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span id="toastMessage">Sucesso!</span>
+    </div>
+
+    <!-- Modal: Confirmar Exclusão -->
+    <div class="modal-overlay" id="deleteStoreModal">
+        <div class="modal" style="max-width: 420px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Excluir loja</h2>
+                <button class="modal-close" onclick="closeModal('deleteStoreModal')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="confirmDeleteStore(event)">
+                <input type="hidden" id="deleteStoreId">
+                <div class="modal-body">
+                    <p style="margin-bottom: var(--space-4); color: var(--ns-gray-600);">
+                        Para confirmar a exclusão da sua loja, digite o <strong>email</strong> que você usou no cadastro:
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">Email de confirmação <span class="required">*</span></label>
+                        <input type="email" class="form-input" id="deleteConfirmEmail" required placeholder="seu@email.com">
+                    </div>
+                    <p style="font-size: 0.8125rem; color: var(--ns-danger); margin-top: var(--space-2);">
+                        ⚠️ Esta ação não pode ser desfeita.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('deleteStoreModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Admin Login -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Acesso Admin</h2>
+                <button class="modal-close" onclick="closeModal('adminLoginModal')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="adminLogin(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Senha de Administrador</label>
+                        <input type="password" class="form-input" id="adminPassword" required placeholder="Digite a senha">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('adminLoginModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Admin Panel -->
+    <div class="modal-overlay" id="adminPanelModal">
+        <div class="modal" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Painel de Administração</h2>
+                <button class="modal-close" onclick="closeModal('adminPanelModal')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div id="adminStoresList"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('adminPanelModal')">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Admin Panel Styles */
+        .admin-store-item {
+            background: var(--ns-gray-50);
+            border: 1px solid var(--ns-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .admin-store-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-3);
+        }
+
+        .admin-store-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--ns-gray-900);
+        }
+
+        .admin-store-url {
+            font-size: 0.875rem;
+            color: var(--ns-primary);
+        }
+
+        .admin-store-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-3);
+            margin-top: var(--space-3);
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--ns-gray-200);
+        }
+
+        .admin-detail {
+            font-size: 0.875rem;
+        }
+
+        .admin-detail-label {
+            color: var(--ns-gray-500);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-detail-value {
+            color: var(--ns-gray-800);
+            word-break: break-all;
+        }
+
+        .btn-danger {
+            background: var(--ns-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: var(--space-2);
+            font-size: 0.75rem;
+            color: var(--ns-gray-500);
+        }
+    </style>
+
+    <script>
+        // Data Storage
+        let stores = JSON.parse(localStorage.getItem('nuvemshop_feedback_stores') || '[]');
+        let currentFilter = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add sample stores if empty
+            if (stores.length === 0) {
+                stores = [
+                    {
+                        id: generateId(),
+                        name: "Moda Sustentável Brasil",
+                        url: "https://modasustentavel.lojavirtualnuvem.com.br",
+                        instagram: "@modasustentavelbr",
+                        description: "Loja de moda feminina com foco em peças sustentáveis e produção local. Gostaria de feedback sobre a experiência de compra e apresentação dos produtos.",
+                        ownerName: "Marina Costa",
+                        ownerEmail: "marina@exemplo.com",
+                        ownerWhatsapp: "(11) 99999-1234",
+                        likes: 12,
+                        likedBy: [],
+                        comments: [
+                            {
+                                id: generateId(),
+                                name: "Ricardo Almeida",
+                                email: "ricardo@email.com",
+                                phone: "(11) 99999-1111",
+                                text: "Adorei a proposta sustentável! A navegação está muito boa. Sugiro adicionar mais informações sobre a origem dos tecidos na página de cada produto para destacar ainda mais o diferencial.",
+                                date: new Date(Date.now() - 86400000).toISOString(),
+                                likes: 5,
+                                likedBy: []
+                            },
+                            {
+                                id: generateId(),
+                                name: "Juliana Santos",
+                                email: "juliana@email.com",
+                                phone: "",
+                                text: "As fotos estão lindas! Talvez valha a pena adicionar vídeos curtos mostrando os detalhes das peças.",
+                                date: new Date(Date.now() - 43200000).toISOString(),
+                                likes: 3,
+                                likedBy: []
+                            }
+                        ],
+                        createdAt: new Date(Date.now() - 172800000).toISOString()
+                    },
+                    {
+                        id: generateId(),
+                        name: "Pet Shop Premium",
+                        url: "https://petshoppremium.lojavirtualnuvem.com.br",
+                        instagram: "@petshoppremium",
+                        description: "E-commerce de produtos premium para pets. Preciso de feedback sobre o processo de checkout e a organização das categorias.",
+                        ownerName: "Carlos Oliveira",
+                        ownerEmail: "carlos@exemplo.com",
+                        ownerWhatsapp: "(21) 98888-5678",
+                        likes: 8,
+                        likedBy: [],
+                        comments: [
+                            {
+                                id: generateId(),
+                                name: "Ana Paula",
+                                email: "ana@email.com",
+                                phone: "(21) 98888-2222",
+                                text: "O checkout está simples e direto! Só senti falta de mais opções de frete. As categorias estão bem organizadas.",
+                                date: new Date(Date.now() - 129600000).toISOString(),
+                                likes: 2,
+                                likedBy: []
+                            }
+                        ],
+                        createdAt: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: generateId(),
+                        name: "Café Artesanal",
+                        url: "https://cafeartesanal.lojavirtualnuvem.com.br",
+                        instagram: "@cafeartesanalbr",
+                        description: "Vendemos cafés especiais direto de produtores. Gostaria de saber se as descrições dos produtos estão claras e se o visual passa a qualidade premium que buscamos.",
+                        ownerName: "Pedro Henrique",
+                        ownerEmail: "pedro@exemplo.com",
+                        ownerWhatsapp: "(31) 97777-9012",
+                        likes: 5,
+                        likedBy: [],
+                        comments: [],
+                        createdAt: new Date(Date.now() - 43200000).toISOString()
+                    }
+                ];
+                saveStores();
+            }
+            renderStores();
+            updateStats();
+        });
+
+        // Utility Functions
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function saveStores() {
+            localStorage.setItem('nuvemshop_feedback_stores', JSON.stringify(stores));
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Agora';
+            if (diffMins < 60) return `${diffMins}min atrás`;
+            if (diffHours < 24) return `${diffHours}h atrás`;
+            if (diffDays < 7) return `${diffDays}d atrás`;
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateStats() {
+            const storeCount = stores.length;
+            const commentCount = stores.reduce((acc, store) => acc + store.comments.length, 0);
+            
+            // Estatísticas disponíveis apenas no painel admin
+            const heroStoreCount = document.getElementById('heroStoreCount');
+            const heroCommentCount = document.getElementById('heroCommentCount');
+            if (heroStoreCount) heroStoreCount.textContent = storeCount;
+            if (heroCommentCount) heroCommentCount.textContent = commentCount;
+        }
+
+        // Render Functions
+        function renderStores(filteredStores = null) {
+            const grid = document.getElementById('storesGrid');
+            const emptyState = document.getElementById('emptyState');
+            let displayStores = filteredStores || stores;
+
+            // Apply category filter
+            if (currentFilter === 'recent') {
+                displayStores = [...displayStores].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            } else if (currentFilter === 'popular') {
+                displayStores = [...displayStores].sort((a, b) => b.likes - a.likes);
+            }
+
+            updateStats();
+
+            if (displayStores.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            grid.innerHTML = displayStores.map(store => createStoreCard(store)).join('');
+            
+            // Carregar imagens de preview
+            loadPreviewImages();
+        }
+
+        // Função para carregar imagens de preview (og:image) via API
+        async function loadPreviewImages() {
+            const previews = document.querySelectorAll('.card-preview[data-url]');
+            
+            previews.forEach(async (preview) => {
+                const url = preview.dataset.url;
+                const storeId = preview.id.replace('preview-', '');
+                
+                try {
+                    // Usar microlink.io para pegar a og:image
+                    const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}`;
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+                    
+                    if (data.status === 'success' && data.data.image) {
+                        const imgUrl = data.data.image.url;
+                        const img = document.createElement('img');
+                        img.src = imgUrl;
+                        img.alt = data.data.title || 'Preview';
+                        img.className = 'loading';
+                        img.onload = function() {
+                            this.classList.remove('loading');
+                            // Esconder o placeholder
+                            const placeholder = preview.querySelector('.card-preview-placeholder');
+                            if (placeholder) placeholder.style.display = 'none';
+                        };
+                        img.onerror = function() {
+                            this.style.display = 'none';
+                            // Mostrar placeholder com ícone
+                            const placeholder = preview.querySelector('.card-preview-placeholder span');
+                            if (placeholder) placeholder.textContent = 'Visualizar loja';
+                        };
+                        
+                        // Inserir antes do link
+                        const link = preview.querySelector('.card-preview-link');
+                        preview.insertBefore(img, link);
+                    } else {
+                        // Fallback: mostrar placeholder
+                        const placeholder = preview.querySelector('.card-preview-placeholder span');
+                        if (placeholder) placeholder.textContent = 'Visualizar loja';
+                    }
+                } catch (error) {
+                    // Em caso de erro, mostrar placeholder
+                    const placeholder = preview.querySelector('.card-preview-placeholder span');
+                    if (placeholder) placeholder.textContent = 'Visualizar loja';
+                }
+            });
+        }
+
+        function createStoreCard(store) {
+            const commentsHtml = store.comments.map(comment => {
+                const commentLikes = comment.likes || 0;
+                const commentLikedBy = comment.likedBy || [];
+                const isCommentLiked = commentLikedBy.includes(getDeviceId());
+                return `
+                <div class="comment">
+                    <div class="comment-header">
+                        <span class="comment-author">${escapeHtml(comment.name)}</span>
+                        <span class="comment-date">${formatDate(comment.date)}</span>
+                    </div>
+                    <p class="comment-text">${escapeHtml(comment.text)}</p>
+                    <div class="comment-footer">
+                        <button class="comment-like-btn ${isCommentLiked ? 'liked' : ''}" onclick="toggleCommentLike('${store.id}', '${comment.id}')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="${isCommentLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            ${commentLikes > 0 ? commentLikes : ''}
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+
+            const isLiked = store.likedBy.includes(getDeviceId());
+
+            return `
+                <article class="card fade-in">
+                    <div class="card-preview" id="preview-${store.id}" data-url="${escapeHtml(store.url)}">
+                        <div class="card-preview-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            <span>Carregando...</span>
+                        </div>
+                        <a href="${escapeHtml(store.url)}" target="_blank" rel="noopener noreferrer" class="card-preview-link">Visitar loja</a>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h3 class="card-title">${escapeHtml(store.name)}</h3>
+                            ${store.description ? `<p class="card-description">${escapeHtml(store.description)}</p>` : ''}
+                        </div>
+                        <div class="card-links">
+                            <a href="${escapeHtml(store.url)}" target="_blank" rel="noopener noreferrer" class="card-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                                <span>${escapeHtml(store.url.replace('https://', '').replace('http://', ''))}</span>
+                            </a>
+                            ${store.instagram ? `
+                                <a href="https://instagram.com/${store.instagram.replace('@', '')}" target="_blank" rel="noopener noreferrer" class="card-link">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                    </svg>
+                                    <span>${escapeHtml(store.instagram)}</span>
+                                </a>
+                            ` : ''}
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-actions">
+                                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${store.id}')">
+                                    <svg viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    ${store.likes}
+                                </button>
+                                <button class="btn btn-ghost btn-sm" onclick="openCommentModal('${store.id}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    Dar feedback
+                                </button>
+                                <button class="btn-delete-icon" onclick="openDeleteModal('${store.id}')" title="Excluir (somente o dono da loja)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                    <span class="delete-tooltip">Somente o dono da loja pode excluir</span>
+                                </button>
+                            </div>
+                            <span class="card-meta">${formatDate(store.createdAt)}</span>
+                        </div>
+                        ${store.comments.length > 0 ? `
+                            <div class="comments-section">
+                                <button class="comments-toggle" onclick="toggleComments('${store.id}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    ${store.comments.length} feedback${store.comments.length > 1 ? 's' : ''}
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron" id="chevron-${store.id}">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <div class="comments-list" id="comments-${store.id}">
+                                    ${commentsHtml}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </article>
+            `;
+        }
+
+        // Device ID for likes
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('nuvemshop_device_id');
+            if (!deviceId) {
+                deviceId = generateId();
+                localStorage.setItem('nuvemshop_device_id', deviceId);
+            }
+            return deviceId;
+        }
+
+        // Actions
+        function toggleLike(storeId) {
+            const store = stores.find(s => s.id === storeId);
+            if (!store) return;
+
+            const deviceId = getDeviceId();
+            const likeIndex = store.likedBy.indexOf(deviceId);
+
+            if (likeIndex === -1) {
+                store.likedBy.push(deviceId);
+                store.likes++;
+            } else {
+                store.likedBy.splice(likeIndex, 1);
+                store.likes--;
+            }
+
+            saveStores();
+            renderStores();
+        }
+
+        function toggleCommentLike(storeId, commentId) {
+            const store = stores.find(s => s.id === storeId);
+            if (!store) return;
+
+            const comment = store.comments.find(c => c.id === commentId);
+            if (!comment) return;
+
+            // Initialize likes if not present
+            if (!comment.likes) comment.likes = 0;
+            if (!comment.likedBy) comment.likedBy = [];
+
+            const deviceId = getDeviceId();
+            const likeIndex = comment.likedBy.indexOf(deviceId);
+
+            if (likeIndex === -1) {
+                comment.likedBy.push(deviceId);
+                comment.likes++;
+            } else {
+                comment.likedBy.splice(likeIndex, 1);
+                comment.likes--;
+            }
+
+            saveStores();
+            renderStores();
+        }
+
+        function toggleComments(storeId) {
+            const commentsList = document.getElementById(`comments-${storeId}`);
+            const chevron = document.getElementById(`chevron-${storeId}`);
+            
+            if (commentsList) {
+                commentsList.classList.toggle('open');
+                if (chevron) {
+                    chevron.style.transform = commentsList.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+                }
+            }
+        }
+
+        function filterStores() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderStores();
+                return;
+            }
+
+            const filtered = stores.filter(store => 
+                store.name.toLowerCase().includes(searchTerm) ||
+                store.url.toLowerCase().includes(searchTerm) ||
+                (store.instagram && store.instagram.toLowerCase().includes(searchTerm)) ||
+                (store.description && store.description.toLowerCase().includes(searchTerm))
+            );
+
+            renderStores(filtered);
+        }
+
+        function filterByCategory(category, element) {
+            currentFilter = category;
+            
+            // Update active state
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            element.classList.add('active');
+            
+            renderStores();
+        }
+
+        // Modal Functions
+        function openAddStoreModal() {
+            document.getElementById('addStoreModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openCommentModal(storeId) {
+            document.getElementById('commentStoreId').value = storeId;
+            document.getElementById('addCommentModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openDeleteModal(storeId) {
+            document.getElementById('deleteStoreId').value = storeId;
+            document.getElementById('deleteConfirmEmail').value = '';
+            document.getElementById('deleteStoreModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function confirmDeleteStore(e) {
+            e.preventDefault();
+            
+            const storeId = document.getElementById('deleteStoreId').value;
+            const confirmEmail = document.getElementById('deleteConfirmEmail').value.trim().toLowerCase();
+            
+            const store = stores.find(s => s.id === storeId);
+            if (!store) {
+                alert('Loja não encontrada.');
+                return;
+            }
+            
+            // Normaliza ambos os emails para comparação
+            const storedEmail = (store.ownerEmail || '').trim().toLowerCase();
+            
+            if (confirmEmail !== storedEmail) {
+                alert('O email não corresponde ao cadastrado. Verifique e tente novamente.\n\nDica: Use o mesmo email que você informou ao cadastrar a loja.');
+                return;
+            }
+            
+            // Email correto, pode excluir
+            stores = stores.filter(s => s.id !== storeId);
+            saveStores();
+            renderStores();
+            closeModal('deleteStoreModal');
+            showToast('Loja excluída com sucesso!');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+            
+            if (modalId === 'addStoreModal') {
+                document.getElementById('addStoreForm').reset();
+            } else if (modalId === 'addCommentModal') {
+                document.getElementById('addCommentForm').reset();
+            }
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Normalize URL (add https:// if missing)
+        function normalizeUrl(url) {
+            url = url.trim();
+            if (!url) return url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                return 'https://' + url;
+            }
+            return url;
+        }
+
+        // Form Submissions
+        function submitStore(e) {
+            e.preventDefault();
+
+            const newStore = {
+                id: generateId(),
+                name: document.getElementById('storeName').value.trim(),
+                url: normalizeUrl(document.getElementById('storeUrl').value),
+                instagram: document.getElementById('storeInstagram').value.trim(),
+                description: document.getElementById('storeDescription').value.trim(),
+                ownerName: document.getElementById('ownerName').value.trim(),
+                ownerEmail: document.getElementById('ownerEmail').value.trim().toLowerCase(),
+                ownerWhatsapp: document.getElementById('ownerWhatsapp').value.trim(),
+                likes: 0,
+                likedBy: [],
+                comments: [],
+                createdAt: new Date().toISOString()
+            };
+
+            stores.unshift(newStore);
+            saveStores();
+            renderStores();
+            closeModal('addStoreModal');
+            showToast('Loja publicada com sucesso!');
+        }
+
+        function submitComment(e) {
+            e.preventDefault();
+
+            const storeId = document.getElementById('commentStoreId').value;
+            const store = stores.find(s => s.id === storeId);
+            
+            if (!store) return;
+
+            const newComment = {
+                id: generateId(),
+                name: document.getElementById('commentName').value.trim(),
+                email: document.getElementById('commentEmail').value.trim(),
+                phone: document.getElementById('commentPhone').value.trim(),
+                text: document.getElementById('commentText').value.trim(),
+                date: new Date().toISOString(),
+                likes: 0,
+                likedBy: []
+            };
+
+            store.comments.push(newComment);
+            saveStores();
+            renderStores();
+            closeModal('addCommentModal');
+            showToast('Feedback enviado com sucesso!');
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('active', 'success');
+            
+            setTimeout(() => {
+                toast.classList.remove('active', 'success');
+            }, 3000);
+        }
+
+        // Admin Functions
+        const ADMIN_PASSWORD = 'nuvemshop2024'; // Em produção, isso deveria ser verificado no backend
+
+        function openAdminLogin(e) {
+            e.preventDefault();
+            document.getElementById('adminLoginModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function adminLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                closeModal('adminLoginModal');
+                document.getElementById('adminPassword').value = '';
+                openAdminPanel();
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        function openAdminPanel() {
+            renderAdminStores();
+            document.getElementById('adminPanelModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderAdminStores() {
+            const container = document.getElementById('adminStoresList');
+            
+            if (stores.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--ns-gray-500);">Nenhuma loja cadastrada.</p>';
+                return;
+            }
+
+            container.innerHTML = stores.map(store => `
+                <div class="admin-store-item">
+                    <div class="admin-store-header">
+                        <div>
+                            <div class="admin-store-name">${escapeHtml(store.name)}</div>
+                            <a href="${escapeHtml(store.url)}" target="_blank" class="admin-store-url">${escapeHtml(store.url)}</a>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="deleteStore('${store.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            Excluir
+                        </button>
+                    </div>
+                    <div class="admin-stats">
+                        <span>❤️ ${store.likes} curtidas</span>
+                        <span>💬 ${store.comments.length} feedbacks</span>
+                        <span>📅 ${formatDate(store.createdAt)}</span>
+                    </div>
+                    <div class="admin-store-details">
+                        <div class="admin-detail">
+                            <div class="admin-detail-label">Responsável</div>
+                            <div class="admin-detail-value">${escapeHtml(store.ownerName)}</div>
+                        </div>
+                        <div class="admin-detail">
+                            <div class="admin-detail-label">Email</div>
+                            <div class="admin-detail-value">${escapeHtml(store.ownerEmail)}</div>
+                        </div>
+                        <div class="admin-detail">
+                            <div class="admin-detail-label">WhatsApp</div>
+                            <div class="admin-detail-value">${escapeHtml(store.ownerWhatsapp || 'Não informado')}</div>
+                        </div>
+                        <div class="admin-detail">
+                            <div class="admin-detail-label">Instagram</div>
+                            <div class="admin-detail-value">${escapeHtml(store.instagram || 'Não informado')}</div>
+                        </div>
+                    </div>
+                    ${store.description ? `
+                        <div class="admin-detail" style="margin-top: var(--space-3);">
+                            <div class="admin-detail-label">Descrição</div>
+                            <div class="admin-detail-value">${escapeHtml(store.description)}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function deleteStore(storeId) {
+            if (!confirm('Tem certeza que deseja excluir esta loja? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+
+            stores = stores.filter(s => s.id !== storeId);
+            saveStores();
+            renderAdminStores();
+            renderStores();
+            showToast('Loja excluída com sucesso!');
+        }
+    </script>
+</body>
+</html>
