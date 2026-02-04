@@ -54,7 +54,7 @@ Criar uma página onde lojistas da comunidade Nuvemshop possam compartilhar seus
 ## Arquivos
 ```
 FeedbackComunidade/
-├── feedback-comunidade.html    # Página principal (tudo em um arquivo)
+├── index.html                  # Página principal (tudo em um arquivo)
 ├── assets/
 │   └── logo-nuvemshop.png      # Logo oficial
 ├── README.md                   # Documentação para GitHub

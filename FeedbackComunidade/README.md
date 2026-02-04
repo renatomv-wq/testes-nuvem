@@ -27,7 +27,7 @@ Página para lojistas da comunidade Nuvemshop compartilharem seus e-commerces e 
 
 ```
 FeedbackComunidade/
-├── feedback-comunidade.html    # Página principal
+├── index.html                  # Página principal
 ├── assets/
 │   └── logo-nuvemshop.png      # Logo da Nuvemshop
 └── README.md                   # Este arquivo
