@@ -465,7 +465,7 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
     pct_base_antiga = round(n_base_antiga / total_ns * 100, 2) if total_ns > 0 else 0
     pct_webinar = round(n_webinar / total_ns * 100, 2) if total_ns > 0 else 0
     
-    # Calcular uplift: tempo até virar seller
+    # Calcular uplift: tempo até virar new seller
     uplift_data = None
     if 'first_seller_at' in df_ns.columns and 'created_at' in df_ns.columns:
         df_ns['dias_ate_seller'] = (df_ns['first_seller_at'] - df_ns['created_at']).dt.days
@@ -498,7 +498,7 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
             amostra_suficiente = len(dias_onb) >= tamanho_minimo and len(dias_ctrl) >= tamanho_minimo
             
             uplift_data = {
-                'metrica': 'Tempo até virar seller',
+                'metrica': 'Tempo até virar New Seller',
                 'grupo_teste': {
                     'nome': 'Com Onboarding',
                     'n': int(len(dias_onb)),
@@ -1331,7 +1331,7 @@ def generate_onboarding_uplift_section():
                 
                 <div class="two-columns" style="margin-top:16px;">
                     <div>
-                        <h4 style="margin-bottom:12px;">Tempo até Virar Seller</h4>
+                        <h4 style="margin-bottom:12px;">Tempo até Virar New Seller</h4>
                         <table>
                             <thead><tr><th>Grupo</th><th>N</th><th>Média (dias)</th><th>Mediana (dias)</th></tr></thead>
                             <tbody>
@@ -1356,7 +1356,7 @@ def generate_onboarding_uplift_section():
                             <div class="card" style="background:var(--bg-secondary);padding:16px;">
                                 <span class="text-muted">Uplift (redução no tempo):</span>
                                 <div class="positive" style="font-size:2rem;font-weight:700;">{uplift['uplift_pct']}%</div>
-                                <span class="text-muted" style="font-size:0.75rem;">mais rápido para virar seller</span>
+                                <span class="text-muted" style="font-size:0.75rem;">mais rápido para virar New Seller</span>
                             </div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                                 <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
@@ -1581,7 +1581,7 @@ def generate_onboarding_insights():
     
     # Insight sobre uplift
     if uplift and uplift.get('significativo'):
-        insights.append(f"<strong>🚀 Resultado Positivo:</strong> O Onboarding V2 reduz o tempo para virar seller em <span class='positive'>{uplift['uplift_pct']}%</span>, de {uplift['grupo_controle']['media']} dias para {uplift['grupo_teste']['media']} dias em média. Resultado estatisticamente significativo (p-value = {uplift['p_value']}).")
+        insights.append(f"<strong>🚀 Resultado Positivo:</strong> O Onboarding V2 reduz o tempo para virar New Seller em <span class='positive'>{uplift['uplift_pct']}%</span>, de {uplift['grupo_controle']['media']} dias para {uplift['grupo_teste']['media']} dias em média. Resultado estatisticamente significativo (p-value = {uplift['p_value']}).")
     elif uplift:
         insights.append(f"<strong>⚠️ Atenção:</strong> A diferença observada ({uplift['uplift_pct']}% mais rápido) ainda não é estatisticamente significativa (p-value = {uplift['p_value']}). Recomenda-se aguardar mais dados.")
     
@@ -2793,7 +2793,7 @@ html_content = f'''<!DOCTYPE html>
             <h2 class="section-title">Visão Geral do Onboarding V2</h2>
             <div class="insight-box warning">
                 <h4>⚠️ Nota sobre Dados</h4>
-                <p>A base geral disponível é de <strong>{dashboard_data['resumo']['data_base']}</strong>. Como o Onboarding V2 é um experimento recente (2026), as lojas ainda não possuem histórico de GMV e Status nesta base. Os dados de conversão (tempo até virar seller) vêm da base de New Sellers que é mais atual.</p>
+                <p>A base geral disponível é de <strong>{dashboard_data['resumo']['data_base']}</strong>. Como o Onboarding V2 é um experimento recente (2026), as lojas ainda não possuem histórico de GMV e Status nesta base. Os dados de conversão (tempo até virar New Seller) vêm da base de New Sellers que é mais atual.</p>
             </div>
             <div class="grid grid-4">
                 <div class="card"><div class="card-title">Grupo Teste</div><div class="card-value gradient">{dashboard_data['onboarding']['grupo_teste']['total']:,}</div><div class="card-subtitle">lojas no experimento</div></div>
