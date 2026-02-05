@@ -929,6 +929,29 @@
             margin-top: var(--space-1);
         }
 
+        .privacy-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background: var(--ns-primary-surface);
+            border: 1px solid var(--ns-primary-light);
+            border-radius: var(--radius-lg);
+            margin: var(--space-4) 0;
+            font-size: 0.875rem;
+            color: var(--ns-gray-700);
+        }
+
+        .privacy-notice svg {
+            flex-shrink: 0;
+            color: var(--ns-primary);
+            margin-top: 2px;
+        }
+
+        .privacy-notice strong {
+            color: var(--ns-primary);
+        }
+
         .form-input,
         .form-textarea {
             width: 100%;
@@ -1227,9 +1250,9 @@
                 <img src="assets/logo-nuvemshop.png" alt="Nuvemshop" class="footer-logo">
             </div>
             <div class="footer-links">
-                <a href="https://www.nuvemshop.com.br/ajuda" class="footer-link" target="_blank">Central de Ajuda</a>
-                <a href="https://comunidade.nuvemshop.com.br" class="footer-link" target="_blank">Comunidade</a>
-                <a href="https://www.nuvemshop.com.br" class="footer-link" target="_blank">Nuvemshop</a>
+                <a href="https://atendimento.nuvemshop.com.br/" class="footer-link" target="_blank">Central de atendimento</a>
+                <a href="https://www.nuvemshop.com.br/newsletter" class="footer-link" target="_blank">Novidades Nuvemshop</a>
+                <a href="https://www.nuvemshop.com.br/newsletter/webinars" class="footer-link" target="_blank">Aprenda com a Nuvemshop</a>
                 <a href="#" class="footer-link" onclick="openAdminLogin(event)" style="opacity: 0.4; font-size: 0.75rem;">Gestão interna</a>
             </div>
         </div>
@@ -1267,6 +1290,15 @@
                         <label class="form-label">O que você gostaria de feedback?</label>
                         <textarea class="form-textarea" id="storeDescription" placeholder="Ex: Gostaria de feedback sobre a experiência de compra, layout da home, fotos dos produtos..."></textarea>
                     </div>
+                    
+                    <div class="privacy-notice">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>Seus dados de contato <strong>não serão exibidos publicamente</strong> nem compartilhados com terceiros.</span>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Seu Nome <span class="required">*</span></label>
                         <input type="text" class="form-input" id="ownerName" required placeholder="Seu nome">
@@ -1274,12 +1306,10 @@
                     <div class="form-group">
                         <label class="form-label">Seu Email <span class="required">*</span></label>
                         <input type="email" class="form-input" id="ownerEmail" required placeholder="seu@email.com">
-                        <p class="form-hint">Não será exibido publicamente</p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Seu WhatsApp <span class="required">*</span></label>
                         <input type="tel" class="form-input" id="ownerWhatsapp" required placeholder="(11) 99999-9999">
-                        <p class="form-hint">Para outros lojistas entrarem em contato com você</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1405,7 +1435,7 @@
     <div class="modal-overlay" id="adminPanelModal">
         <div class="modal" style="max-width: 900px;">
             <div class="modal-header">
-                <h2 class="modal-title">Painel de Administração</h2>
+                <h2 class="modal-title">Painel de Gestão</h2>
                 <button class="modal-close" onclick="closeModal('adminPanelModal')">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1414,6 +1444,51 @@
                 </button>
             </div>
             <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <!-- Dashboard Stats -->
+                <div class="admin-dashboard">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">🏪</div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="adminTotalStores">0</span>
+                            <span class="admin-stat-label">Lojas para avaliar</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">💬</div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="adminTotalFeedbacks">0</span>
+                            <span class="admin-stat-label">Feedbacks recebidos</span>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">📊</div>
+                        <div class="admin-stat-info">
+                            <span class="admin-stat-value" id="adminAvgFeedbacks">0</span>
+                            <span class="admin-stat-label">Média por loja</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="admin-export-section">
+                    <h3 class="admin-section-title">Exportar dados</h3>
+                    <div class="admin-export-options">
+                        <label class="admin-checkbox">
+                            <input type="checkbox" id="exportIncludeFeedbacks">
+                            <span>Incluir feedbacks no download</span>
+                        </label>
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Baixar base de lojas (CSV)
+                        </button>
+                    </div>
+                </div>
+
+                <h3 class="admin-section-title" style="margin-top: var(--space-6);">Lojas cadastradas</h3>
                 <div id="adminStoresList"></div>
             </div>
             <div class="modal-footer">
@@ -1424,6 +1499,81 @@
 
     <style>
         /* Admin Panel Styles */
+        .admin-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .admin-stat-card {
+            background: linear-gradient(135deg, var(--ns-primary-surface) 0%, var(--ns-white) 100%);
+            border: 1px solid var(--ns-primary-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .admin-stat-icon {
+            font-size: 1.5rem;
+        }
+
+        .admin-stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ns-gray-900);
+        }
+
+        .admin-stat-label {
+            font-size: 0.75rem;
+            color: var(--ns-gray-500);
+        }
+
+        .admin-export-section {
+            background: var(--ns-gray-50);
+            border: 1px solid var(--ns-gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .admin-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ns-gray-800);
+            margin-bottom: var(--space-3);
+        }
+
+        .admin-export-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+        }
+
+        .admin-checkbox {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--ns-gray-700);
+        }
+
+        .admin-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--ns-primary);
+        }
+
         .admin-store-item {
             background: var(--ns-gray-50);
             border: 1px solid var(--ns-gray-200);
@@ -2058,7 +2208,7 @@
         }
 
         // Admin Functions
-        const ADMIN_PASSWORD = 'nuvemshop2024'; // Em produção, isso deveria ser verificado no backend
+        const ADMIN_PASSWORD = 'ProdMkt@2024'; // Em produção, isso deveria ser verificado no backend
 
         function openAdminLogin(e) {
             e.preventDefault();
@@ -2087,6 +2237,15 @@
 
         function renderAdminStores() {
             const container = document.getElementById('adminStoresList');
+            
+            // Update stats
+            const totalStores = stores.length;
+            const totalFeedbacks = stores.reduce((acc, store) => acc + store.comments.length, 0);
+            const avgFeedbacks = totalStores > 0 ? (totalFeedbacks / totalStores).toFixed(1) : 0;
+            
+            document.getElementById('adminTotalStores').textContent = totalStores;
+            document.getElementById('adminTotalFeedbacks').textContent = totalFeedbacks;
+            document.getElementById('adminAvgFeedbacks').textContent = avgFeedbacks;
             
             if (stores.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: var(--ns-gray-500);">Nenhuma loja cadastrada.</p>';
@@ -2151,6 +2310,49 @@
             renderAdminStores();
             renderStores();
             showToast('Loja excluída com sucesso!');
+        }
+
+        function exportData() {
+            if (stores.length === 0) {
+                alert('Não há lojas para exportar.');
+                return;
+            }
+
+            const includeFeedbacks = document.getElementById('exportIncludeFeedbacks').checked;
+            let csvContent = '';
+            
+            if (includeFeedbacks) {
+                // Header with feedbacks
+                csvContent = 'Nome da Loja,Site,Instagram,Email,WhatsApp,Data Cadastro,Qtd Feedbacks,Feedbacks\n';
+                
+                stores.forEach(store => {
+                    const feedbacksText = store.comments.map(c => 
+                        `[${c.name}]: ${c.text.replace(/"/g, '""').replace(/\n/g, ' ')}`
+                    ).join(' | ');
+                    
+                    csvContent += `"${store.name}","${store.url}","${store.instagram || ''}","${store.ownerEmail}","${store.ownerWhatsapp || ''}","${formatDate(store.createdAt)}","${store.comments.length}","${feedbacksText}"\n`;
+                });
+            } else {
+                // Header without feedbacks
+                csvContent = 'Nome da Loja,Site,Instagram,Email,WhatsApp,Data Cadastro,Qtd Feedbacks\n';
+                
+                stores.forEach(store => {
+                    csvContent += `"${store.name}","${store.url}","${store.instagram || ''}","${store.ownerEmail}","${store.ownerWhatsapp || ''}","${formatDate(store.createdAt)}","${store.comments.length}"\n`;
+                });
+            }
+
+            // Create download
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `lojas-feedback-comunidade-${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Download iniciado!');
         }
     </script>
 </body>

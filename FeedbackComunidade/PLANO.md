@@ -84,10 +84,16 @@ FeedbackComunidade/
 
 ## Configurações
 
-### Acesso Admin
-- Link: Footer > "Gestão interna"
-- Senha: `nuvemshop2024`
+### Acesso Painel de Gestão
+- Link: Footer > "Gestão interna" (discreto, opacidade reduzida)
+- Senha: `ProdMkt@2024`
 - **Importante**: Em produção, trocar para autenticação real
+
+### Funcionalidades do Painel
+- Dashboard com estatísticas (lojas, feedbacks, média)
+- Exportar dados em CSV (com ou sem feedbacks)
+- Visualizar dados de contato das lojas
+- Excluir lojas
 
 ### LocalStorage Keys
 - `nuvemshop_feedback_stores` - Dados das lojas
