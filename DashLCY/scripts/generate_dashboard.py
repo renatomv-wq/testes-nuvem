@@ -289,6 +289,25 @@ else:
 # New Sellers
 new_sellers_por_mes = load_new_sellers()
 
+# Onboarding V2 - Grupo Teste
+print("\n📂 Carregando bases de Onboarding...")
+onboarding_grupo_teste = None
+onboarding_potential = None
+onboarding_path_teste = os.path.join(DATA_DIR, 'onboarding_grupo_teste.csv')
+onboarding_path_potential = os.path.join(DATA_DIR, 'onboarding_potential_sellers.csv')
+
+if os.path.exists(onboarding_path_teste):
+    onboarding_grupo_teste = pd.read_csv(onboarding_path_teste, low_memory=False)
+    print(f"  ✅ Onboarding Grupo Teste: {len(onboarding_grupo_teste):,} lojas")
+else:
+    print(f"  ⚠️ Arquivo não encontrado: {onboarding_path_teste}")
+
+if os.path.exists(onboarding_path_potential):
+    onboarding_potential = pd.read_csv(onboarding_path_potential, low_memory=False)
+    print(f"  ✅ Onboarding Potential Sellers: {len(onboarding_potential):,} lojas")
+else:
+    print(f"  ⚠️ Arquivo não encontrado: {onboarding_path_potential}")
+
 # =============================================================================
 # PREPARAR FLAGS E MÉTRICAS
 # =============================================================================
@@ -307,6 +326,12 @@ if webinars_df is not None:
     lojas_ativas['qtd_webinars'] = lojas_ativas['qtd_webinars'].fillna(0).astype(int)
 else:
     lojas_ativas['qtd_webinars'] = 0
+
+# Flag de onboarding
+ids_onboarding = set()
+if onboarding_grupo_teste is not None:
+    ids_onboarding = set(onboarding_grupo_teste['Store ID'].dropna().astype(int))
+lojas_ativas['tem_onboarding'] = lojas_ativas[id_col].isin(ids_onboarding)
 
 # Merchant Services
 for col in MERCHANT_COLS:
@@ -402,26 +427,224 @@ else:
 # =============================================================================
 print("\n🆕 Analisando New Sellers...")
 
-new_sellers_analysis = {'total': 0, 'por_mes': [], 'soma_total': 0}
+new_sellers_analysis = {'total': 0, 'por_mes': [], 'soma_total': 0, 'impacto_por_projeto': [], 'uplift_onboarding': None}
 
 for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
     ns_id_col = 'store_id' if 'store_id' in df_ns.columns else 'id_store'
+    df_ns = df_ns.copy()
     ids_new_sellers = set(df_ns[ns_id_col].unique())
     total_ns = len(ids_new_sellers)
     
-    ns_com_lifecycle = ids_new_sellers.intersection(ids_webinar)
-    pct = round(len(ns_com_lifecycle) / total_ns * 100, 2) if total_ns > 0 else 0
+    # Converter datas
+    if 'created_at' in df_ns.columns:
+        df_ns['created_at'] = pd.to_datetime(df_ns['created_at'], dayfirst=True, errors='coerce')
+    if 'first_seller_at' in df_ns.columns:
+        df_ns['first_seller_at'] = pd.to_datetime(df_ns['first_seller_at'], dayfirst=True, errors='coerce')
+    
+    # Classificar em 3 grupos: Onboarding, Grupo Controle, Base Antiga
+    def classificar_ns(row):
+        store_id = row[ns_id_col]
+        created = row.get('created_at')
+        if store_id in ids_onboarding:
+            return 'onboarding'
+        elif pd.notna(created) and created >= pd.Timestamp('2025-10-01'):
+            return 'grupo_controle'
+        else:
+            return 'base_antiga'
+    
+    df_ns['grupo_ns'] = df_ns.apply(classificar_ns, axis=1)
+    
+    # Contar por grupo
+    n_onboarding = len(df_ns[df_ns['grupo_ns'] == 'onboarding'])
+    n_controle = len(df_ns[df_ns['grupo_ns'] == 'grupo_controle'])
+    n_base_antiga = len(df_ns[df_ns['grupo_ns'] == 'base_antiga'])
+    n_webinar = len(ids_new_sellers.intersection(ids_webinar))
+    
+    pct_onboarding = round(n_onboarding / total_ns * 100, 2) if total_ns > 0 else 0
+    pct_controle = round(n_controle / total_ns * 100, 2) if total_ns > 0 else 0
+    pct_base_antiga = round(n_base_antiga / total_ns * 100, 2) if total_ns > 0 else 0
+    pct_webinar = round(n_webinar / total_ns * 100, 2) if total_ns > 0 else 0
+    
+    # Calcular uplift: tempo até virar seller
+    uplift_data = None
+    if 'first_seller_at' in df_ns.columns and 'created_at' in df_ns.columns:
+        df_ns['dias_ate_seller'] = (df_ns['first_seller_at'] - df_ns['created_at']).dt.days
+        
+        dias_onb = df_ns[df_ns['grupo_ns'] == 'onboarding']['dias_ate_seller'].dropna()
+        dias_ctrl = df_ns[df_ns['grupo_ns'] == 'grupo_controle']['dias_ate_seller'].dropna()
+        
+        if len(dias_onb) > 10 and len(dias_ctrl) > 10:
+            media_onb = dias_onb.mean()
+            media_ctrl = dias_ctrl.mean()
+            mediana_onb = dias_onb.median()
+            mediana_ctrl = dias_ctrl.median()
+            
+            # Uplift (redução no tempo)
+            uplift_pct = round(((media_ctrl - media_onb) / media_ctrl) * 100, 1) if media_ctrl > 0 else 0
+            
+            # Teste t para significância
+            from scipy import stats
+            t_stat, p_value = stats.ttest_ind(dias_onb, dias_ctrl)
+            significativo = p_value < 0.05
+            
+            # Teste de proporção para significância do tamanho das amostras
+            # Usando teste chi-quadrado para comparar se proporções são significativamente diferentes
+            n_total = n_onboarding + n_controle
+            prop_onb = n_onboarding / n_total if n_total > 0 else 0
+            prop_ctrl = n_controle / n_total if n_total > 0 else 0
+            
+            # Poder estatístico aproximado (baseado em tamanho de amostra mínimo para detectar efeitos)
+            tamanho_minimo = 30  # Regra prática para amostras
+            amostra_suficiente = len(dias_onb) >= tamanho_minimo and len(dias_ctrl) >= tamanho_minimo
+            
+            uplift_data = {
+                'metrica': 'Tempo até virar seller',
+                'grupo_teste': {
+                    'nome': 'Com Onboarding',
+                    'n': int(len(dias_onb)),
+                    'media': float(round(media_onb, 1)),
+                    'mediana': float(round(mediana_onb, 0))
+                },
+                'grupo_controle': {
+                    'nome': 'Grupo Controle',
+                    'n': int(len(dias_ctrl)),
+                    'media': float(round(media_ctrl, 1)),
+                    'mediana': float(round(mediana_ctrl, 0))
+                },
+                'uplift_pct': float(uplift_pct),
+                'p_value': float(round(p_value, 4)),
+                'significativo': bool(significativo),
+                'amostra_suficiente': bool(amostra_suficiente),
+                'tamanho_amostra_analise': {
+                    'n_teste': int(n_onboarding),
+                    'n_controle': int(n_controle),
+                    'n_total': int(n_total),
+                    'pct_teste': float(round(prop_onb * 100, 1)),
+                    'pct_controle': float(round(prop_ctrl * 100, 1)),
+                    'suficiente_teste': bool(n_onboarding >= tamanho_minimo),
+                    'suficiente_controle': bool(n_controle >= tamanho_minimo)
+                }
+            }
+            print(f"      📊 Uplift: {uplift_pct}% mais rápido | p-value: {p_value:.4f} {'✅' if significativo else '⚠️'}")
+            print(f"      📊 Amostras: Teste={n_onboarding} | Controle={n_controle} | {'✅ Suficiente' if amostra_suficiente else '⚠️ Amostra pequena'}")
+    
+    # Análise de churn por grupo (merge com base geral)
+    churn_analysis = None
+    if 'predictive_churn_probability' in lojas_ativas.columns:
+        # Merge new sellers com base para pegar dados de churn
+        df_ns_churn = df_ns.merge(
+            lojas_ativas[[id_col, 'predictive_churn_probability', 'status_seller']],
+            left_on=ns_id_col,
+            right_on=id_col,
+            how='left'
+        )
+        
+        # Calcular métricas de churn por grupo
+        churn_by_group = {}
+        for grupo in ['onboarding', 'grupo_controle', 'base_antiga']:
+            subset = df_ns_churn[df_ns_churn['grupo_ns'] == grupo]
+            churn_valid = subset['predictive_churn_probability'].dropna()
+            
+            if len(churn_valid) > 0:
+                # Calcular quartis
+                q1 = int((churn_valid <= 0.25).sum())
+                q2 = int(((churn_valid > 0.25) & (churn_valid <= 0.50)).sum())
+                q3 = int(((churn_valid > 0.50) & (churn_valid <= 0.75)).sum())
+                q4 = int((churn_valid > 0.75).sum())
+                total_q = len(churn_valid)
+                
+                churn_by_group[grupo] = {
+                    'n_total': int(len(subset)),
+                    'n_com_churn': int(len(churn_valid)),
+                    'churn_medio': float(round(churn_valid.mean() * 100, 1)),
+                    'churn_mediana': float(round(churn_valid.median() * 100, 1)),
+                    'quartis': {
+                        'baixo': {'n': q1, 'pct': float(round(q1/total_q*100, 1))},
+                        'moderado': {'n': q2, 'pct': float(round(q2/total_q*100, 1))},
+                        'alto': {'n': q3, 'pct': float(round(q3/total_q*100, 1))},
+                        'critico': {'n': q4, 'pct': float(round(q4/total_q*100, 1))}
+                    }
+                }
+        
+        # Teste estatístico entre onboarding e controle
+        churn_onb = df_ns_churn[df_ns_churn['grupo_ns'] == 'onboarding']['predictive_churn_probability'].dropna()
+        churn_ctrl = df_ns_churn[df_ns_churn['grupo_ns'] == 'grupo_controle']['predictive_churn_probability'].dropna()
+        
+        churn_test = None
+        if len(churn_onb) > 10 and len(churn_ctrl) > 10:
+            t_stat_churn, p_value_churn = stats.ttest_ind(churn_onb, churn_ctrl)
+            diff_pp = float(round((churn_ctrl.mean() - churn_onb.mean()) * 100, 1))
+            
+            churn_test = {
+                'media_onb': float(round(churn_onb.mean() * 100, 1)),
+                'media_ctrl': float(round(churn_ctrl.mean() * 100, 1)),
+                'diff_pp': diff_pp,
+                'p_value': float(round(p_value_churn, 4)),
+                'significativo': bool(p_value_churn < 0.05)
+            }
+            print(f"      📊 Churn: Onb={churn_test['media_onb']}% vs Ctrl={churn_test['media_ctrl']}% | Diff={diff_pp}pp | p={p_value_churn:.4f}")
+        
+        churn_analysis = {
+            'por_grupo': churn_by_group,
+            'teste_estatistico': churn_test
+        }
+        
+        # Status distribution por grupo
+        status_by_group = {}
+        for grupo in ['onboarding', 'grupo_controle', 'base_antiga']:
+            subset = df_ns_churn[df_ns_churn['grupo_ns'] == grupo]
+            status_dist = subset['status_seller'].value_counts().to_dict()
+            status_by_group[grupo] = {str(k): int(v) for k, v in status_dist.items()}
+        
+        churn_analysis['status_por_grupo'] = status_by_group
     
     new_sellers_analysis['por_mes'].append({
         'mes': mes_ns,
         'total_new_sellers': total_ns,
-        'com_lifecycle': len(ns_com_lifecycle),
-        'pct_cobertura': pct
+        'com_lifecycle': n_onboarding + n_webinar,
+        'pct_cobertura': round((n_onboarding + n_webinar) / total_ns * 100, 2) if total_ns > 0 else 0,
+        'por_grupo': {
+            'onboarding': {'n': n_onboarding, 'pct': pct_onboarding},
+            'grupo_controle': {'n': n_controle, 'pct': pct_controle},
+            'base_antiga': {'n': n_base_antiga, 'pct': pct_base_antiga},
+            'webinar': {'n': n_webinar, 'pct': pct_webinar}
+        },
+        'uplift': uplift_data,
+        'churn_analysis': churn_analysis
     })
     new_sellers_analysis['soma_total'] += total_ns
-    print(f"  📅 {mes_ns}: {total_ns:,} new sellers, {len(ns_com_lifecycle)} com lifecycle ({pct}%)")
+    print(f"  📅 {mes_ns}: {total_ns:,} new sellers")
+    print(f"      Onboarding: {n_onboarding} ({pct_onboarding}%) | Grupo Controle: {n_controle} ({pct_controle}%) | Base Antiga: {n_base_antiga} ({pct_base_antiga}%)")
 
 new_sellers_analysis['total'] = new_sellers_analysis['soma_total']
+
+# Resumo de impacto por projeto (agregado)
+if new_sellers_analysis['por_mes']:
+    ultimo_mes = new_sellers_analysis['por_mes'][0]
+    new_sellers_analysis['impacto_por_projeto'] = [
+        {
+            'projeto': 'Onboarding V2',
+            'n': ultimo_mes['por_grupo']['onboarding']['n'],
+            'pct': ultimo_mes['por_grupo']['onboarding']['pct']
+        },
+        {
+            'projeto': 'Grupo Controle',
+            'n': ultimo_mes['por_grupo']['grupo_controle']['n'],
+            'pct': ultimo_mes['por_grupo']['grupo_controle']['pct']
+        },
+        {
+            'projeto': 'Base Antiga',
+            'n': ultimo_mes['por_grupo']['base_antiga']['n'],
+            'pct': ultimo_mes['por_grupo']['base_antiga']['pct']
+        },
+        {
+            'projeto': 'Webinars',
+            'n': ultimo_mes['por_grupo']['webinar']['n'],
+            'pct': ultimo_mes['por_grupo']['webinar']['pct']
+        }
+    ]
+    new_sellers_analysis['uplift_onboarding'] = ultimo_mes.get('uplift')
+    new_sellers_analysis['churn_onboarding'] = ultimo_mes.get('churn_analysis')
 
 # =============================================================================
 # ANÁLISE DE RISCO
@@ -596,10 +819,12 @@ print("\n📊 Calculando métricas gerais...")
 
 lojas_sellers = lojas_ativas[lojas_ativas['status_seller'].isin(SELLER_STATUS)]
 lojas_com_status = lojas_ativas[lojas_ativas['status_seller'] != 'not informed']
-lojas_ativas['tem_alguma_acao'] = lojas_ativas['tem_webinar']
+lojas_ativas['tem_alguma_acao'] = lojas_ativas['tem_webinar'] | lojas_ativas['tem_onboarding']
 lojas_cobertas = lojas_ativas[lojas_ativas['tem_alguma_acao'] == True]
 com_webinar = lojas_ativas[lojas_ativas['tem_webinar'] == True]
 sem_webinar = lojas_ativas[lojas_ativas['tem_webinar'] == False]
+com_onboarding = lojas_ativas[lojas_ativas['tem_onboarding'] == True]
+sem_onboarding = lojas_ativas[lojas_ativas['tem_onboarding'] == False]
 
 # =============================================================================
 # MONTAR DADOS DO DASHBOARD
@@ -640,7 +865,12 @@ dashboard_data['cobertura_projetos'] = [
         'pct': round(len(com_webinar) / len(lojas_ativas) * 100, 1),
         'status': 'ativo'
     },
-    {'projeto': 'Onboarding', 'lojas': 0, 'pct': 0, 'status': 'em breve'},
+    {
+        'projeto': 'Onboarding V2',
+        'lojas': len(com_onboarding),
+        'pct': round(len(com_onboarding) / len(lojas_ativas) * 100, 1) if len(lojas_ativas) > 0 else 0,
+        'status': 'ativo' if len(com_onboarding) > 0 else 'em breve'
+    },
     {'projeto': 'Human in the Loop', 'lojas': 0, 'pct': 0, 'status': 'em breve'},
     {'projeto': 'Atrai e Cresce', 'lojas': 0, 'pct': 0, 'status': 'em breve'}
 ]
@@ -895,9 +1125,512 @@ dashboard_data['webinars']['churn_pareado'] = {
 }
 
 # =============================================================================
+# ANÁLISE DE ONBOARDING V2
+# =============================================================================
+print("\n📊 Analisando Onboarding V2...")
+
+dashboard_data['onboarding'] = {
+    'disponivel': False,
+    'grupo_teste': {'total': 0, 'na_base': 0, 'pct_na_base': 0},
+    'potential_sellers': {'total': 0, 'na_base': 0, 'pct_na_base': 0},
+    'funil_steps': [],
+    'status_pedidos': [],
+    'cobertura_produtos': [],
+    'qualificacao': [],
+    'gmv_total': 0,
+    'pct_sellers': 0,
+    'lista_lojas': []
+}
+
+if onboarding_grupo_teste is not None and len(onboarding_grupo_teste) > 0:
+    dashboard_data['onboarding']['disponivel'] = True
+    onb = onboarding_grupo_teste.copy()
+    
+    # Resumo geral
+    total_grupo = len(onb)
+    onb_ids = set(onb['Store ID'].dropna().astype(int))
+    
+    # Cruzar com base geral para obter dados de GMV e Status
+    lojas_onb_na_base = lojas_ativas[lojas_ativas[id_col].isin(onb_ids)].copy()
+    ids_na_base = len(lojas_onb_na_base)
+    
+    dashboard_data['onboarding']['grupo_teste'] = {
+        'total': total_grupo,
+        'na_base': ids_na_base,
+        'pct_na_base': round(ids_na_base / total_grupo * 100, 1) if total_grupo > 0 else 0
+    }
+    
+    # GMV e Status da BASE GERAL (não da planilha de onboarding)
+    gmv_total_base = lojas_onb_na_base['gmv_mes_local'].sum()
+    dashboard_data['onboarding']['gmv_total'] = round(gmv_total_base, 2)
+    
+    # % Sellers da base geral
+    sellers_onb = lojas_onb_na_base[lojas_onb_na_base['status_seller'].isin(SELLER_STATUS)]
+    pct_sellers_onb = round(len(sellers_onb) / ids_na_base * 100, 1) if ids_na_base > 0 else 0
+    dashboard_data['onboarding']['pct_sellers'] = pct_sellers_onb
+    
+    # Status por pedidos - DA BASE GERAL
+    status_dist_base = lojas_onb_na_base['status_seller'].value_counts()
+    for status, count in status_dist_base.items():
+        label = STATUS_LABELS.get(status, status)
+        dashboard_data['onboarding']['status_pedidos'].append({
+            'status': str(status),
+            'label': label,
+            'count': int(count),
+            'pct': round(count / ids_na_base * 100, 1) if ids_na_base > 0 else 0
+        })
+    
+    # Potential Sellers (subset do grupo teste)
+    if onboarding_potential is not None:
+        pot = onboarding_potential.copy()
+        total_pot = len(pot)
+        pot_ids = set(pot['Store ID'].dropna().astype(int))
+        lojas_pot_na_base = lojas_ativas[lojas_ativas[id_col].isin(pot_ids)]
+        pot_na_base = len(lojas_pot_na_base)
+        
+        dashboard_data['onboarding']['potential_sellers'] = {
+            'total': total_pot,
+            'na_base': pot_na_base,
+            'pct_na_base': round(pot_na_base / total_pot * 100, 1) if total_pot > 0 else 0,
+            'gmv_total': round(lojas_pot_na_base['gmv_mes_local'].sum(), 2),
+            'pct_sellers': round(len(lojas_pot_na_base[lojas_pot_na_base['status_seller'].isin(SELLER_STATUS)]) / pot_na_base * 100, 1) if pot_na_base > 0 else 0
+        }
+    
+    # =========================================================================
+    # DADOS ESPECÍFICOS DO ONBOARDING (da planilha de onboarding)
+    # =========================================================================
+    
+    # Funil de Onboarding Steps (da planilha)
+    steps_col = 'Onboarding - Steps completed'
+    if steps_col in onb.columns:
+        step_names = ['Layout', 'Products', 'Shipping', 'Payment']
+        step_counts = {s: 0 for s in step_names}
+        
+        for val in onb[steps_col].dropna():
+            for step in step_names:
+                if step in str(val):
+                    step_counts[step] += 1
+        
+        total_lojas = len(onb)
+        for step in step_names:
+            dashboard_data['onboarding']['funil_steps'].append({
+                'step': step,
+                'count': step_counts[step],
+                'pct': round(step_counts[step] / total_lojas * 100, 1) if total_lojas > 0 else 0
+            })
+        
+        # Combinações mais comuns
+        steps_dist = onb[steps_col].value_counts().head(10)
+        dashboard_data['onboarding']['steps_combinacoes'] = [
+            {'combo': str(k), 'count': int(v), 'pct': round(v/total_lojas*100, 1)}
+            for k, v in steps_dist.items()
+        ]
+    
+    # Cobertura de produtos (da planilha de onboarding)
+    if 'has_nuvemenvio' in onb.columns:
+        ne_count = onb['has_nuvemenvio'].astype(str).str.lower().isin(['true', '1']).sum()
+        dashboard_data['onboarding']['cobertura_produtos'].append({
+            'produto': 'Nuvem Envio',
+            'count': int(ne_count),
+            'pct': round(ne_count / total_grupo * 100, 1)
+        })
+    
+    if 'active_gateways_fintech' in onb.columns:
+        np_count = onb['active_gateways_fintech'].str.contains('Nuvem Pago', case=False, na=False).sum()
+        dashboard_data['onboarding']['cobertura_produtos'].append({
+            'produto': 'Nuvem Pago',
+            'count': int(np_count),
+            'pct': round(np_count / total_grupo * 100, 1)
+        })
+        mp_count = onb['active_gateways_fintech'].str.contains('Mercado Pago', case=False, na=False).sum()
+        dashboard_data['onboarding']['cobertura_produtos'].append({
+            'produto': 'Mercado Pago',
+            'count': int(mp_count),
+            'pct': round(mp_count / total_grupo * 100, 1)
+        })
+    
+    # Qualificação (da planilha de onboarding)
+    qual_col = '[LCY BR] Qualificação - Potencial Sellers'
+    if qual_col in onb.columns:
+        qual_dist = onb[qual_col].value_counts().sort_index()
+        for score, count in qual_dist.items():
+            if pd.notna(score):
+                dashboard_data['onboarding']['qualificacao'].append({
+                    'score': int(score) if pd.notna(score) else 'N/A',
+                    'count': int(count),
+                    'pct': round(count / total_grupo * 100, 1)
+                })
+    
+    # Lista de lojas para download - CRUZANDO base geral + dados do onboarding
+    # Pegar dados da base geral (GMV, Status, Pedidos)
+    lojas_base_para_lista = lojas_onb_na_base[[id_col, 'store_name', 'status_seller', 'gmv_mes_local', 'orders_mes', 'main_user']].copy()
+    lojas_base_para_lista = lojas_base_para_lista.rename(columns={
+        id_col: 'ID',
+        'store_name': 'Nome',
+        'status_seller': 'Status',
+        'gmv_mes_local': 'GMV',
+        'orders_mes': 'Pedidos',
+        'main_user': 'Email'
+    })
+    
+    # Pegar dados específicos do onboarding (Steps, Score)
+    onb_dados = onb[['Store ID', steps_col, qual_col]].copy() if steps_col in onb.columns and qual_col in onb.columns else onb[['Store ID']].copy()
+    if steps_col in onb.columns:
+        onb_dados = onb_dados.rename(columns={steps_col: 'Steps Onboarding'})
+    if qual_col in onb.columns:
+        onb_dados = onb_dados.rename(columns={qual_col: 'Score'})
+    onb_dados = onb_dados.rename(columns={'Store ID': 'ID'})
+    
+    # Merge: base geral + dados do onboarding
+    lojas_lista = lojas_base_para_lista.merge(onb_dados, on='ID', how='left')
+    
+    # Ordenar por GMV e pegar top 500
+    lojas_lista = lojas_lista.nlargest(500, 'GMV')
+    
+    # Formatar
+    lojas_lista['GMV'] = lojas_lista['GMV'].round(2)
+    lojas_lista['Score'] = lojas_lista['Score'].fillna(0).astype(int) if 'Score' in lojas_lista.columns else 0
+    
+    dashboard_data['onboarding']['lista_lojas'] = lojas_lista.to_dict('records')
+    
+    print(f"  ✅ Onboarding: {total_grupo:,} lojas no grupo teste")
+    print(f"  ✅ Na base geral: {ids_na_base:,} lojas | GMV: R$ {gmv_total_base/1e6:.2f}M | {pct_sellers_onb}% sellers")
+    print(f"  ✅ {dashboard_data['onboarding']['potential_sellers']['total']:,} potential sellers")
+else:
+    print("  ⚠️ Dados de onboarding não disponíveis")
+
+# =============================================================================
 # GERAR HTML
 # =============================================================================
 print("\n🎨 Gerando HTML...")
+
+# Função para gerar seção de uplift do onboarding
+def generate_onboarding_uplift_section():
+    """Gera HTML para a seção de resultados do experimento de onboarding"""
+    uplift = dashboard_data.get('new_sellers', {}).get('uplift_onboarding')
+    if not uplift:
+        return '<div class="insight-box"><p>Dados de uplift não disponíveis. Aguardando mais dados para análise.</p></div>'
+    
+    # Determinação de cores e status
+    sig_class = "positive" if uplift['significativo'] else "negative"
+    sig_text = "✅ Sim" if uplift['significativo'] else "⚠️ Não"
+    amostra_ok = uplift.get('amostra_suficiente', True)
+    amostra_class = "positive" if amostra_ok else "warning"
+    amostra_text = "✅ Suficiente" if amostra_ok else "⚠️ Amostra pequena"
+    
+    tamanho = uplift.get('tamanho_amostra_analise', {})
+    
+    html = f'''
+            <h2 class="section-title">📊 Resultado do Experimento: Onboarding vs Controle</h2>
+            <div class="card">
+                <div class="card-title">Análise de Significância Estatística</div>
+                <div class="insight-box {"positive" if uplift["significativo"] else "neutral"}">
+                    <h4>Métrica Principal: {uplift['metrica']}</h4>
+                    <p style="margin-top:8px;">Comparação entre lojas que passaram pelo onboarding e grupo controle (lojas criadas a partir de Out/2025 sem onboarding).</p>
+                </div>
+                
+                <div class="two-columns" style="margin-top:16px;">
+                    <div>
+                        <h4 style="margin-bottom:12px;">Tempo até Virar Seller</h4>
+                        <table>
+                            <thead><tr><th>Grupo</th><th>N</th><th>Média (dias)</th><th>Mediana (dias)</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>{uplift['grupo_teste']['nome']}</strong></td>
+                                    <td>{uplift['grupo_teste']['n']}</td>
+                                    <td class="positive">{uplift['grupo_teste']['media']}</td>
+                                    <td>{int(uplift['grupo_teste']['mediana'])}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{uplift['grupo_controle']['nome']}</strong></td>
+                                    <td>{uplift['grupo_controle']['n']}</td>
+                                    <td>{uplift['grupo_controle']['media']}</td>
+                                    <td>{int(uplift['grupo_controle']['mediana'])}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:12px;">Resultado Estatístico</h4>
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div class="card" style="background:var(--bg-secondary);padding:16px;">
+                                <span class="text-muted">Uplift (redução no tempo):</span>
+                                <div class="positive" style="font-size:2rem;font-weight:700;">{uplift['uplift_pct']}%</div>
+                                <span class="text-muted" style="font-size:0.75rem;">mais rápido para virar seller</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                                    <span class="text-muted" style="font-size:0.75rem;">p-value</span>
+                                    <div style="font-weight:600;">{uplift['p_value']}</div>
+                                </div>
+                                <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                                    <span class="text-muted" style="font-size:0.75rem;">Significativo?</span>
+                                    <div class="{sig_class}" style="font-weight:600;">{sig_text}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
+                    <h4 style="margin-bottom:12px;">Análise do Tamanho da Amostra</h4>
+                    <div class="grid grid-4" style="margin-top:12px;">
+                        <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                            <span class="text-muted" style="font-size:0.75rem;">N Grupo Teste</span>
+                            <div style="font-weight:600;">{tamanho.get('n_teste', uplift['grupo_teste']['n'])}</div>
+                            <span class="text-muted" style="font-size:0.7rem;">{tamanho.get('pct_teste', 0)}% do total</span>
+                        </div>
+                        <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                            <span class="text-muted" style="font-size:0.75rem;">N Grupo Controle</span>
+                            <div style="font-weight:600;">{tamanho.get('n_controle', uplift['grupo_controle']['n'])}</div>
+                            <span class="text-muted" style="font-size:0.7rem;">{tamanho.get('pct_controle', 0)}% do total</span>
+                        </div>
+                        <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                            <span class="text-muted" style="font-size:0.75rem;">Total Analisado</span>
+                            <div style="font-weight:600;">{tamanho.get('n_total', uplift['grupo_teste']['n'] + uplift['grupo_controle']['n'])}</div>
+                            <span class="text-muted" style="font-size:0.7rem;">new sellers</span>
+                        </div>
+                        <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                            <span class="text-muted" style="font-size:0.75rem;">Amostra</span>
+                            <div class="{amostra_class}" style="font-weight:600;">{amostra_text}</div>
+                            <span class="text-muted" style="font-size:0.7rem;">mín. 30 por grupo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    '''
+    
+    # Adicionar seção de análise de churn
+    churn = dashboard_data.get('new_sellers', {}).get('churn_onboarding')
+    if churn and churn.get('teste_estatistico'):
+        test = churn['teste_estatistico']
+        por_grupo = churn.get('por_grupo', {})
+        
+        # Determinar cores baseado no resultado
+        churn_sig_class = "positive" if test['significativo'] else "neutral"
+        churn_sig_text = "✅ Sim" if test['significativo'] else "⚠️ Não"
+        diff_class = "positive" if test['diff_pp'] > 0 else "negative"
+        
+        # Gerar linhas da tabela de quartis
+        quartis_names = [
+            ('baixo', 'Baixo (0-25%)', '#00c87b'),
+            ('moderado', 'Moderado (25-50%)', '#c87b00'),
+            ('alto', 'Alto (50-75%)', '#f77a7c'),
+            ('critico', 'Crítico (75-100%)', '#c80003')
+        ]
+        
+        quartis_comparison = []
+        onb_data = por_grupo.get('onboarding', {}).get('quartis', {})
+        ctrl_data = por_grupo.get('grupo_controle', {}).get('quartis', {})
+        
+        for key, name, color in quartis_names:
+            pct_onb = onb_data.get(key, {}).get('pct', 0)
+            pct_ctrl = ctrl_data.get(key, {}).get('pct', 0)
+            diff = round(pct_onb - pct_ctrl, 1)
+            # Para quartis de baixo risco, ter mais é bom. Para alto risco, ter menos é bom.
+            is_good = (key == 'baixo' and diff > 0) or (key in ['alto', 'critico'] and diff < 0)
+            quartis_comparison.append({
+                'name': name,
+                'color': color,
+                'pct_onb': pct_onb,
+                'pct_ctrl': pct_ctrl,
+                'diff': diff,
+                'is_good': is_good
+            })
+        
+        html += f'''
+            <h2 class="section-title" style="margin-top:32px;">🚨 Risco Preditivo de Churn: Onboarding vs Controle</h2>
+            <div class="card">
+                <div class="card-title">Comparação de Risco de Churn entre Grupos</div>
+                <div class="insight-box {churn_sig_class}">
+                    <h4>Métrica: Probabilidade de Churn Preditivo</h4>
+                    <p style="margin-top:8px;">Análise do risco de churn entre lojas que passaram pelo onboarding vs grupo controle.</p>
+                </div>
+                
+                <div class="two-columns" style="margin-top:16px;">
+                    <div>
+                        <h4 style="margin-bottom:12px;">Média de Risco por Grupo</h4>
+                        <table>
+                            <thead><tr><th>Grupo</th><th>N</th><th>Churn Médio</th><th>Churn Mediana</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Com Onboarding</strong></td>
+                                    <td>{por_grupo.get('onboarding', {}).get('n_com_churn', 0)}</td>
+                                    <td class="positive">{por_grupo.get('onboarding', {}).get('churn_medio', 0)}%</td>
+                                    <td>{por_grupo.get('onboarding', {}).get('churn_mediana', 0)}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Grupo Controle</strong></td>
+                                    <td>{por_grupo.get('grupo_controle', {}).get('n_com_churn', 0)}</td>
+                                    <td>{por_grupo.get('grupo_controle', {}).get('churn_medio', 0)}%</td>
+                                    <td>{por_grupo.get('grupo_controle', {}).get('churn_mediana', 0)}%</td>
+                                </tr>
+                                <tr style="background:var(--bg-secondary);">
+                                    <td><strong>Base Antiga</strong></td>
+                                    <td>{por_grupo.get('base_antiga', {}).get('n_com_churn', 0)}</td>
+                                    <td class="negative">{por_grupo.get('base_antiga', {}).get('churn_medio', 0)}%</td>
+                                    <td>{por_grupo.get('base_antiga', {}).get('churn_mediana', 0)}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:12px;">Resultado Estatístico</h4>
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div class="card" style="background:var(--bg-secondary);padding:16px;">
+                                <span class="text-muted">Diferença (Ctrl - Onb):</span>
+                                <div class="{diff_class}" style="font-size:2rem;font-weight:700;">{test['diff_pp']}pp</div>
+                                <span class="text-muted" style="font-size:0.75rem;">{"menor risco no onboarding" if test['diff_pp'] > 0 else "maior risco no onboarding"}</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                                    <span class="text-muted" style="font-size:0.75rem;">p-value</span>
+                                    <div style="font-weight:600;">{test['p_value']}</div>
+                                </div>
+                                <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
+                                    <span class="text-muted" style="font-size:0.75rem;">Significativo?</span>
+                                    <div class="{churn_sig_class}" style="font-weight:600;">{churn_sig_text}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
+                    <h4 style="margin-bottom:12px;">Distribuição por Quartil de Risco</h4>
+                    <p class="text-muted" style="margin-bottom:12px;">Comparação da distribuição de lojas em cada faixa de risco. Diferenças negativas nos quartis de maior risco indicam que o onboarding ajuda a reduzir o risco.</p>
+                    <div class="quartile-comparison">
+                        {''.join([f'<div class="quartile-card" style="background:{q["color"]}15;border:2px solid {q["color"]};"><h4 style="color:{q["color"]};">{q["name"]}</h4><div class="quartile-row"><span class="quartile-label">Onboarding</span><span class="quartile-value" style="color:{q["color"]};">{q["pct_onb"]}%</span></div><div class="quartile-row"><span class="quartile-label">Controle</span><span class="quartile-value">{q["pct_ctrl"]}%</span></div><div class="quartile-row"><span class="quartile-label">Diferença</span><span class="quartile-value {"positive" if q["is_good"] else "negative" if not q["is_good"] and q["diff"]!=0 else ""}">{("+" if q["diff"]>0 else "")}{q["diff"]}pp</span></div></div>' for q in quartis_comparison])}
+                    </div>
+                </div>
+            </div>
+        '''
+    
+    return html
+
+def generate_conversion_rate_onboarding():
+    """Calcula taxa de conversão do grupo de onboarding baseado nos New Sellers"""
+    uplift = dashboard_data.get('new_sellers', {}).get('uplift_onboarding')
+    if uplift:
+        n_teste = uplift['grupo_teste']['n']
+        n_total_onb = 0
+        # Buscar total de new sellers no onboarding do último mês
+        por_mes = dashboard_data.get('new_sellers', {}).get('por_mes', [])
+        if por_mes:
+            n_total_onb = por_mes[0].get('por_grupo', {}).get('onboarding', {}).get('n', 0)
+        
+        if n_total_onb > 0:
+            # n_teste são os que viraram seller (que têm first_seller_at)
+            taxa = round(n_teste / n_total_onb * 100, 1) if n_total_onb > 0 else 0
+            return f"{taxa}%"
+    return "N/A"
+
+def generate_onboarding_status_section():
+    """Gera seção de status apenas se houver dados válidos"""
+    onb = dashboard_data.get('onboarding', {})
+    status_pedidos = onb.get('status_pedidos', [])
+    cobertura_produtos = onb.get('cobertura_produtos', [])
+    
+    # Verificar se há dados válidos (não só "not informed")
+    has_valid_status = any(s.get('status') != 'not informed' and s.get('count', 0) > 0 for s in status_pedidos)
+    has_valid_products = any(p.get('count', 0) > 0 for p in cobertura_produtos)
+    
+    if not has_valid_status and not has_valid_products:
+        return '''
+            <div class="insight-box" style="margin-top:16px;">
+                <h4>📋 Status e Cobertura de Produtos</h4>
+                <p>Dados de status e cobertura de produtos não estão disponíveis para este grupo na base atual. Atualize a base geral com dados mais recentes para visualizar estas métricas.</p>
+            </div>
+        '''
+    
+    html = ''
+    
+    if has_valid_status:
+        status_rows = ''.join([f'<tr><td><strong>{s.get("label", s["status"])}</strong></td><td>{s["count"]:,}</td><td>{s["pct"]}%</td></tr>' for s in status_pedidos if s.get('status') != 'not informed'])
+        html += f'''
+            <h2 class="section-title">Status por Pedidos (Base Geral)</h2>
+            <div class="two-columns">
+                <div class="card">
+                    <div class="card-title">Distribuição por Status</div>
+                    <div class="chart-container"><canvas id="chartOnboardingStatus"></canvas></div>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>Status</th><th>Lojas</th><th>%</th></tr></thead>
+                        <tbody>{status_rows}</tbody>
+                    </table>
+                </div>
+            </div>
+        '''
+    
+    if has_valid_products:
+        products_html = ''.join([f'<div class="card"><div class="card-title">{p["produto"]}</div><div class="card-value {"positive" if p["pct"]>50 else ""}">{p["pct"]}%</div><div class="card-subtitle">{p["count"]:,} lojas</div></div>' for p in cobertura_produtos])
+        html += f'''
+            <h2 class="section-title">Cobertura de Produtos</h2>
+            <div class="grid grid-3">{products_html}</div>
+        '''
+    
+    return html
+
+def generate_onboarding_insights():
+    """Gera insights automáticos para a aba de Onboarding"""
+    insights = []
+    
+    uplift = dashboard_data.get('new_sellers', {}).get('uplift_onboarding')
+    onb = dashboard_data.get('onboarding', {})
+    
+    # Insight sobre uplift
+    if uplift and uplift.get('significativo'):
+        insights.append(f"<strong>🚀 Resultado Positivo:</strong> O Onboarding V2 reduz o tempo para virar seller em <span class='positive'>{uplift['uplift_pct']}%</span>, de {uplift['grupo_controle']['media']} dias para {uplift['grupo_teste']['media']} dias em média. Resultado estatisticamente significativo (p-value = {uplift['p_value']}).")
+    elif uplift:
+        insights.append(f"<strong>⚠️ Atenção:</strong> A diferença observada ({uplift['uplift_pct']}% mais rápido) ainda não é estatisticamente significativa (p-value = {uplift['p_value']}). Recomenda-se aguardar mais dados.")
+    
+    # Insight sobre tamanho de amostra
+    if uplift and uplift.get('amostra_suficiente'):
+        insights.append(f"<strong>📊 Amostra Robusta:</strong> Análise com {uplift['grupo_teste']['n']} lojas no grupo teste e {uplift['grupo_controle']['n']} no controle - amostras suficientes para conclusões estatísticas.")
+    elif uplift:
+        insights.append(f"<strong>⚠️ Amostra Limitada:</strong> Embora haja diferença, o tamanho atual das amostras (Teste: {uplift['grupo_teste']['n']}, Controle: {uplift['grupo_controle']['n']}) pode limitar a confiança nos resultados.")
+    
+    # Insight sobre cobertura na base
+    if onb.get('disponivel') and onb.get('grupo_teste', {}).get('pct_na_base', 0) < 50:
+        insights.append(f"<strong>📋 Nota sobre Base:</strong> Apenas {onb['grupo_teste']['pct_na_base']}% das lojas do grupo teste estão na base geral de dezembro. Isso ocorre porque o onboarding é mais recente. Atualize a base para dados mais precisos de GMV e Status.")
+    
+    # Insight sobre funnel de steps
+    steps = onb.get('funil_steps', [])
+    if steps:
+        step_mais_completado = max(steps, key=lambda x: x['pct'])
+        step_menos_completado = min(steps, key=lambda x: x['pct'])
+        if step_mais_completado['pct'] - step_menos_completado['pct'] > 20:
+            insights.append(f"<strong>📈 Funil de Steps:</strong> {step_mais_completado['step']} é a etapa mais completada ({step_mais_completado['pct']}%), enquanto {step_menos_completado['step']} tem menor adesão ({step_menos_completado['pct']}%). Considere melhorar a experiência de {step_menos_completado['step']}.")
+    
+    # Insight sobre potential sellers
+    pot = onb.get('potential_sellers', {})
+    if pot.get('total', 0) > 0:
+        insights.append(f"<strong>🎯 Potential Sellers:</strong> {pot['total']:,} lojas identificadas como potential sellers representam oportunidade de conversão.")
+    
+    # Insight sobre churn
+    churn = dashboard_data.get('new_sellers', {}).get('churn_onboarding')
+    if churn and churn.get('teste_estatistico'):
+        test = churn['teste_estatistico']
+        if test.get('significativo') and test.get('diff_pp', 0) > 0:
+            insights.append(f"<strong>🛡️ Menor Risco de Churn:</strong> O grupo de onboarding apresenta <span class='positive'>{test['diff_pp']}pp menos risco de churn</span> ({test['media_onb']}% vs {test['media_ctrl']}% do controle). Resultado estatisticamente significativo (p-value = {test['p_value']}).")
+        elif test.get('significativo'):
+            insights.append(f"<strong>⚠️ Risco de Churn:</strong> O grupo de onboarding apresenta {abs(test['diff_pp'])}pp mais risco de churn que o controle. Necessário investigar.")
+        else:
+            insights.append(f"<strong>📊 Churn:</strong> Diferença de {test['diff_pp']}pp no risco de churn ainda não é estatisticamente significativa (p-value = {test['p_value']}).")
+    
+    if not insights:
+        insights.append("<strong>📊 Aguardando Dados:</strong> Insights serão gerados quando houver dados suficientes para análise.")
+    
+    html = '''
+            <h2 class="section-title">💡 Principais Insights</h2>
+            <div class="insights-section">
+    '''
+    for ins in insights:
+        html += f'<div class="insight-item">{ins}</div>'
+    html += '</div>'
+    
+    return html
 
 # Helpers para tabelas
 ns_rows = ''.join([f"<tr><td>{m['mes']}</td><td>{m['total_new_sellers']:,}</td><td>{m['com_lifecycle']}</td><td class='{'positive' if m['pct_cobertura']>5 else 'neutral' if m['pct_cobertura']>2 else ''}'>{m['pct_cobertura']}%</td></tr>" for m in dashboard_data['new_sellers']['por_mes'][:6]])
@@ -1812,7 +2545,7 @@ html_content = f'''<!DOCTYPE html>
         <div class="tab" onclick="showTab('risco')">Risco de Churn</div>
         <div class="tab" onclick="showTab('cobertura')">Cobertura Lifecycle</div>
         <div class="tab" onclick="showTab('webinars')">Projeto: Webinars</div>
-        <div class="tab disabled">Onboarding <span class="badge soon">em breve</span></div>
+        <div class="tab" onclick="showTab('onboarding')">Projeto: Onboarding</div>
         <div class="tab disabled">Human in the Loop <span class="badge soon">em breve</span></div>
     </div>
     
@@ -1828,11 +2561,24 @@ html_content = f'''<!DOCTYPE html>
                 <div class="card"><div class="card-title">Risco Médio</div><div class="card-value negative">{dashboard_data['resumo']['churn_prob_media']}%</div></div>
             </div>
             
-            <h2 class="section-title">New Sellers</h2>
-            <div class="grid grid-4">
-                <div class="card"><div class="card-title">Total New Sellers</div><div class="card-value gradient">{dashboard_data['new_sellers']['soma_total']:,}</div></div>
-                <div class="card" style="grid-column:span 3;"><div class="card-title">Impacto por Mês</div><table><thead><tr><th>Mês</th><th>New Sellers</th><th>Com Lifecycle</th><th>%</th></tr></thead><tbody>{ns_rows}</tbody></table></div>
+            <h2 class="section-title">Impacto em New Sellers por Projeto</h2>
+            <div class="grid grid-5">
+                <div class="card"><div class="card-title">Total New Sellers</div><div class="card-value gradient">{dashboard_data['new_sellers']['soma_total']:,}</div><div class="card-subtitle">último mês</div></div>
+                {''.join([f'<div class="card"><div class="card-title">{p["projeto"]}</div><div class="card-value {"positive" if p["projeto"]=="Onboarding V2" else ""}">{p["pct"]}%</div><div class="card-subtitle">{p["n"]:,} lojas</div></div>' for p in dashboard_data['new_sellers']['impacto_por_projeto']])}
             </div>
+            <div class="card" style="margin-top:16px;">
+                <div class="card-title">Detalhamento por Grupo</div>
+                <table>
+                    <thead><tr><th>Grupo</th><th>New Sellers</th><th>% do Total</th><th>Descrição</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Onboarding V2</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][0]['n']:,}</td><td class="positive">{dashboard_data['new_sellers']['impacto_por_projeto'][0]['pct']}%</td><td>Grupo Teste</td></tr>
+                        <tr><td><strong>Grupo Controle</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][1]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][1]['pct']}%</td><td>Criados a partir de Out/2025, sem onboarding</td></tr>
+                        <tr><td><strong>Base Antiga</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][2]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][2]['pct']}%</td><td>Criados antes de Out/2025</td></tr>
+                        <tr><td><strong>Webinars</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][3]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][3]['pct']}%</td><td>Participaram de webinars</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
             
             <h2 class="section-title">Matriz de Transição</h2>
             {matriz_html}
@@ -2041,6 +2787,46 @@ html_content = f'''<!DOCTYPE html>
             
             {insights_webinars_html}
         </div>
+        
+        <!-- ONBOARDING -->
+        <div id="onboarding" class="tab-content">
+            <h2 class="section-title">Visão Geral do Onboarding V2</h2>
+            <div class="insight-box warning">
+                <h4>⚠️ Nota sobre Dados</h4>
+                <p>A base geral disponível é de <strong>{dashboard_data['resumo']['data_base']}</strong>. Como o Onboarding V2 é um experimento recente (2026), as lojas ainda não possuem histórico de GMV e Status nesta base. Os dados de conversão (tempo até virar seller) vêm da base de New Sellers que é mais atual.</p>
+            </div>
+            <div class="grid grid-4">
+                <div class="card"><div class="card-title">Grupo Teste</div><div class="card-value gradient">{dashboard_data['onboarding']['grupo_teste']['total']:,}</div><div class="card-subtitle">lojas no experimento</div></div>
+                <div class="card"><div class="card-title">Na Base Geral</div><div class="card-value">{dashboard_data['onboarding']['grupo_teste']['na_base']:,}</div><div class="card-subtitle">{dashboard_data['onboarding']['grupo_teste']['pct_na_base']}% encontradas</div></div>
+                <div class="card"><div class="card-title">Potential Sellers</div><div class="card-value positive">{dashboard_data['onboarding']['potential_sellers']['total']:,}</div><div class="card-subtitle">alta qualificação</div></div>
+                <div class="card"><div class="card-title">Taxa de Conversão</div><div class="card-value positive">{generate_conversion_rate_onboarding()}</div><div class="card-subtitle">viraram seller</div></div>
+            </div>
+            
+            <h2 class="section-title">Funil de Onboarding Steps</h2>
+            <div class="insight-box">
+                <h4>Etapas completadas no onboarding</h4>
+                <p>Cada loja pode completar múltiplas etapas: Layout, Products, Shipping, Payment.</p>
+            </div>
+            <div class="grid grid-4">
+                {''.join([f'<div class="card"><div class="card-title">{s["step"]}</div><div class="card-value">{s["count"]:,}</div><div class="card-subtitle">{s["pct"]}% das lojas</div></div>' for s in dashboard_data['onboarding']['funil_steps']])}
+            </div>
+            
+            <h2 class="section-title">Combinações de Steps mais Comuns</h2>
+            <div class="card">
+                <table>
+                    <thead><tr><th>Combinação</th><th>Lojas</th><th>%</th></tr></thead>
+                    <tbody>
+                        {''.join([f'<tr><td><strong>{c["combo"]}</strong></td><td>{c["count"]:,}</td><td>{c["pct"]}%</td></tr>' for c in dashboard_data['onboarding'].get('steps_combinacoes', [])[:10]])}
+                    </tbody>
+                </table>
+            </div>
+            
+            {generate_onboarding_status_section()}
+            
+            {generate_onboarding_uplift_section()}
+            
+            {generate_onboarding_insights()}
+        </div>
     </div>
     
     <!-- Modal de Detalhes -->
@@ -2225,6 +3011,16 @@ html_content = f'''<!DOCTYPE html>
             downloadCSV(lojas, filename);
         }}
         
+        function downloadOnboardingList() {{
+            const lojas = data.onboarding.lista_lojas || [];
+            if (lojas.length === 0) {{
+                alert('Não há dados para download');
+                return;
+            }}
+            const filename = `onboarding_grupo_teste_${{new Date().toISOString().split('T')[0]}}`;
+            downloadCSV(lojas, filename);
+        }}
+        
         function downloadCSV(dataArray, filename) {{
             if (!dataArray || dataArray.length === 0) return;
             
@@ -2373,6 +3169,78 @@ html_content = f'''<!DOCTYPE html>
                         }}
                     }}
                 }});
+            }}
+            
+            // Onboarding Status Chart
+            const ctxOnbStatus = document.getElementById('chartOnboardingStatus');
+            if (ctxOnbStatus && !ctxOnbStatus.chart && data.onboarding.status_pedidos && data.onboarding.status_pedidos.length > 0) {{
+                const statusData = data.onboarding.status_pedidos;
+                const statusColorMap = {{
+                    'no-seller': nimbusColors.danger,
+                    'struggling-seller': nimbusColors.warning,
+                    'tiny-seller': nimbusColors.warningLight,
+                    'small-seller': nimbusColors.successLight,
+                    'medium-seller': nimbusColors.success,
+                    'large-seller': '#00935b',
+                    'top-seller': nimbusColors.primary,
+                    'Not Informed': nimbusColors.neutral
+                }};
+                ctxOnbStatus.chart = new Chart(ctxOnbStatus, {{
+                    type: 'doughnut',
+                    data: {{
+                        labels: statusData.map(d => d.status),
+                        datasets: [{{
+                            data: statusData.map(d => d.count),
+                            backgroundColor: statusData.map(d => statusColorMap[d.status] || nimbusColors.neutral),
+                            borderWidth: 0
+                        }}]
+                    }},
+                    options: {{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {{ legend: {{ position: 'right' }} }}
+                    }}
+                }});
+            }}
+            
+            // Onboarding Qualificação Chart
+            const ctxOnbQual = document.getElementById('chartOnboardingQual');
+            if (ctxOnbQual && !ctxOnbQual.chart && data.onboarding.qualificacao && data.onboarding.qualificacao.length > 0) {{
+                const qualData = data.onboarding.qualificacao;
+                ctxOnbQual.chart = new Chart(ctxOnbQual, {{
+                    type: 'bar',
+                    data: {{
+                        labels: qualData.map(d => 'Score ' + d.score),
+                        datasets: [{{
+                            label: 'Lojas',
+                            data: qualData.map(d => d.count),
+                            backgroundColor: nimbusColors.primary,
+                            borderRadius: 4
+                        }}]
+                    }},
+                    options: {{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {{ legend: {{ display: false }} }}
+                    }}
+                }});
+            }}
+            
+            // Preencher tabela de onboarding
+            const onbTableBody = document.getElementById('onboardingTableBody');
+            if (onbTableBody && data.onboarding.lista_lojas && data.onboarding.lista_lojas.length > 0) {{
+                const lojas = data.onboarding.lista_lojas.slice(0, 50); // Top 50 na tabela
+                onbTableBody.innerHTML = lojas.map(l => `
+                    <tr>
+                        <td>${{l.ID || l['Store ID'] || '-'}}</td>
+                        <td>${{l.Nome || l['Nome da empresa'] || '-'}}</td>
+                        <td>${{l.Status || '-'}}</td>
+                        <td>R$ ${{(l.GMV || 0).toLocaleString('pt-BR', {{minimumFractionDigits: 2, maximumFractionDigits: 2}})}}</td>
+                        <td>${{l['Pedidos Total'] || l['total_orders'] || 0}}</td>
+                        <td>${{l['Steps Onboarding'] || l['Onboarding - Steps completed'] || '-'}}</td>
+                        <td>${{l.Score || l['[LCY BR] Qualificação - Potencial Sellers'] || '-'}}</td>
+                    </tr>
+                `).join('');
             }}
         }}
         
