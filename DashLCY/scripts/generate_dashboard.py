@@ -1296,6 +1296,96 @@ if onboarding_grupo_teste is not None and len(onboarding_grupo_teste) > 0:
     print(f"  ✅ Onboarding: {total_grupo:,} lojas no grupo teste")
     print(f"  ✅ Na base geral: {ids_na_base:,} lojas | GMV: R$ {gmv_total_base/1e6:.2f}M | {pct_sellers_onb}% sellers")
     print(f"  ✅ {dashboard_data['onboarding']['potential_sellers']['total']:,} potential sellers")
+    
+    # =========================================================================
+    # ANÁLISE DE CHURN EXPANDIDA: GRUPO TESTE COMPLETO vs BASE GERAL
+    # =========================================================================
+    print("  📊 Analisando churn do grupo teste completo...")
+    
+    from scipy import stats
+    
+    def calc_churn_metrics(df, name):
+        """Calcula métricas de churn para um DataFrame"""
+        churn = df['predictive_churn_probability'].dropna()
+        if len(churn) == 0:
+            return None
+        
+        q1 = int((churn <= 0.25).sum())
+        q2 = int(((churn > 0.25) & (churn <= 0.50)).sum())
+        q3 = int(((churn > 0.50) & (churn <= 0.75)).sum())
+        q4 = int((churn > 0.75).sum())
+        total = len(churn)
+        
+        return {
+            'nome': name,
+            'n': int(total),
+            'churn_medio': float(round(churn.mean() * 100, 1)),
+            'churn_mediana': float(round(churn.median() * 100, 1)),
+            'quartis': {
+                'baixo': {'n': q1, 'pct': float(round(q1/total*100, 1))},
+                'moderado': {'n': q2, 'pct': float(round(q2/total*100, 1))},
+                'alto': {'n': q3, 'pct': float(round(q3/total*100, 1))},
+                'critico': {'n': q4, 'pct': float(round(q4/total*100, 1))}
+            }
+        }
+    
+    # Lojas do grupo teste na base
+    lojas_grupo_teste = lojas_ativas[lojas_ativas[id_col].isin(onb_ids)].copy()
+    
+    # Potential Sellers
+    pot_ids = set()
+    if onboarding_potential is not None:
+        pot_ids = set(onboarding_potential['Store ID'].dropna().astype(int))
+    lojas_potential = lojas_ativas[lojas_ativas[id_col].isin(pot_ids)].copy()
+    
+    # Resto do grupo teste (não potential)
+    resto_onb_ids = onb_ids - pot_ids
+    lojas_resto_teste = lojas_ativas[lojas_ativas[id_col].isin(resto_onb_ids)].copy()
+    
+    # Base geral (sem onboarding)
+    lojas_sem_onb = lojas_ativas[~lojas_ativas[id_col].isin(onb_ids)].copy()
+    
+    # Calcular métricas
+    churn_grupo_teste = calc_churn_metrics(lojas_grupo_teste, 'Grupo Teste (Onboarding)')
+    churn_potential = calc_churn_metrics(lojas_potential, 'Potential Sellers')
+    churn_resto_teste = calc_churn_metrics(lojas_resto_teste, 'Resto Grupo Teste')
+    churn_base_geral = calc_churn_metrics(lojas_sem_onb, 'Base Geral (sem Onboarding)')
+    
+    # Testes estatísticos
+    def calc_test(df1, df2, name1, name2):
+        churn1 = df1['predictive_churn_probability'].dropna()
+        churn2 = df2['predictive_churn_probability'].dropna()
+        if len(churn1) > 10 and len(churn2) > 10:
+            t_stat, p_value = stats.ttest_ind(churn1, churn2)
+            return {
+                'grupo1': name1,
+                'grupo2': name2,
+                'media1': float(round(churn1.mean() * 100, 1)),
+                'media2': float(round(churn2.mean() * 100, 1)),
+                'diff_pp': float(round((churn2.mean() - churn1.mean()) * 100, 1)),
+                'p_value': float(round(p_value, 4)),
+                'significativo': bool(p_value < 0.05)
+            }
+        return None
+    
+    teste_vs_base = calc_test(lojas_grupo_teste, lojas_sem_onb, 'Grupo Teste', 'Base Geral')
+    teste_potential_vs_resto = calc_test(lojas_potential, lojas_resto_teste, 'Potential Sellers', 'Resto Grupo Teste')
+    
+    # Armazenar análise expandida
+    dashboard_data['onboarding']['churn_expandido'] = {
+        'grupo_teste': churn_grupo_teste,
+        'potential_sellers': churn_potential,
+        'resto_teste': churn_resto_teste,
+        'base_geral': churn_base_geral,
+        'teste_vs_base': teste_vs_base,
+        'potential_vs_resto': teste_potential_vs_resto
+    }
+    
+    if teste_vs_base:
+        print(f"      Grupo Teste: {teste_vs_base['media1']}% vs Base Geral: {teste_vs_base['media2']}% | Diff: {teste_vs_base['diff_pp']}pp")
+    if teste_potential_vs_resto:
+        print(f"      Potential: {teste_potential_vs_resto['media1']}% vs Resto: {teste_potential_vs_resto['media2']}% | Diff: {teste_potential_vs_resto['diff_pp']}pp")
+    
 else:
     print("  ⚠️ Dados de onboarding não disponíveis")
 
@@ -1497,10 +1587,161 @@ def generate_onboarding_uplift_section():
                 </div>
                 
                 <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
-                    <h4 style="margin-bottom:12px;">Distribuição por Quartil de Risco</h4>
+                    <h4 style="margin-bottom:12px;">Distribuição por Quartil de Risco (New Sellers)</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Comparação da distribuição de lojas em cada faixa de risco. Diferenças negativas nos quartis de maior risco indicam que o onboarding ajuda a reduzir o risco.</p>
                     <div class="quartile-comparison">
                         {''.join([f'<div class="quartile-card" style="background:{q["color"]}15;border:2px solid {q["color"]};"><h4 style="color:{q["color"]};">{q["name"]}</h4><div class="quartile-row"><span class="quartile-label">Onboarding</span><span class="quartile-value" style="color:{q["color"]};">{q["pct_onb"]}%</span></div><div class="quartile-row"><span class="quartile-label">Controle</span><span class="quartile-value">{q["pct_ctrl"]}%</span></div><div class="quartile-row"><span class="quartile-label">Diferença</span><span class="quartile-value {"positive" if q["is_good"] else "negative" if not q["is_good"] and q["diff"]!=0 else ""}">{("+" if q["diff"]>0 else "")}{q["diff"]}pp</span></div></div>' for q in quartis_comparison])}
+                    </div>
+                </div>
+            </div>
+        '''
+    
+    # Adicionar análise expandida: Grupo Teste Completo vs Base Geral
+    churn_exp = dashboard_data.get('onboarding', {}).get('churn_expandido')
+    if churn_exp:
+        grupo_teste = churn_exp.get('grupo_teste', {})
+        potential = churn_exp.get('potential_sellers', {})
+        resto = churn_exp.get('resto_teste', {})
+        base_geral = churn_exp.get('base_geral', {})
+        teste_vs_base = churn_exp.get('teste_vs_base', {})
+        pot_vs_resto = churn_exp.get('potential_vs_resto', {})
+        
+        # Quartis para comparação expandida
+        quartis_names = [
+            ('baixo', 'Baixo (0-25%)', '#00c87b'),
+            ('moderado', 'Moderado (25-50%)', '#c87b00'),
+            ('alto', 'Alto (50-75%)', '#f77a7c'),
+            ('critico', 'Crítico (75-100%)', '#c80003')
+        ]
+        
+        # Comparação Grupo Teste vs Base Geral
+        quartis_teste_base = []
+        if grupo_teste and base_geral:
+            for key, name, color in quartis_names:
+                pct_teste = grupo_teste.get('quartis', {}).get(key, {}).get('pct', 0)
+                pct_base = base_geral.get('quartis', {}).get(key, {}).get('pct', 0)
+                diff = round(pct_teste - pct_base, 1)
+                is_good = (key == 'baixo' and diff > 0) or (key in ['alto', 'critico'] and diff < 0)
+                quartis_teste_base.append({
+                    'name': name, 'color': color, 'pct_teste': pct_teste, 
+                    'pct_base': pct_base, 'diff': diff, 'is_good': is_good
+                })
+        
+        # Comparação Potential vs Resto
+        quartis_pot_resto = []
+        if potential and resto:
+            for key, name, color in quartis_names:
+                pct_pot = potential.get('quartis', {}).get(key, {}).get('pct', 0)
+                pct_resto = resto.get('quartis', {}).get(key, {}).get('pct', 0)
+                diff = round(pct_pot - pct_resto, 1)
+                is_good = (key == 'baixo' and diff > 0) or (key in ['alto', 'critico'] and diff < 0)
+                quartis_pot_resto.append({
+                    'name': name, 'color': color, 'pct_pot': pct_pot,
+                    'pct_resto': pct_resto, 'diff': diff, 'is_good': is_good
+                })
+        
+        # Gerar HTML dos quartis fora do f-string
+        def make_quartil_card(q, label1, label2, key1, key2):
+            diff_class = "positive" if q["is_good"] else ("negative" if not q["is_good"] and q["diff"]!=0 else "")
+            diff_sign = "+" if q["diff"] > 0 else ""
+            return f'<div class="quartile-card" style="background:{q["color"]}15;border:2px solid {q["color"]};"><h4 style="color:{q["color"]};">{q["name"]}</h4><div class="quartile-row"><span class="quartile-label">{label1}</span><span class="quartile-value" style="color:{q["color"]};">{q[key1]}%</span></div><div class="quartile-row"><span class="quartile-label">{label2}</span><span class="quartile-value">{q[key2]}%</span></div><div class="quartile-row"><span class="quartile-label">Diferença</span><span class="quartile-value {diff_class}">{diff_sign}{q["diff"]}pp</span></div></div>'
+        
+        quartis_teste_base_html = "".join([make_quartil_card(q, "Grupo Teste", "Base Geral", "pct_teste", "pct_base") for q in quartis_teste_base]) if quartis_teste_base else "<p>Dados não disponíveis</p>"
+        quartis_pot_resto_html = "".join([make_quartil_card(q, "Potential", "Resto", "pct_pot", "pct_resto") for q in quartis_pot_resto]) if quartis_pot_resto else "<p>Dados não disponíveis</p>"
+        
+        # Gerar HTML do teste estatístico
+        def make_test_html(test_data):
+            if not test_data:
+                return "<p>Dados insuficientes</p>"
+            sig_class = "positive" if test_data.get("significativo") else "neutral"
+            sig_text = "✅ Sim" if test_data.get("significativo") else "⚠️ Não"
+            return f'<div style="display:flex;flex-direction:column;gap:8px;"><div class="card" style="background:var(--bg-secondary);padding:12px;"><span class="text-muted">Diferença:</span> <strong>{test_data.get("diff_pp", 0)}pp</strong></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div class="card" style="background:var(--bg-secondary);padding:8px;text-align:center;"><span class="text-muted" style="font-size:0.7rem;">p-value</span><div style="font-weight:600;">{test_data.get("p_value", "N/A")}</div></div><div class="card" style="background:var(--bg-secondary);padding:8px;text-align:center;"><span class="text-muted" style="font-size:0.7rem;">Significativo?</span><div class="{sig_class}" style="font-weight:600;">{sig_text}</div></div></div></div>'
+        
+        teste_vs_base_html = make_test_html(teste_vs_base)
+        pot_vs_resto_html = make_test_html(pot_vs_resto)
+        
+        html += f'''
+            <h2 class="section-title" style="margin-top:32px;">📊 Análise Expandida: Grupo Teste Completo (20k lojas)</h2>
+            <div class="insight-box">
+                <h4>Contexto</h4>
+                <p>Esta análise compara <strong>todo o grupo teste do Onboarding</strong> (20k lojas) com a <strong>base geral</strong>. 
+                Note que o grupo de onboarding são lojas mais novas, que naturalmente têm maior risco de churn comparado a lojas estabelecidas.</p>
+            </div>
+            
+            <div class="card" style="margin-top:16px;">
+                <div class="card-title">Grupo Teste vs Base Geral</div>
+                <div class="two-columns" style="margin-top:16px;">
+                    <div>
+                        <h4 style="margin-bottom:12px;">Score de Risco por Grupo</h4>
+                        <table>
+                            <thead><tr><th>Grupo</th><th>N</th><th>Churn Médio</th><th>Mediana</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Grupo Teste (Onboarding)</strong></td>
+                                    <td>{grupo_teste.get('n', 0):,}</td>
+                                    <td>{grupo_teste.get('churn_medio', 0)}%</td>
+                                    <td>{grupo_teste.get('churn_mediana', 0)}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Base Geral (sem Onboarding)</strong></td>
+                                    <td>{base_geral.get('n', 0):,}</td>
+                                    <td class="positive">{base_geral.get('churn_medio', 0)}%</td>
+                                    <td>{base_geral.get('churn_mediana', 0)}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted" style="margin-top:8px;font-size:0.75rem;">* Lojas novas têm maior risco de churn naturalmente</p>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:12px;">Teste Estatístico</h4>
+                        {teste_vs_base_html}
+                    </div>
+                </div>
+                
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
+                    <h4 style="margin-bottom:12px;">Distribuição por Quartil de Risco</h4>
+                    <div class="quartile-comparison">
+                        {quartis_teste_base_html}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:16px;">
+                <div class="card-title">Potential Sellers vs Resto do Grupo Teste</div>
+                <div class="insight-box">
+                    <p>Análise para verificar se os <strong>Potential Sellers</strong> (lojas identificadas com alto potencial) performam diferente do resto do grupo teste.</p>
+                </div>
+                <div class="two-columns" style="margin-top:16px;">
+                    <div>
+                        <h4 style="margin-bottom:12px;">Score de Risco</h4>
+                        <table>
+                            <thead><tr><th>Grupo</th><th>N</th><th>Churn Médio</th><th>Mediana</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Potential Sellers</strong></td>
+                                    <td>{potential.get('n', 0):,}</td>
+                                    <td>{potential.get('churn_medio', 0)}%</td>
+                                    <td>{potential.get('churn_mediana', 0)}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Resto Grupo Teste</strong></td>
+                                    <td>{resto.get('n', 0):,}</td>
+                                    <td class="positive">{resto.get('churn_medio', 0)}%</td>
+                                    <td>{resto.get('churn_mediana', 0)}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:12px;">Teste Estatístico</h4>
+                        {pot_vs_resto_html}
+                    </div>
+                </div>
+                
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color);">
+                    <h4 style="margin-bottom:12px;">Distribuição por Quartil de Risco</h4>
+                    <div class="quartile-comparison">
+                        {quartis_pot_resto_html}
                     </div>
                 </div>
             </div>
