@@ -30,6 +30,7 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 # Caminhos alternativos (para compatibilidade com bases existentes)
 ALT_BASE_PATH_JAN = '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - Jan ok.csv'
 ALT_BASE_PATH_DEZ = '/Users/renatovieira/Downloads/base_br_diciembre_2024.csv'
+ALT_BASE_PATH_MS = '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - 13_02_2026 - BR - Base Stores para Lifecycle.csv'
 ALT_BASE_PATH = ALT_BASE_PATH_JAN  # Base principal agora é janeiro
 ALT_WEBINAR_PATH = '/Users/renatovieira/Downloads/Webinars - geral até Dezembro_25 - Raw Data_data (4).csv'
 ALT_NEWSELLERS_PATH = '/Users/renatovieira/Downloads/Raw Data Total Stores (2).csv'
@@ -177,43 +178,65 @@ def load_base_geral():
             lojas_com_churn = df_jan['predictive_churn_probability'].notna().sum()
             print(f"  ✅ Churn disponível para {lojas_com_churn:,} de {len(df_jan):,} lojas ({lojas_com_churn/len(df_jan)*100:.1f}%)")
         
-        # Carregar base de dezembro apenas para merchant services (se necessário)
-        if os.path.exists(ALT_BASE_PATH_DEZ):
-            print(f"  📂 Enriquecendo com dados de DEZEMBRO (merchant services)...")
-            df_dez = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
-            df_dez = df_dez[df_dez['merchant_finance_status'] == 'paying'].copy()
+        # Carregar base de Merchant Services atualizada (Fev/2026)
+        if os.path.exists(ALT_BASE_PATH_MS):
+            print(f"  📂 Carregando dados de Merchant Services (Fev/2026)...")
+            df_ms = pd.read_csv(ALT_BASE_PATH_MS, low_memory=False)
             
-            # Campos a buscar de dezembro (apenas merchant services)
-            campos_dez = ['id_store', 'nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']
+            # Renomear colunas de MS para formato padrão
+            ms_rename = {
+                'store_id': 'id_store',
+                'nuvem_pago_active': 'nuvempago',
+                'nuvem_envio_active': 'nuvemenvio',
+                'nuvem_mkt_active': 'nuvemmarketing',
+                'nuvem_chat_active': 'nuvemchat',
+                'pdv_active': 'pdv'
+            }
+            df_ms = df_ms.rename(columns=ms_rename)
             
-            # Se não tiver churn em janeiro, buscar de dezembro também
-            if 'is_potential_churn' not in df_jan.columns:
-                campos_dez.extend(['predictive_churn_probability', 'predictive_churn', 
-                                  'predictive_churn_life_stage', 'predictive_churn_profile'])
+            # Converter Yes/No para True/False
+            for col in ['nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']:
+                if col in df_ms.columns:
+                    df_ms[col] = df_ms[col].str.lower() == 'yes'
             
-            campos_disponiveis = [c for c in campos_dez if c in df_dez.columns]
+            # Campos a buscar da base MS
+            campos_ms = ['id_store', 'nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']
+            campos_disponiveis = [c for c in campos_ms if c in df_ms.columns]
             
-            # Remover duplicatas de dezembro antes do merge (pegar a primeira ocorrência)
-            df_dez_unique = df_dez[campos_disponiveis].drop_duplicates(subset='id_store', keep='first')
+            # Remover duplicatas antes do merge
+            df_ms_unique = df_ms[campos_disponiveis].drop_duplicates(subset='id_store', keep='first')
             
             df_jan = df_jan.merge(
-                df_dez_unique,
+                df_ms_unique,
                 on='id_store',
                 how='left'
             )
             
             lojas_com_ms = df_jan['nuvempago'].notna().sum()
             print(f"  ✅ Merchant Services disponível para {lojas_com_ms:,} de {len(df_jan):,} lojas ({lojas_com_ms/len(df_jan)*100:.1f}%)")
+        elif os.path.exists(ALT_BASE_PATH_DEZ):
+            # Fallback para base de dezembro
+            print(f"  📂 Enriquecendo com dados de DEZEMBRO (merchant services)...")
+            df_dez = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
+            df_dez = df_dez[df_dez['merchant_finance_status'] == 'paying'].copy()
             
-            # Lojas sem merchant services
+            campos_dez = ['id_store', 'nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']
+            campos_disponiveis = [c for c in campos_dez if c in df_dez.columns]
+            df_dez_unique = df_dez[campos_disponiveis].drop_duplicates(subset='id_store', keep='first')
+            
+            df_jan = df_jan.merge(df_dez_unique, on='id_store', how='left')
+            
+            lojas_com_ms = df_jan['nuvempago'].notna().sum()
+            print(f"  ✅ Merchant Services disponível para {lojas_com_ms:,} de {len(df_jan):,} lojas ({lojas_com_ms/len(df_jan)*100:.1f}%)")
+            
             lojas_sem_ms = df_jan['nuvempago'].isna().sum()
             if lojas_sem_ms > 0:
                 campos_nao_disponiveis.append(f"Merchant Services: {lojas_sem_ms:,} lojas sem dados (novas)")
         else:
-            # Sem base de dezembro
+            # Sem base de MS
             for col in ['nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']:
                 df_jan[col] = None
-            campos_nao_disponiveis.append("Merchant Services: não disponível (base dez não encontrada)")
+            campos_nao_disponiveis.append("Merchant Services: não disponível (base não encontrada)")
         
         bases['2026-01'] = df_jan
         
@@ -4825,7 +4848,7 @@ html_content = f'''<!DOCTYPE html>
         <div class="tab active" onclick="showTab('resumo')">Resumo Executivo</div>
         <div class="tab" onclick="showTab('base')">Visão da Base</div>
         <div class="tab" onclick="showTab('icp')">Análise por ICP</div>
-        <div class="tab" onclick="showTab('merchant')">Merchant Services <span class="badge soon">em atualização</span></div>
+        <div class="tab" onclick="showTab('merchant')">Merchant Services</div>
         <div class="tab" onclick="showTab('risco')">Risco de Churn</div>
         <div class="tab" onclick="showTab('cobertura')">Cobertura Lifecycle</div>
         <div class="tab" onclick="showTab('webinars')">Projeto: Webinars</div>
@@ -4943,9 +4966,9 @@ html_content = f'''<!DOCTYPE html>
         <!-- MERCHANT SERVICES -->
         <div id="merchant" class="tab-content">
             <h2 class="section-title">Visão Geral de Merchant Services</h2>
-            <div class="grid grid-4">
+            <div class="grid" style="grid-template-columns: repeat(6, 1fr);">
                 <div class="card"><div class="card-title">Média Produtos/Loja</div><div class="card-value gradient">{dashboard_data['merchant_services']['media']}</div></div>
-                {''.join([f'<div class="card"><div class="card-title">{p["produto"]}</div><div class="card-value">{p["pct"]}%</div><div class="card-subtitle">{p["lojas"]:,} lojas</div></div>' for p in dashboard_data['merchant_services']['por_produto'][:3]])}
+                {''.join([f'<div class="card"><div class="card-title">{p["produto"]}</div><div class="card-value">{p["pct"]}%</div><div class="card-subtitle">{p["lojas"]:,} lojas</div></div>' for p in dashboard_data['merchant_services']['por_produto']])}
             </div>
             
             <div class="two-columns">
