@@ -6,6 +6,7 @@ Gerador de dashboard para análise de impacto das ações de Lifecycle
 """
 
 import pandas as pd
+import numpy as np
 import json
 import warnings
 import os
@@ -13,6 +14,7 @@ import glob
 import re
 from datetime import datetime
 from collections import Counter
+from scipy import stats
 warnings.filterwarnings('ignore')
 
 print("=" * 70)
@@ -26,13 +28,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 # Caminhos alternativos (para compatibilidade com bases existentes)
-ALT_BASE_PATH = '/Users/renatovieira/Downloads/base_br_diciembre_2024.csv'
+ALT_BASE_PATH_JAN = '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - Jan ok.csv'
+ALT_BASE_PATH_DEZ = '/Users/renatovieira/Downloads/base_br_diciembre_2024.csv'
+ALT_BASE_PATH = ALT_BASE_PATH_JAN  # Base principal agora é janeiro
 ALT_WEBINAR_PATH = '/Users/renatovieira/Downloads/Webinars - geral até Dezembro_25 - Raw Data_data (4).csv'
 ALT_NEWSELLERS_PATH = '/Users/renatovieira/Downloads/Raw Data Total Stores (2).csv'
 
-STATUS_ORDER = ['no-seller', 'struggling-seller', 'tiny-seller', 'small-seller', 
+STATUS_ORDER = ['not informed', 'no-seller', 'struggling-seller', 'tiny-seller', 'small-seller', 
                 'medium-seller', 'large-seller', 'top-seller']
 STATUS_LABELS = {
+    'not informed': 'Não Classificado',
     'no-seller': 'No Seller',
     'struggling-seller': 'Struggling',
     'tiny-seller': 'Tiny',
@@ -44,12 +49,11 @@ STATUS_LABELS = {
 }
 SELLER_STATUS = ['tiny-seller', 'small-seller', 'medium-seller', 'large-seller', 'top-seller']
 
-# Quartis de risco
+# Categorias de risco (binário: 0 = sem risco, 1 = com risco)
 RISK_QUARTILES = [
-    {'name': 'Sem Risco', 'min': 0, 'max': 0.25, 'color': '#22c55e'},
-    {'name': 'Baixo Risco', 'min': 0.25, 'max': 0.50, 'color': '#fbbf24'},
-    {'name': 'Médio Risco', 'min': 0.50, 'max': 0.75, 'color': '#f97316'},
-    {'name': 'Alto Risco', 'min': 0.75, 'max': 1.01, 'color': '#ef4444'},
+    {'name': 'Não Classificado', 'min': -1, 'max': -0.5, 'color': '#6b7280', 'special': 'not_classified'},
+    {'name': 'Sem Risco', 'min': -0.5, 'max': 0.5, 'color': '#22c55e'},  # churn = 0
+    {'name': 'Com Risco de Churn', 'min': 0.5, 'max': 1.5, 'color': '#ef4444'},  # churn = 1
 ]
 
 # Produtos Merchant Services
@@ -114,22 +118,115 @@ def find_latest_file(folder, pattern='*.csv'):
     return files[0][0]
 
 def load_base_geral():
-    """Carrega todas as bases gerais de lojas"""
+    """Carrega todas as bases gerais de lojas - Janeiro como principal, Dezembro para campos legados"""
     data_folder = os.path.join(DATA_DIR, 'base_geral')
     files = find_all_files_sorted(data_folder)
     
     bases = {}
+    campos_nao_disponiveis = []
     
     if files:
         for filepath, date_str in files:
             print(f"  📂 Base encontrada: {os.path.basename(filepath)} ({date_str})")
             df = pd.read_csv(filepath, low_memory=False)
-            df = df[df['merchant_finance_status'] == 'paying'].copy()
+            if 'merchant_finance_status' in df.columns:
+                df = df[df['merchant_finance_status'] == 'paying'].copy()
             bases[date_str] = df
     
-    if not bases and os.path.exists(ALT_BASE_PATH):
-        print(f"  📂 Usando base alternativa: {os.path.basename(ALT_BASE_PATH)}")
-        df = pd.read_csv(ALT_BASE_PATH, low_memory=False)
+    # Usar base de janeiro como principal
+    if not bases and os.path.exists(ALT_BASE_PATH_JAN):
+        print(f"  📂 Usando base de JANEIRO: {os.path.basename(ALT_BASE_PATH_JAN)}")
+        df_jan = pd.read_csv(ALT_BASE_PATH_JAN, low_memory=False)
+        
+        # Mapear campos de janeiro para formato esperado
+        df_jan = df_jan.rename(columns={
+            'store_id': 'id_store',
+            'current_segment': 'status_seller',
+            'main_user_email': 'main_user',
+            'domain': 'store_name',
+            'gmv30': 'gmv_mes_local',
+            'gmv90': 'gmv_90d_local',
+            'orders30': 'orders_mes',
+            'orders90': 'orders_90d',
+            'current_plan_name': 'plan',
+            'current_plan_type': 'plan_type',
+        })
+        
+        # Calcular aging (dias desde criação)
+        df_jan['created_at'] = pd.to_datetime(df_jan['created_at'], errors='coerce')
+        df_jan['aging'] = (pd.Timestamp.now() - df_jan['created_at']).dt.days
+        df_jan['aging_clean'] = df_jan['aging'].fillna(0)
+        
+        # Campos que não existem em janeiro - marcar como não disponíveis
+        df_jan['merchant_finance_status'] = 'paying'  # Base já vem filtrada
+        
+        # Verificar se a base de janeiro já tem dados de churn (is_potential_churn)
+        if 'is_potential_churn' in df_jan.columns:
+            print(f"  ✅ Usando dados de churn da BASE DE JANEIRO (is_potential_churn)")
+            # Criar predictive_churn_probability a partir de is_potential_churn
+            # is_potential_churn é binário (0/1), vamos manter assim
+            df_jan['predictive_churn_probability'] = df_jan['is_potential_churn']
+            df_jan['predictive_churn'] = df_jan['is_potential_churn'].apply(
+                lambda x: 'high' if x == 1 else ('low' if x == 0 else None)
+            )
+            
+            # Usar potential_churn_profile se existir
+            if 'potential_churn_profile' in df_jan.columns:
+                df_jan['predictive_churn_profile'] = df_jan['potential_churn_profile']
+            
+            lojas_com_churn = df_jan['predictive_churn_probability'].notna().sum()
+            print(f"  ✅ Churn disponível para {lojas_com_churn:,} de {len(df_jan):,} lojas ({lojas_com_churn/len(df_jan)*100:.1f}%)")
+        
+        # Carregar base de dezembro apenas para merchant services (se necessário)
+        if os.path.exists(ALT_BASE_PATH_DEZ):
+            print(f"  📂 Enriquecendo com dados de DEZEMBRO (merchant services)...")
+            df_dez = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
+            df_dez = df_dez[df_dez['merchant_finance_status'] == 'paying'].copy()
+            
+            # Campos a buscar de dezembro (apenas merchant services)
+            campos_dez = ['id_store', 'nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']
+            
+            # Se não tiver churn em janeiro, buscar de dezembro também
+            if 'is_potential_churn' not in df_jan.columns:
+                campos_dez.extend(['predictive_churn_probability', 'predictive_churn', 
+                                  'predictive_churn_life_stage', 'predictive_churn_profile'])
+            
+            campos_disponiveis = [c for c in campos_dez if c in df_dez.columns]
+            
+            # Remover duplicatas de dezembro antes do merge (pegar a primeira ocorrência)
+            df_dez_unique = df_dez[campos_disponiveis].drop_duplicates(subset='id_store', keep='first')
+            
+            df_jan = df_jan.merge(
+                df_dez_unique,
+                on='id_store',
+                how='left'
+            )
+            
+            lojas_com_ms = df_jan['nuvempago'].notna().sum()
+            print(f"  ✅ Merchant Services disponível para {lojas_com_ms:,} de {len(df_jan):,} lojas ({lojas_com_ms/len(df_jan)*100:.1f}%)")
+            
+            # Lojas sem merchant services
+            lojas_sem_ms = df_jan['nuvempago'].isna().sum()
+            if lojas_sem_ms > 0:
+                campos_nao_disponiveis.append(f"Merchant Services: {lojas_sem_ms:,} lojas sem dados (novas)")
+        else:
+            # Sem base de dezembro
+            for col in ['nuvempago', 'nuvemenvio', 'nuvemmarketing', 'nuvemchat', 'pdv']:
+                df_jan[col] = None
+            campos_nao_disponiveis.append("Merchant Services: não disponível (base dez não encontrada)")
+        
+        bases['2026-01'] = df_jan
+        
+        # Informar campos não disponíveis
+        if campos_nao_disponiveis:
+            print(f"  ⚠️ CAMPOS NÃO ATUALIZADOS:")
+            for campo in campos_nao_disponiveis:
+                print(f"     - {campo}")
+    
+    # Fallback para base de dezembro apenas
+    elif not bases and os.path.exists(ALT_BASE_PATH_DEZ):
+        print(f"  📂 Usando base de DEZEMBRO (fallback): {os.path.basename(ALT_BASE_PATH_DEZ)}")
+        df = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
         df = df[df['merchant_finance_status'] == 'paying'].copy()
         bases['2024-12'] = df
     
@@ -176,24 +273,52 @@ def load_new_sellers():
     
     return new_sellers_por_mes
 
-def classify_risk(prob):
-    """Classifica risco em quartis"""
-    if pd.isna(prob) or prob <= 0:
-        return 'Sem dados'
-    elif prob <= 0.25:
+def classify_risk(prob, status=None):
+    """Classifica risco em categorias (binário: 0 = sem risco, 1 = com risco)"""
+    if pd.isna(prob):
+        return 'Não Classificado'
+    elif prob == 0:
         return 'Sem Risco'
-    elif prob <= 0.50:
-        return 'Baixo Risco'
-    elif prob <= 0.75:
-        return 'Médio Risco'
+    elif prob == 1:
+        return 'Com Risco de Churn'
     else:
-        return 'Alto Risco'
+        # Para probabilidades contínuas (base antiga)
+        if prob <= 0.25:
+            return 'Sem Risco'
+        else:
+            return 'Com Risco de Churn'
 
 def get_status_tier(status):
     """Retorna o nível do status para comparação"""
     if status not in STATUS_ORDER:
         return -1
     return STATUS_ORDER.index(status)
+
+def get_transition_type(status_de, status_para):
+    """
+    Classifica o tipo de transição considerando regras especiais.
+    - Lojas "not informed" só são upgrade se forem para struggling ou melhor
+    - "not informed" → "no-seller" é downgrade (negativo)
+    """
+    tier_de = get_status_tier(status_de)
+    tier_para = get_status_tier(status_para)
+    
+    # Regra especial: "not informed" → "no-seller" é downgrade
+    if status_de == 'not informed':
+        if status_para == 'no-seller':
+            return 'downgrade'
+        elif status_para == 'not informed':
+            return 'estavel'
+        else:
+            return 'upgrade'
+    
+    # Regra padrão para outros status
+    if tier_para > tier_de:
+        return 'upgrade'
+    elif tier_para < tier_de:
+        return 'downgrade'
+    else:
+        return 'estavel'
 
 def get_product_combo(row):
     """Gera string da combinação de produtos"""
@@ -344,8 +469,10 @@ lojas_ativas['qtd_merchant_services'] = lojas_ativas[MERCHANT_COLS].sum(axis=1)
 # Combinação de produtos
 lojas_ativas['combo_produtos'] = lojas_ativas.apply(get_product_combo, axis=1)
 
-# Classificar risco
-lojas_ativas['risk_quartile'] = lojas_ativas['predictive_churn_probability'].apply(classify_risk)
+# Classificar risco (considerando status para identificar não classificados)
+lojas_ativas['risk_quartile'] = lojas_ativas.apply(
+    lambda row: classify_risk(row['predictive_churn_probability'], row['status_seller']), axis=1
+)
 
 # Aging
 lojas_ativas['aging_clean'] = pd.to_numeric(lojas_ativas['aging'], errors='coerce')
@@ -360,7 +487,7 @@ def categorize_aging_simple(days):
 lojas_ativas['aging_faixa_simples'] = lojas_ativas['aging_clean'].apply(categorize_aging_simple)
 
 # =============================================================================
-# MATRIZ DE TRANSIÇÃO
+# MATRIZ DE TRANSIÇÃO (Dezembro → Janeiro)
 # =============================================================================
 print("\n📊 Calculando Matriz de Transição...")
 
@@ -374,10 +501,213 @@ matriz_transicao = {
     'pct_upgrade': 0,
     'pct_downgrade': 0,
     'pct_estavel': 0,
-    'detalhes': []
+    'detalhes': [],
+    'top_upgrades': [],
+    'top_downgrades': []
 }
 
-if len(meses_disponiveis) >= 2:
+# Tentar carregar base de dezembro para comparação
+base_dezembro = None
+if os.path.exists(ALT_BASE_PATH_DEZ):
+    print(f"  📂 Carregando base de Dezembro para comparação...")
+    base_dezembro = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
+    base_dezembro = base_dezembro[base_dezembro['merchant_finance_status'] == 'paying'].copy()
+
+if base_dezembro is not None:
+    base_anterior = base_dezembro
+    base_atual = lojas_ativas
+    mes_anterior = '2024-12'
+    
+    print(f"  📈 Comparando: {mes_anterior} → {mes_atual}")
+    
+    id_col_ant = 'id_store' if 'id_store' in base_anterior.columns else 'store_id'
+    id_col_atu = 'id_store' if 'id_store' in base_atual.columns else 'store_id'
+    
+    merged = base_anterior[[id_col_ant, 'status_seller']].merge(
+        base_atual[[id_col_atu, 'status_seller']],
+        left_on=id_col_ant, right_on=id_col_atu,
+        how='inner',  # Apenas lojas em ambas
+        suffixes=('_antes', '_depois')
+    )
+    
+    merged['tier_antes'] = merged['status_seller_antes'].apply(get_status_tier)
+    merged['tier_depois'] = merged['status_seller_depois'].apply(get_status_tier)
+    
+    # Incluir todas as lojas com status no STATUS_ORDER (agora inclui "not informed")
+    lojas_continuam = merged[(merged['tier_antes'] >= 0) & (merged['tier_depois'] >= 0)]
+    
+    # Usar get_transition_type para classificar corretamente
+    lojas_continuam = lojas_continuam.copy()
+    lojas_continuam['tipo_transicao'] = lojas_continuam.apply(
+        lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+    )
+    
+    # Separar lojas que eram "not informed" em dezembro (para não distorcer números)
+    lojas_not_informed = lojas_continuam[lojas_continuam['status_seller_antes'] == 'not informed']
+    lojas_com_status = lojas_continuam[lojas_continuam['status_seller_antes'] != 'not informed']
+    
+    # Calcular totais APENAS para lojas que tinham status em dezembro
+    upgrade = len(lojas_com_status[lojas_com_status['tipo_transicao'] == 'upgrade'])
+    downgrade = len(lojas_com_status[lojas_com_status['tipo_transicao'] == 'downgrade'])
+    estavel = len(lojas_com_status[lojas_com_status['tipo_transicao'] == 'estavel'])
+    
+    total = upgrade + downgrade + estavel
+    
+    # Métricas para "not informed" separadas
+    ni_total = len(lojas_not_informed)
+    ni_virou_seller = len(lojas_not_informed[lojas_not_informed['tipo_transicao'] == 'upgrade'])
+    ni_virou_no_seller = len(lojas_not_informed[lojas_not_informed['status_seller_depois'] == 'no-seller'])
+    ni_pct_seller = round(ni_virou_seller / ni_total * 100, 1) if ni_total > 0 else 0
+    ni_pct_no_seller = round(ni_virou_no_seller / ni_total * 100, 1) if ni_total > 0 else 0
+    
+    # Calcular top transições (excluindo not informed)
+    lojas_upgrade = lojas_com_status[lojas_com_status['tipo_transicao'] == 'upgrade']
+    lojas_downgrade = lojas_com_status[lojas_com_status['tipo_transicao'] == 'downgrade']
+    
+    top_upgrades = lojas_upgrade.groupby(['status_seller_antes', 'status_seller_depois']).size().sort_values(ascending=False).head(5)
+    top_downgrades = lojas_downgrade.groupby(['status_seller_antes', 'status_seller_depois']).size().sort_values(ascending=False).head(5)
+    
+    # Calcular entradas e saídas
+    jan_ids = set(base_atual[id_col_atu].dropna().astype(int))
+    dez_ids = set(base_anterior[id_col_ant].dropna().astype(int))
+    
+    lojas_novas = len(jan_ids - dez_ids)
+    lojas_sairam = len(dez_ids - jan_ids)
+    
+    # Criar matriz de transição completa (crosstab)
+    matriz_crosstab = pd.crosstab(
+        lojas_continuam['status_seller_antes'], 
+        lojas_continuam['status_seller_depois'],
+        margins=False
+    )
+    
+    # Reordenar pelo STATUS_ORDER
+    status_presentes = [s for s in STATUS_ORDER if s in matriz_crosstab.index or s in matriz_crosstab.columns]
+    
+    # Garantir que todos os status estejam na matriz
+    for status in status_presentes:
+        if status not in matriz_crosstab.index:
+            matriz_crosstab.loc[status] = 0
+        if status not in matriz_crosstab.columns:
+            matriz_crosstab[status] = 0
+    
+    # Reordenar
+    matriz_crosstab = matriz_crosstab.reindex(index=status_presentes, columns=status_presentes, fill_value=0)
+    
+    # Converter para formato serializável
+    matriz_visual = []
+    for status_de in status_presentes:
+        row = {
+            'de': status_de,
+            'de_label': STATUS_LABELS.get(status_de, status_de),
+            'transicoes': []
+        }
+        total_de = int(matriz_crosstab.loc[status_de].sum())
+        for status_para in status_presentes:
+            count = int(matriz_crosstab.loc[status_de, status_para])
+            pct = round(count / total_de * 100, 1) if total_de > 0 else 0
+            
+            # Determinar tipo de transição usando a nova função
+            tipo = get_transition_type(status_de, status_para)
+            
+            row['transicoes'].append({
+                'para': status_para,
+                'para_label': STATUS_LABELS.get(status_para, status_para),
+                'count': count,
+                'pct': pct,
+                'tipo': tipo
+            })
+        row['total'] = total_de
+        matriz_visual.append(row)
+    
+    # Calcular fluxo líquido por status com detalhamento de origem/destino
+    fluxo_liquido = []
+    for status in status_presentes:
+        # Quantos estavam nesse status em dezembro
+        antes = int((lojas_continuam['status_seller_antes'] == status).sum())
+        # Quantos estão nesse status em janeiro (dentre os que continuam)
+        depois = int((lojas_continuam['status_seller_depois'] == status).sum())
+        # Variação líquida
+        variacao = depois - antes
+        pct_var = round((variacao / antes * 100), 1) if antes > 0 else 0
+        
+        # Detalhamento: de onde vieram os novos (entradas) e para onde foram os que saíram (saídas)
+        # Entradas: lojas que NÃO estavam nesse status e agora estão
+        entradas_df = lojas_continuam[(lojas_continuam['status_seller_antes'] != status) & 
+                                       (lojas_continuam['status_seller_depois'] == status)]
+        entradas_por_origem = entradas_df['status_seller_antes'].value_counts().head(5).to_dict()
+        entradas_detalhe = [
+            {'de': STATUS_LABELS.get(orig, orig), 'count': int(cnt)}
+            for orig, cnt in entradas_por_origem.items()
+        ]
+        
+        # Saídas: lojas que ESTAVAM nesse status e agora não estão
+        saidas_df = lojas_continuam[(lojas_continuam['status_seller_antes'] == status) & 
+                                     (lojas_continuam['status_seller_depois'] != status)]
+        saidas_por_destino = saidas_df['status_seller_depois'].value_counts().head(5).to_dict()
+        saidas_detalhe = [
+            {'para': STATUS_LABELS.get(dest, dest), 'count': int(cnt)}
+            for dest, cnt in saidas_por_destino.items()
+        ]
+        
+        fluxo_liquido.append({
+            'status': status,
+            'label': STATUS_LABELS.get(status, status),
+            'antes': antes,
+            'depois': depois,
+            'variacao': variacao,
+            'pct_variacao': pct_var,
+            'entradas': int(len(entradas_df)),
+            'saidas': int(len(saidas_df)),
+            'entradas_detalhe': entradas_detalhe,
+            'saidas_detalhe': saidas_detalhe
+        })
+    
+    # Ordenar pelo maior ganho/perda
+    fluxo_liquido = sorted(fluxo_liquido, key=lambda x: x['variacao'], reverse=True)
+    
+    matriz_transicao = {
+        'disponivel': True,
+        'mes_anterior': mes_anterior,
+        'mes_atual': mes_atual,
+        'upgrade': upgrade,
+        'downgrade': downgrade,
+        'estavel': estavel,
+        'pct_upgrade': round(upgrade / total * 100, 1) if total > 0 else 0,
+        'pct_downgrade': round(downgrade / total * 100, 1) if total > 0 else 0,
+        'pct_estavel': round(estavel / total * 100, 1) if total > 0 else 0,
+        'lojas_novas': lojas_novas,
+        'lojas_sairam': lojas_sairam,
+        'total_comparado': total,
+        # Dados de "não informados" separados
+        'not_informed': {
+            'total': ni_total,
+            'virou_seller': ni_virou_seller,
+            'virou_no_seller': ni_virou_no_seller,
+            'pct_seller': ni_pct_seller,
+            'pct_no_seller': ni_pct_no_seller
+        },
+        'top_upgrades': [
+            {'de': STATUS_LABELS.get(de, de), 'para': STATUS_LABELS.get(para, para), 'count': int(count)}
+            for (de, para), count in top_upgrades.items()
+        ],
+        'top_downgrades': [
+            {'de': STATUS_LABELS.get(de, de), 'para': STATUS_LABELS.get(para, para), 'count': int(count)}
+            for (de, para), count in top_downgrades.items()
+        ],
+        'matriz_visual': matriz_visual,
+        'status_order': [STATUS_LABELS.get(s, s) for s in status_presentes],
+        'fluxo_liquido': fluxo_liquido,
+        'detalhes': []
+    }
+    
+    print(f"  ✅ Upgrade: {upgrade:,} ({matriz_transicao['pct_upgrade']}%)")
+    print(f"  ➡️ Estável: {estavel:,} ({matriz_transicao['pct_estavel']}%)")
+    print(f"  ⬇️ Downgrade: {downgrade:,} ({matriz_transicao['pct_downgrade']}%)")
+    print(f"  📊 Não Classificados (Dez): {ni_total:,} → {ni_virou_seller:,} viraram seller ({ni_pct_seller}%)")
+    print(f"  🆕 Lojas novas: {lojas_novas:,} | 🚪 Saíram: {lojas_sairam:,}")
+
+elif len(meses_disponiveis) >= 2:
     mes_anterior = meses_disponiveis[1]
     base_anterior = bases_mensais[mes_anterior]
     base_atual = bases_mensais[mes_atual]
@@ -399,9 +729,15 @@ if len(meses_disponiveis) >= 2:
     
     lojas_continuam = merged[(merged['tier_antes'] >= 0) & (merged['tier_depois'] >= 0)]
     
-    upgrade = len(lojas_continuam[lojas_continuam['tier_depois'] > lojas_continuam['tier_antes']])
-    downgrade = len(lojas_continuam[lojas_continuam['tier_depois'] < lojas_continuam['tier_antes']])
-    estavel = len(lojas_continuam[lojas_continuam['tier_depois'] == lojas_continuam['tier_antes']])
+    # Usar get_transition_type para classificar corretamente
+    lojas_continuam = lojas_continuam.copy()
+    lojas_continuam['tipo_transicao'] = lojas_continuam.apply(
+        lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+    )
+    
+    upgrade = len(lojas_continuam[lojas_continuam['tipo_transicao'] == 'upgrade'])
+    downgrade = len(lojas_continuam[lojas_continuam['tipo_transicao'] == 'downgrade'])
+    estavel = len(lojas_continuam[lojas_continuam['tipo_transicao'] == 'estavel'])
     
     total = upgrade + downgrade + estavel
     
@@ -415,6 +751,8 @@ if len(meses_disponiveis) >= 2:
         'pct_upgrade': round(upgrade / total * 100, 1) if total > 0 else 0,
         'pct_downgrade': round(downgrade / total * 100, 1) if total > 0 else 0,
         'pct_estavel': round(estavel / total * 100, 1) if total > 0 else 0,
+        'top_upgrades': [],
+        'top_downgrades': [],
         'detalhes': []
     }
     
@@ -441,7 +779,7 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
     if 'first_seller_at' in df_ns.columns:
         df_ns['first_seller_at'] = pd.to_datetime(df_ns['first_seller_at'], dayfirst=True, errors='coerce')
     
-    # Classificar em 3 grupos: Onboarding, Grupo Controle, Base Antiga
+    # Classificar em 3 grupos: Com Onboarding, Sem Onboarding, Base Antiga
     def classificar_ns(row):
         store_id = row[ns_id_col]
         created = row.get('created_at')
@@ -506,7 +844,7 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
                     'mediana': float(round(mediana_onb, 0))
                 },
                 'grupo_controle': {
-                    'nome': 'Grupo Controle',
+                    'nome': 'Sem Onboarding',
                     'n': int(len(dias_ctrl)),
                     'media': float(round(media_ctrl, 1)),
                     'mediana': float(round(mediana_ctrl, 0))
@@ -543,22 +881,31 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
         churn_by_group = {}
         for grupo in ['onboarding', 'grupo_controle', 'base_antiga']:
             subset = df_ns_churn[df_ns_churn['grupo_ns'] == grupo]
-            churn_valid = subset['predictive_churn_probability'].dropna()
+            churn_valid = subset[subset['predictive_churn_probability'].notna()]
             
             if len(churn_valid) > 0:
-                # Calcular quartis
-                q1 = int((churn_valid <= 0.25).sum())
-                q2 = int(((churn_valid > 0.25) & (churn_valid <= 0.50)).sum())
-                q3 = int(((churn_valid > 0.50) & (churn_valid <= 0.75)).sum())
-                q4 = int((churn_valid > 0.75).sum())
+                # Identificar não classificados (churn = 0 E status = not informed)
+                nao_class = (churn_valid['predictive_churn_probability'] == 0) & \
+                           (churn_valid['status_seller'] == 'not informed')
+                classificados = churn_valid[~nao_class]
+                churn_classificado = classificados['predictive_churn_probability']
+                
+                # Calcular quartis para lojas classificadas
+                q_nc = int(nao_class.sum())
+                q1 = int((churn_classificado <= 0.25).sum())
+                q2 = int(((churn_classificado > 0.25) & (churn_classificado <= 0.50)).sum())
+                q3 = int(((churn_classificado > 0.50) & (churn_classificado <= 0.75)).sum())
+                q4 = int((churn_classificado > 0.75).sum())
                 total_q = len(churn_valid)
                 
                 churn_by_group[grupo] = {
                     'n_total': int(len(subset)),
                     'n_com_churn': int(len(churn_valid)),
-                    'churn_medio': float(round(churn_valid.mean() * 100, 1)),
-                    'churn_mediana': float(round(churn_valid.median() * 100, 1)),
+                    'n_classificados': int(len(classificados)),
+                    'churn_medio': float(round(churn_classificado.mean() * 100, 1)) if len(churn_classificado) > 0 else 0,
+                    'churn_mediana': float(round(churn_classificado.median() * 100, 1)) if len(churn_classificado) > 0 else 0,
                     'quartis': {
+                        'nao_classificado': {'n': q_nc, 'pct': float(round(q_nc/total_q*100, 1))},
                         'baixo': {'n': q1, 'pct': float(round(q1/total_q*100, 1))},
                         'moderado': {'n': q2, 'pct': float(round(q2/total_q*100, 1))},
                         'alto': {'n': q3, 'pct': float(round(q3/total_q*100, 1))},
@@ -614,7 +961,7 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
     })
     new_sellers_analysis['soma_total'] += total_ns
     print(f"  📅 {mes_ns}: {total_ns:,} new sellers")
-    print(f"      Onboarding: {n_onboarding} ({pct_onboarding}%) | Grupo Controle: {n_controle} ({pct_controle}%) | Base Antiga: {n_base_antiga} ({pct_base_antiga}%)")
+    print(f"      Com Onboarding: {n_onboarding} ({pct_onboarding}%) | Sem Onboarding: {n_controle} ({pct_controle}%) | Base Antiga: {n_base_antiga} ({pct_base_antiga}%)")
 
 new_sellers_analysis['total'] = new_sellers_analysis['soma_total']
 
@@ -628,7 +975,7 @@ if new_sellers_analysis['por_mes']:
             'pct': ultimo_mes['por_grupo']['onboarding']['pct']
         },
         {
-            'projeto': 'Grupo Controle',
+            'projeto': 'Sem Onboarding',
             'n': ultimo_mes['por_grupo']['grupo_controle']['n'],
             'pct': ultimo_mes['por_grupo']['grupo_controle']['pct']
         },
@@ -651,24 +998,51 @@ if new_sellers_analysis['por_mes']:
 # =============================================================================
 print("\n🚨 Analisando Risco...")
 
-lojas_com_churn = lojas_ativas[lojas_ativas['predictive_churn_probability'] > 0]
+# Verificar se churn é binário (0/1) ou probabilidade (0-1)
+churn_values = lojas_ativas['predictive_churn_probability'].dropna().unique()
+is_binary_churn = len(churn_values) <= 3 and all(v in [0, 1, 0.0, 1.0] for v in churn_values if pd.notna(v))
+print(f"  📊 Tipo de churn: {'Binário (0/1)' if is_binary_churn else 'Probabilidade (0-1)'}")
+
+# Total de lojas com dados de churn
+lojas_com_churn = lojas_ativas[lojas_ativas['predictive_churn_probability'].notna()].copy()
+lojas_sem_churn = lojas_ativas[lojas_ativas['predictive_churn_probability'].isna()].copy()
+print(f"  📊 Total lojas com dados de churn: {len(lojas_com_churn):,}")
+print(f"  ⚪ Lojas sem classificação: {len(lojas_sem_churn):,}")
+
+# Classificar lojas por risco
+lojas_sem_risco = lojas_com_churn[lojas_com_churn['predictive_churn_probability'] == 0].copy()
+lojas_com_risco = lojas_com_churn[lojas_com_churn['predictive_churn_probability'] == 1].copy()
+print(f"  ✅ Sem Risco (churn=0): {len(lojas_sem_risco):,}")
+print(f"  🚨 Com Risco (churn=1): {len(lojas_com_risco):,}")
 
 risk_quartiles_data = []
 risk_quartiles_lojas = {}  # Armazena lista de lojas por quartil
 
-for q in RISK_QUARTILES:
-    mask = (lojas_com_churn['predictive_churn_probability'] > q['min']) & \
-           (lojas_com_churn['predictive_churn_probability'] <= q['max'])
-    lojas_quartil = lojas_com_churn[mask].copy()
+for i, q in enumerate(RISK_QUARTILES):
+    # Categoria especial: Não Classificado
+    if q.get('special') == 'not_classified':
+        lojas_quartil = lojas_sem_churn.copy()
+    elif q['name'] == 'Sem Risco':
+        lojas_quartil = lojas_sem_risco.copy()
+    elif q['name'] == 'Com Risco de Churn':
+        lojas_quartil = lojas_com_risco.copy()
+    else:
+        # Fallback para probabilidades contínuas
+        mask = (lojas_com_churn['predictive_churn_probability'] > q['min']) & \
+               (lojas_com_churn['predictive_churn_probability'] <= q['max'])
+        lojas_quartil = lojas_com_churn[mask].copy()
     count = len(lojas_quartil)
-    pct = round(count / len(lojas_com_churn) * 100, 1) if len(lojas_com_churn) > 0 else 0
+    # Usar total de lojas ativas para porcentagem (inclui não classificadas)
+    total_base = len(lojas_ativas)
+    pct = round(count / total_base * 100, 1) if total_base > 0 else 0
     gmv = lojas_quartil['gmv_mes_local'].sum()
     
     # Estatísticas do quartil
+    prob_mean = lojas_quartil['predictive_churn_probability'].mean() if count > 0 else 0
     stats = {
         'gmv_medio': round(lojas_quartil['gmv_mes_local'].mean(), 2) if count > 0 else 0,
         'orders_medio': round(lojas_quartil['orders_mes'].mean(), 1) if count > 0 else 0,
-        'prob_media': round(lojas_quartil['predictive_churn_probability'].mean() * 100, 2) if count > 0 else 0,
+        'prob_media': round(prob_mean * 100, 2) if pd.notna(prob_mean) else 0,
         'aging_medio': round(lojas_quartil['aging_clean'].mean(), 0) if count > 0 else 0,
     }
     
@@ -697,15 +1071,26 @@ for q in RISK_QUARTILES:
     
     risk_quartiles_lojas[q['name']] = lojas_lista.to_dict('records')
     
+    # Definir prob_range apropriado para cada categoria
+    if q.get('special') == 'not_classified':
+        prob_range = 'Sem dados'
+    elif q['name'] == 'Sem Risco':
+        prob_range = 'Sem risco'
+    elif q['name'] == 'Com Risco de Churn':
+        prob_range = 'Potencial churn'
+    else:
+        prob_range = f"{int(q['min']*100)}%-{int(q['max']*100)}%"
+    
     risk_quartiles_data.append({
         'name': q['name'],
         'color': q['color'],
         'count': count,
         'pct': pct,
         'gmv_total': round(gmv, 2),
-        'prob_range': f"{int(q['min']*100)}%-{int(q['max']*100)}%",
+        'prob_range': prob_range,
         'stats': stats,
-        'status_distribution': status_dist_formatted
+        'status_distribution': status_dist_formatted,
+        'is_not_classified': q.get('special') == 'not_classified'
     })
 
 # Evolução do risco por mês
@@ -927,6 +1312,94 @@ for status in STATUS_ORDER:
         })
 
 # =============================================================================
+# ANÁLISE POR ICP (Ideal Customer Profile)
+# =============================================================================
+print("🎯 Analisando ICP...")
+
+# Padronizar coluna de ICP
+lojas_ativas['icp'] = lojas_ativas['model_icp'].fillna('Não Classificado')
+lojas_ativas['icp'] = lojas_ativas['icp'].replace({'Fall Back': 'Não Classificado'})
+
+# Ordenar ICPs
+ICP_ORDER = ['ICP 1', 'ICP 2', 'ICP 3', 'ICP 4', 'Não Classificado']
+
+# Análise por ICP
+icp_analysis = {
+    'disponivel': True,
+    'total_classificados': len(lojas_ativas[lojas_ativas['icp'] != 'Não Classificado']),
+    'total_nao_classificados': len(lojas_ativas[lojas_ativas['icp'] == 'Não Classificado']),
+    'por_icp': []
+}
+
+for icp in ICP_ORDER:
+    subset = lojas_ativas[lojas_ativas['icp'] == icp]
+    if len(subset) > 0:
+        # Status de sellers
+        sellers = subset[subset['status_seller'].isin(SELLER_STATUS)]
+        pct_sellers = round(len(sellers) / len(subset) * 100, 1) if len(subset) > 0 else 0
+        
+        # Distribuição por status
+        status_dist = []
+        for status in STATUS_ORDER:
+            status_subset = subset[subset['status_seller'] == status]
+            if len(status_subset) > 0:
+                status_dist.append({
+                    'status': status,
+                    'label': STATUS_LABELS.get(status, status),
+                    'count': len(status_subset),
+                    'pct': round(len(status_subset) / len(subset) * 100, 1)
+                })
+        
+        # New sellers
+        new_sellers_icp = subset[subset['status_seller'] == 'new-seller'] if 'new-seller' in subset['status_seller'].values else pd.DataFrame()
+        pct_new_sellers = round(len(new_sellers_icp) / len(subset) * 100, 2) if len(subset) > 0 else 0
+        
+        # Risco de churn
+        subset_com_churn = subset[subset['predictive_churn_probability'].notna()]
+        pct_risco = round(subset_com_churn['predictive_churn_probability'].mean() * 100, 1) if len(subset_com_churn) > 0 else 0
+        lojas_com_risco = len(subset_com_churn[subset_com_churn['predictive_churn_probability'] > 0])
+        pct_lojas_risco = round(lojas_com_risco / len(subset_com_churn) * 100, 1) if len(subset_com_churn) > 0 else 0
+        
+        # Participação no onboarding
+        onb_icp = subset[subset['tem_onboarding'] == True]
+        pct_onboarding = round(len(onb_icp) / len(subset) * 100, 1) if len(subset) > 0 else 0
+        
+        # Participação em webinars
+        web_icp = subset[subset['tem_webinar'] == True]
+        pct_webinar = round(len(web_icp) / len(subset) * 100, 1) if len(subset) > 0 else 0
+        
+        # GMV médio
+        gmv_medio = round(subset['gmv_mes_local'].mean(), 2) if subset['gmv_mes_local'].notna().any() else 0
+        gmv_total = round(subset['gmv_mes_local'].sum(), 2) if subset['gmv_mes_local'].notna().any() else 0
+        
+        icp_analysis['por_icp'].append({
+            'icp': icp,
+            'total': len(subset),
+            'pct_base': round(len(subset) / len(lojas_ativas) * 100, 1),
+            'pct_sellers': pct_sellers,
+            'n_sellers': len(sellers),
+            'status_dist': status_dist,
+            'pct_new_sellers': pct_new_sellers,
+            'pct_risco_churn': pct_risco,
+            'pct_lojas_com_risco': pct_lojas_risco,
+            'lojas_com_risco': lojas_com_risco,
+            'pct_onboarding': pct_onboarding,
+            'n_onboarding': len(onb_icp),
+            'pct_webinar': pct_webinar,
+            'n_webinar': len(web_icp),
+            'gmv_medio': gmv_medio,
+            'gmv_total': gmv_total
+        })
+
+dashboard_data['icp'] = icp_analysis
+
+print(f"  ✅ Total classificados: {icp_analysis['total_classificados']:,} lojas")
+print(f"  ⚪ Não classificados: {icp_analysis['total_nao_classificados']:,} lojas")
+for icp_data in icp_analysis['por_icp']:
+    if icp_data['icp'] != 'Não Classificado':
+        print(f"  📊 {icp_data['icp']}: {icp_data['total']:,} lojas ({icp_data['pct_sellers']}% sellers, {icp_data['pct_risco_churn']}% risco)")
+
+# =============================================================================
 # WEBINARS - COM COMPARATIVO DE MERCHANT SERVICES
 # =============================================================================
 print("🎓 Analisando Webinars...")
@@ -983,24 +1456,41 @@ dashboard_data['webinars']['churn']['diff_pp'] = round(
     dashboard_data['webinars']['churn']['prob_com'] - dashboard_data['webinars']['churn']['prob_sem'], 2
 )
 
-# Análise de risco por quartil: com vs sem webinar
-print("  📊 Calculando risco por quartil (com vs sem webinar)...")
-com_webinar_churn = com_webinar[com_webinar['predictive_churn_probability'] > 0]
-sem_webinar_churn = sem_webinar[sem_webinar['predictive_churn_probability'] > 0]
+# Análise de risco por categoria: com vs sem webinar
+print("  📊 Calculando risco por categoria (com vs sem webinar)...")
+com_webinar_churn = com_webinar[com_webinar['predictive_churn_probability'].notna()]
+sem_webinar_churn = sem_webinar[sem_webinar['predictive_churn_probability'].notna()]
+
+# Total por grupo (para calcular % incluindo não classificados)
+total_com = len(com_webinar)
+total_sem = len(sem_webinar)
+
+# Categorias de churn binário
+com_sem_risco = int((com_webinar['predictive_churn_probability'] == 0).sum())
+com_com_risco = int((com_webinar['predictive_churn_probability'] == 1).sum())
+com_nao_class = int(com_webinar['predictive_churn_probability'].isna().sum())
+
+sem_sem_risco = int((sem_webinar['predictive_churn_probability'] == 0).sum())
+sem_com_risco = int((sem_webinar['predictive_churn_probability'] == 1).sum())
+sem_nao_class = int(sem_webinar['predictive_churn_probability'].isna().sum())
 
 risk_quartiles_webinar = []
-for q in RISK_QUARTILES:
-    # Com webinar
-    mask_com = (com_webinar_churn['predictive_churn_probability'] > q['min']) & \
-               (com_webinar_churn['predictive_churn_probability'] <= q['max'])
-    count_com = len(com_webinar_churn[mask_com])
-    pct_com = round(count_com / len(com_webinar_churn) * 100, 1) if len(com_webinar_churn) > 0 else 0
+for i, q in enumerate(RISK_QUARTILES):
+    if q.get('special') == 'not_classified':
+        count_com = com_nao_class
+        count_sem = sem_nao_class
+    elif q['name'] == 'Sem Risco':
+        count_com = com_sem_risco
+        count_sem = sem_sem_risco
+    elif q['name'] == 'Com Risco de Churn':
+        count_com = com_com_risco
+        count_sem = sem_com_risco
+    else:
+        count_com = 0
+        count_sem = 0
     
-    # Sem webinar
-    mask_sem = (sem_webinar_churn['predictive_churn_probability'] > q['min']) & \
-               (sem_webinar_churn['predictive_churn_probability'] <= q['max'])
-    count_sem = len(sem_webinar_churn[mask_sem])
-    pct_sem = round(count_sem / len(sem_webinar_churn) * 100, 1) if len(sem_webinar_churn) > 0 else 0
+    pct_com = round(count_com / total_com * 100, 1) if total_com > 0 else 0
+    pct_sem = round(count_sem / total_sem * 100, 1) if total_sem > 0 else 0
     
     risk_quartiles_webinar.append({
         'name': q['name'],
@@ -1009,7 +1499,8 @@ for q in RISK_QUARTILES:
         'pct_com': pct_com,
         'count_sem': count_sem,
         'pct_sem': pct_sem,
-        'diff_pp': round(pct_com - pct_sem, 1)
+        'diff_pp': round(pct_com - pct_sem, 1),
+        'is_not_classified': q.get('special') == 'not_classified'
     })
 
 dashboard_data['webinars']['risk_quartiles_comparison'] = risk_quartiles_webinar
@@ -1050,7 +1541,8 @@ else:
 # Análise pareada
 lojas_pareamento = lojas_ativas[
     (lojas_ativas['status_seller'] != 'not informed') & 
-    (lojas_ativas['aging_faixa_simples'] != 'N/A')
+    (lojas_ativas['aging_faixa_simples'] != 'N/A') &
+    (lojas_ativas['gmv_mes_local'].notna())  # Garantir GMV válido
 ].copy()
 lojas_pareamento['grupo'] = lojas_pareamento['status_seller'] + ' | ' + lojas_pareamento['aging_faixa_simples']
 
@@ -1063,6 +1555,11 @@ for grupo in lojas_pareamento['grupo'].unique():
     if len(com_web) >= 5 and len(sem_web) >= 5:
         gmv_com = com_web['gmv_mes_local'].mean()
         gmv_sem = sem_web['gmv_mes_local'].mean()
+        
+        # Validar valores antes de usar
+        if pd.isna(gmv_com) or pd.isna(gmv_sem) or gmv_sem == 0:
+            continue
+            
         churn_com = com_web['predictive_churn_probability'].mean() * 100
         churn_sem = sem_web['predictive_churn_probability'].mean() * 100
         
@@ -1123,6 +1620,110 @@ dashboard_data['webinars']['churn_pareado'] = {
     'churn_sem': churn_pareado_sem,
     'diff_pp': churn_pareado_diff
 }
+
+# Matriz de transição específica para webinars
+print("  📊 Calculando matriz de transição de webinars...")
+
+matriz_webinar = {
+    'disponivel': False,
+    'upgrade': 0,
+    'downgrade': 0,
+    'estavel': 0,
+    'pct_upgrade': 0,
+    'pct_downgrade': 0,
+    'pct_estavel': 0,
+    'fluxo_liquido': [],
+    'comparativo': None
+}
+
+if base_dezembro is not None and len(com_webinar) > 0:
+    # IDs das lojas com webinar
+    webinar_ids = set(com_webinar[id_col].dropna().astype(int))
+    
+    # Filtrar apenas lojas que estão em ambas as bases E participaram de webinar
+    id_col_dez = 'id_store' if 'id_store' in base_dezembro.columns else 'store_id'
+    
+    # Base de dezembro - lojas com webinar
+    dez_webinar = base_dezembro[base_dezembro[id_col_dez].isin(webinar_ids)][[id_col_dez, 'status_seller']].copy()
+    jan_webinar = lojas_ativas[lojas_ativas[id_col].isin(webinar_ids)][[id_col, 'status_seller']].copy()
+    
+    # Merge para transição
+    merged_web = dez_webinar.merge(
+        jan_webinar,
+        left_on=id_col_dez, right_on=id_col,
+        how='inner',
+        suffixes=('_antes', '_depois')
+    )
+    
+    if len(merged_web) > 0:
+        merged_web['tier_antes'] = merged_web['status_seller_antes'].apply(get_status_tier)
+        merged_web['tier_depois'] = merged_web['status_seller_depois'].apply(get_status_tier)
+        
+        lojas_web_validas = merged_web[(merged_web['tier_antes'] >= 0) & (merged_web['tier_depois'] >= 0)]
+        
+        # Usar get_transition_type para classificar corretamente
+        lojas_web_validas = lojas_web_validas.copy()
+        lojas_web_validas['tipo_transicao'] = lojas_web_validas.apply(
+            lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+        )
+        
+        up_web = len(lojas_web_validas[lojas_web_validas['tipo_transicao'] == 'upgrade'])
+        down_web = len(lojas_web_validas[lojas_web_validas['tipo_transicao'] == 'downgrade'])
+        estavel_web = len(lojas_web_validas[lojas_web_validas['tipo_transicao'] == 'estavel'])
+        total_web = up_web + down_web + estavel_web
+        
+        # Fluxo líquido por status
+        fluxo_web = []
+        status_presentes_web = [s for s in STATUS_ORDER if s in lojas_web_validas['status_seller_antes'].values or s in lojas_web_validas['status_seller_depois'].values]
+        
+        for status in status_presentes_web:
+            antes = int((lojas_web_validas['status_seller_antes'] == status).sum())
+            depois = int((lojas_web_validas['status_seller_depois'] == status).sum())
+            variacao = depois - antes
+            pct_var = round((variacao / antes * 100), 1) if antes > 0 else 0
+            
+            fluxo_web.append({
+                'status': status,
+                'label': STATUS_LABELS.get(status, status),
+                'antes': antes,
+                'depois': depois,
+                'variacao': variacao,
+                'pct_variacao': pct_var
+            })
+        
+        fluxo_web = sorted(fluxo_web, key=lambda x: x['variacao'], reverse=True)
+        
+        # Comparar com base geral
+        pct_up_web = round(up_web / total_web * 100, 1) if total_web > 0 else 0
+        pct_down_web = round(down_web / total_web * 100, 1) if total_web > 0 else 0
+        pct_estavel_web = round(estavel_web / total_web * 100, 1) if total_web > 0 else 0
+        
+        # Diferença vs base geral
+        diff_up = round(pct_up_web - matriz_transicao['pct_upgrade'], 1)
+        diff_down = round(pct_down_web - matriz_transicao['pct_downgrade'], 1)
+        
+        matriz_webinar = {
+            'disponivel': True,
+            'total': total_web,
+            'upgrade': up_web,
+            'downgrade': down_web,
+            'estavel': estavel_web,
+            'pct_upgrade': pct_up_web,
+            'pct_downgrade': pct_down_web,
+            'pct_estavel': pct_estavel_web,
+            'fluxo_liquido': fluxo_web,
+            'comparativo': {
+                'diff_upgrade': diff_up,
+                'diff_downgrade': diff_down,
+                'base_upgrade': matriz_transicao['pct_upgrade'],
+                'base_downgrade': matriz_transicao['pct_downgrade']
+            }
+        }
+        
+        print(f"      Webinars: Upgrade {pct_up_web}% | Downgrade {pct_down_web}% | Estável {pct_estavel_web}%")
+        print(f"      vs Base:  Upgrade {'+' if diff_up > 0 else ''}{diff_up}pp | Downgrade {'+' if diff_down > 0 else ''}{diff_down}pp")
+
+dashboard_data['webinars']['matriz_transicao'] = matriz_webinar
 
 # =============================================================================
 # ANÁLISE DE ONBOARDING V2
@@ -1305,23 +1906,32 @@ if onboarding_grupo_teste is not None and len(onboarding_grupo_teste) > 0:
     from scipy import stats
     
     def calc_churn_metrics(df, name):
-        """Calcula métricas de churn para um DataFrame"""
-        churn = df['predictive_churn_probability'].dropna()
-        if len(churn) == 0:
+        """Calcula métricas de churn para um DataFrame, incluindo não classificados"""
+        df_valid = df[df['predictive_churn_probability'].notna()]
+        if len(df_valid) == 0:
             return None
         
+        # Identificar não classificados (churn = 0 E status = not informed)
+        nao_class = (df_valid['predictive_churn_probability'] == 0) & \
+                    (df_valid['status_seller'] == 'not informed')
+        classificados = df_valid[~nao_class]
+        churn = classificados['predictive_churn_probability']
+        
+        q_nc = int(nao_class.sum())
         q1 = int((churn <= 0.25).sum())
         q2 = int(((churn > 0.25) & (churn <= 0.50)).sum())
         q3 = int(((churn > 0.50) & (churn <= 0.75)).sum())
         q4 = int((churn > 0.75).sum())
-        total = len(churn)
+        total = len(df_valid)
         
         return {
             'nome': name,
             'n': int(total),
-            'churn_medio': float(round(churn.mean() * 100, 1)),
-            'churn_mediana': float(round(churn.median() * 100, 1)),
+            'n_classificados': int(len(classificados)),
+            'churn_medio': float(round(churn.mean() * 100, 1)) if len(churn) > 0 else 0,
+            'churn_mediana': float(round(churn.median() * 100, 1)) if len(churn) > 0 else 0,
             'quartis': {
+                'nao_classificado': {'n': q_nc, 'pct': float(round(q_nc/total*100, 1))},
                 'baixo': {'n': q1, 'pct': float(round(q1/total*100, 1))},
                 'moderado': {'n': q2, 'pct': float(round(q2/total*100, 1))},
                 'alto': {'n': q3, 'pct': float(round(q3/total*100, 1))},
@@ -1385,6 +1995,429 @@ if onboarding_grupo_teste is not None and len(onboarding_grupo_teste) > 0:
         print(f"      Grupo Teste: {teste_vs_base['media1']}% vs Base Geral: {teste_vs_base['media2']}% | Diff: {teste_vs_base['diff_pp']}pp")
     if teste_potential_vs_resto:
         print(f"      Potential: {teste_potential_vs_resto['media1']}% vs Resto: {teste_potential_vs_resto['media2']}% | Diff: {teste_potential_vs_resto['diff_pp']}pp")
+    
+    # =========================================================================
+    # MATRIZ DE TRANSIÇÃO: COM ONBOARDING vs SEM ONBOARDING (mesma idade)
+    # =========================================================================
+    print("  📊 Calculando matriz de transição de onboarding...")
+    
+    matriz_onboarding = {
+        'disponivel': False,
+        'com_onboarding': None,
+        'sem_onboarding': None,
+        'comparativo': None
+    }
+    
+    if base_dezembro is not None:
+        # IDs das lojas com onboarding
+        onb_ids_set = set(onb_ids)
+        
+        # Filtrar lojas com onboarding em ambas as bases
+        id_col_dez = 'id_store' if 'id_store' in base_dezembro.columns else 'store_id'
+        
+        # Lojas com onboarding que estão em dezembro e janeiro
+        dez_onb = base_dezembro[base_dezembro[id_col_dez].isin(onb_ids_set)][[id_col_dez, 'status_seller', 'aging']].copy()
+        jan_onb = lojas_ativas[lojas_ativas[id_col].isin(onb_ids_set)][[id_col, 'status_seller', 'aging_clean']].copy()
+        
+        # Merge
+        merged_onb = dez_onb.merge(
+            jan_onb,
+            left_on=id_col_dez, right_on=id_col,
+            how='inner',
+            suffixes=('_antes', '_depois')
+        )
+        
+        print(f"      Lojas onboarding em dezembro: {len(dez_onb):,}")
+        print(f"      Lojas onboarding em janeiro: {len(jan_onb):,}")
+        print(f"      Lojas em ambas as bases: {len(merged_onb):,}")
+        
+        if len(merged_onb) > 100:
+            merged_onb['tier_antes'] = merged_onb['status_seller_antes'].apply(get_status_tier)
+            merged_onb['tier_depois'] = merged_onb['status_seller_depois'].apply(get_status_tier)
+            
+            # Verificar se há status válido em dezembro
+            pct_not_informed = (merged_onb['status_seller_antes'] == 'not informed').mean() * 100
+            print(f"      Lojas 'not informed' em dezembro: {pct_not_informed:.1f}%")
+            
+            # Se a maioria era "not informed", analisar evolução desde "not informed"
+            if pct_not_informed > 80:
+                print(f"      ⚠️ Maioria sem status em dezembro - analisando evolução desde criação")
+                
+                # Análise: onde estão agora em janeiro
+                status_jan_onb = merged_onb['status_seller_depois'].value_counts()
+                total_onb_analysis = len(merged_onb)
+                
+                # Calcular quantos evoluíram (saíram de not-informed)
+                ficaram_no_seller = (merged_onb['status_seller_depois'] == 'no-seller').sum()
+                evoluiram = total_onb_analysis - ficaram_no_seller
+                pct_evoluiram = round(evoluiram / total_onb_analysis * 100, 1) if total_onb_analysis > 0 else 0
+                
+                # Separar por tier atual
+                merged_onb['tier_atual'] = merged_onb['status_seller_depois'].apply(get_status_tier)
+                tier_dist_onb = {}
+                for tier_val, tier_name in [(0, 'no-seller'), (1, 'struggling-seller'), (2, 'tiny-seller'), 
+                                            (3, 'small-seller'), (4, 'medium-seller'), (5, 'large-seller'), (6, 'top-seller')]:
+                    count = int((merged_onb['tier_atual'] == tier_val).sum())
+                    tier_dist_onb[tier_name] = {
+                        'count': count,
+                        'pct': round(count / total_onb_analysis * 100, 1) if total_onb_analysis > 0 else 0
+                    }
+            
+            # Calcular faixa de aging do grupo onboarding
+            aging_onb_medio = merged_onb['aging'].median() if 'aging' in merged_onb.columns else 0
+            aging_onb_min = merged_onb['aging'].quantile(0.25) if 'aging' in merged_onb.columns else 0
+            aging_onb_max = merged_onb['aging'].quantile(0.75) if 'aging' in merged_onb.columns else 365
+            
+            # Apenas com status válido (para matriz tradicional)
+            onb_validos = merged_onb[(merged_onb['tier_antes'] >= 0) & (merged_onb['tier_depois'] >= 0)]
+            
+            # Se a maioria era "not informed" em dezembro, fazer análise de evolução
+            if pct_not_informed > 80:
+                # Análise alternativa: comparar distribuição atual de status
+                total_onb_analise = len(merged_onb)
+                
+                # Status atual - Com Onboarding
+                dist_status_com = []
+                for status in STATUS_ORDER:
+                    if status in merged_onb['status_seller_depois'].values:
+                        count = int((merged_onb['status_seller_depois'] == status).sum())
+                        dist_status_com.append({
+                            'status': status,
+                            'label': STATUS_LABELS.get(status, status),
+                            'count': count,
+                            'pct': round(count / total_onb_analise * 100, 1) if total_onb_analise > 0 else 0
+                        })
+                
+                # Calcular taxa de evolução (saíram de no-seller)
+                no_seller_count = int((merged_onb['status_seller_depois'] == 'no-seller').sum())
+                evoluiram = total_onb_analise - no_seller_count
+                pct_evoluiram_onb = round(evoluiram / total_onb_analise * 100, 1) if total_onb_analise > 0 else 0
+                
+                matriz_onboarding['com_onboarding'] = {
+                    'tipo': 'evolucao',  # Indica análise alternativa
+                    'total': total_onb_analise,
+                    'pct_evoluiram': pct_evoluiram_onb,
+                    'evoluiram': evoluiram,
+                    'no_seller': no_seller_count,
+                    'dist_status': dist_status_com
+                }
+                
+                print(f"      Com Onboarding: {pct_evoluiram_onb}% evoluíram para seller ({evoluiram:,} de {total_onb_analise:,})")
+                
+            else:
+                # Análise tradicional de upgrade/downgrade
+                # Usar get_transition_type para classificar corretamente
+                onb_validos = onb_validos.copy()
+                onb_validos['tipo_transicao'] = onb_validos.apply(
+                    lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+                )
+                
+                up_onb = len(onb_validos[onb_validos['tipo_transicao'] == 'upgrade'])
+                down_onb = len(onb_validos[onb_validos['tipo_transicao'] == 'downgrade'])
+                estavel_onb = len(onb_validos[onb_validos['tipo_transicao'] == 'estavel'])
+                total_onb = up_onb + down_onb + estavel_onb
+                
+                # Fluxo líquido por status - Com Onboarding
+                fluxo_onb = []
+                status_presentes_onb = [s for s in STATUS_ORDER if s in onb_validos['status_seller_antes'].values or s in onb_validos['status_seller_depois'].values]
+                
+                for status in status_presentes_onb:
+                    antes = int((onb_validos['status_seller_antes'] == status).sum())
+                    depois = int((onb_validos['status_seller_depois'] == status).sum())
+                    variacao = depois - antes
+                    pct_var = round((variacao / antes * 100), 1) if antes > 0 else 0
+                    
+                    fluxo_onb.append({
+                        'status': status,
+                        'label': STATUS_LABELS.get(status, status),
+                        'antes': antes,
+                        'depois': depois,
+                        'variacao': variacao,
+                        'pct_variacao': pct_var
+                    })
+                
+                fluxo_onb = sorted(fluxo_onb, key=lambda x: x['variacao'], reverse=True)
+                
+                # Criar matriz visual para onboarding
+                matriz_crosstab_onb = pd.crosstab(
+                    onb_validos['status_seller_antes'], 
+                    onb_validos['status_seller_depois'],
+                    margins=False
+                )
+                
+                status_presentes_mat = [s for s in STATUS_ORDER if s in matriz_crosstab_onb.index or s in matriz_crosstab_onb.columns]
+                for s in status_presentes_mat:
+                    if s not in matriz_crosstab_onb.index:
+                        matriz_crosstab_onb.loc[s] = 0
+                    if s not in matriz_crosstab_onb.columns:
+                        matriz_crosstab_onb[s] = 0
+                matriz_crosstab_onb = matriz_crosstab_onb.reindex(index=status_presentes_mat, columns=status_presentes_mat, fill_value=0)
+                
+                matriz_visual_onb = []
+                max_count_onb = 1
+                if matriz_crosstab_onb.size > 0:
+                    max_val = matriz_crosstab_onb.values.max()
+                    if max_val > 0:
+                        max_count_onb = max_val
+                
+                for status_de in status_presentes_mat:
+                    row = {'de': status_de, 'de_label': STATUS_LABELS.get(status_de, status_de), 'transicoes': []}
+                    total_de = int(matriz_crosstab_onb.loc[status_de].sum())
+                    for status_para in status_presentes_mat:
+                        count = int(matriz_crosstab_onb.loc[status_de, status_para])
+                        pct = round(count / total_de * 100, 1) if total_de > 0 else 0
+                        # Usar função de classificação de transição
+                        tipo = get_transition_type(status_de, status_para)
+                        intensidade = round(count / max_count_onb, 2)
+                        row['transicoes'].append({
+                            'para': status_para,
+                            'para_label': STATUS_LABELS.get(status_para, status_para),
+                            'count': count,
+                            'pct': pct,
+                            'tipo': tipo,
+                            'intensidade': intensidade
+                        })
+                    row['total'] = total_de
+                    matriz_visual_onb.append(row)
+                
+                matriz_onboarding['com_onboarding'] = {
+                    'tipo': 'transicao',
+                    'total': total_onb,
+                    'upgrade': up_onb,
+                    'downgrade': down_onb,
+                    'estavel': estavel_onb,
+                    'pct_upgrade': round(up_onb / total_onb * 100, 1) if total_onb > 0 else 0,
+                    'pct_downgrade': round(down_onb / total_onb * 100, 1) if total_onb > 0 else 0,
+                    'pct_estavel': round(estavel_onb / total_onb * 100, 1) if total_onb > 0 else 0,
+                    'fluxo_liquido': fluxo_onb,
+                    'matriz_visual': matriz_visual_onb,
+                    'status_order': [STATUS_LABELS.get(s, s) for s in status_presentes_mat]
+                }
+            
+            # Agora criar grupo SEM onboarding com mesma faixa de aging
+            # Usar aging atual (janeiro) para comparação justa
+            aging_jan_onb = lojas_ativas[lojas_ativas[id_col].isin(onb_ids_set)]['aging_clean']
+            aging_jan_min = aging_jan_onb.quantile(0.25) if len(aging_jan_onb) > 0 else 0
+            aging_jan_max = aging_jan_onb.quantile(0.75) if len(aging_jan_onb) > 0 else 365
+            
+            sem_onb_ids = set(lojas_ativas[~lojas_ativas[id_col].isin(onb_ids_set)][id_col])
+            
+            # Filtrar lojas sem onboarding pela idade em JANEIRO (comparação justa)
+            jan_sem_todas = lojas_ativas[
+                (~lojas_ativas[id_col].isin(onb_ids_set)) &
+                (lojas_ativas['aging_clean'] >= aging_jan_min) &
+                (lojas_ativas['aging_clean'] <= aging_jan_max)
+            ][[id_col, 'status_seller']].copy()
+            
+            print(f"      Faixa de aging (Jan): {aging_jan_min:.0f}-{aging_jan_max:.0f} dias")
+            print(f"      Lojas sem onboarding (mesma idade atual): {len(jan_sem_todas):,}")
+            
+            # Para análise de evolução, buscar status em dezembro dessas lojas
+            dez_sem = base_dezembro[
+                base_dezembro[id_col_dez].isin(jan_sem_todas[id_col].values)
+            ][[id_col_dez, 'status_seller']].copy()
+            
+            merged_sem = dez_sem.merge(
+                jan_sem_todas,
+                left_on=id_col_dez, right_on=id_col,
+                how='inner',
+                suffixes=('_antes', '_depois')
+            )
+            
+            if len(merged_sem) > 100:
+                merged_sem['tier_antes'] = merged_sem['status_seller_antes'].apply(get_status_tier)
+                merged_sem['tier_depois'] = merged_sem['status_seller_depois'].apply(get_status_tier)
+                
+                # Verificar também o % de "not informed" no grupo sem onboarding
+                pct_not_informed_sem = (merged_sem['status_seller_antes'] == 'not informed').mean() * 100
+                
+                # Se análise é de evolução (maioria era not informed)
+                if pct_not_informed > 80:
+                    # Análise de evolução para grupo sem onboarding
+                    total_sem_analise = len(merged_sem)
+                    
+                    # Status atual - Sem Onboarding
+                    dist_status_sem = []
+                    for status in STATUS_ORDER:
+                        if status in merged_sem['status_seller_depois'].values:
+                            count = int((merged_sem['status_seller_depois'] == status).sum())
+                            dist_status_sem.append({
+                                'status': status,
+                                'label': STATUS_LABELS.get(status, status),
+                                'count': count,
+                                'pct': round(count / total_sem_analise * 100, 1) if total_sem_analise > 0 else 0
+                            })
+                    
+                    # Calcular taxa de evolução (saíram de no-seller)
+                    no_seller_count_sem = int((merged_sem['status_seller_depois'] == 'no-seller').sum())
+                    evoluiram_sem = total_sem_analise - no_seller_count_sem
+                    pct_evoluiram_sem = round(evoluiram_sem / total_sem_analise * 100, 1) if total_sem_analise > 0 else 0
+                    
+                    matriz_onboarding['sem_onboarding'] = {
+                        'tipo': 'evolucao',
+                        'total': total_sem_analise,
+                        'pct_evoluiram': pct_evoluiram_sem,
+                        'evoluiram': evoluiram_sem,
+                        'no_seller': no_seller_count_sem,
+                        'dist_status': dist_status_sem,
+                        'aging_range': f"{int(aging_jan_min)}-{int(aging_jan_max)} dias"
+                    }
+                    
+                    print(f"      Sem Onboarding: {pct_evoluiram_sem}% evoluíram para seller ({evoluiram_sem:,} de {total_sem_analise:,})")
+                    
+                    # Comparativo de evolução com teste estatístico
+                    pct_evoluiram_onb = matriz_onboarding['com_onboarding'].get('pct_evoluiram', 0)
+                    diff_evolucao = round(pct_evoluiram_onb - pct_evoluiram_sem, 1)
+                    
+                    # Teste estatístico de proporções (z-test)
+                    n_com = matriz_onboarding['com_onboarding'].get('total', 0)
+                    n_sem = total_sem_analise
+                    sucesso_com = matriz_onboarding['com_onboarding'].get('evoluiram', 0)
+                    sucesso_sem = evoluiram_sem
+                    
+                    significativo = False
+                    p_value = 1.0
+                    if n_com > 30 and n_sem > 30:
+                        # Proporções
+                        p1 = sucesso_com / n_com if n_com > 0 else 0
+                        p2 = sucesso_sem / n_sem if n_sem > 0 else 0
+                        # Proporção pooled
+                        p_pool = (sucesso_com + sucesso_sem) / (n_com + n_sem)
+                        # Erro padrão
+                        se = np.sqrt(p_pool * (1 - p_pool) * (1/n_com + 1/n_sem)) if p_pool > 0 and p_pool < 1 else 0.001
+                        # Z-score
+                        z = (p1 - p2) / se if se > 0 else 0
+                        # P-value (two-tailed)
+                        p_value = float(round(2 * (1 - stats.norm.cdf(abs(z))), 4))
+                        significativo = bool(p_value < 0.05)
+                    
+                    matriz_onboarding['comparativo'] = {
+                        'tipo': 'evolucao',
+                        'diff_evolucao': diff_evolucao,
+                        'pct_com': pct_evoluiram_onb,
+                        'pct_sem': pct_evoluiram_sem,
+                        'aging_range': f"{int(aging_jan_min)}-{int(aging_jan_max)} dias",
+                        'p_value': p_value,
+                        'significativo': significativo
+                    }
+                    
+                    matriz_onboarding['disponivel'] = True
+                    sig_str = "✅ Significativo" if significativo else "⚠️ Não significativo"
+                    print(f"      Diferença: {'+' if diff_evolucao > 0 else ''}{diff_evolucao}pp em taxa de evolução | p-value: {p_value} | {sig_str}")
+                    
+                else:
+                    # Análise tradicional de upgrade/downgrade
+                    sem_validos = merged_sem[(merged_sem['tier_antes'] >= 0) & (merged_sem['tier_depois'] >= 0)]
+                    
+                    # Usar get_transition_type para classificar corretamente
+                    sem_validos = sem_validos.copy()
+                    sem_validos['tipo_transicao'] = sem_validos.apply(
+                        lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+                    )
+                    
+                    up_sem = len(sem_validos[sem_validos['tipo_transicao'] == 'upgrade'])
+                    down_sem = len(sem_validos[sem_validos['tipo_transicao'] == 'downgrade'])
+                    estavel_sem = len(sem_validos[sem_validos['tipo_transicao'] == 'estavel'])
+                    total_sem = up_sem + down_sem + estavel_sem
+                    
+                    if total_sem > 0:
+                        # Obter status_presentes_mat do grupo com onboarding
+                        status_presentes_mat = [s for s in STATUS_ORDER if s in sem_validos['status_seller_antes'].values or s in sem_validos['status_seller_depois'].values]
+                        
+                        # Fluxo líquido sem onboarding
+                        fluxo_sem = []
+                        for status in status_presentes_mat:
+                            antes = int((sem_validos['status_seller_antes'] == status).sum())
+                            depois = int((sem_validos['status_seller_depois'] == status).sum())
+                            variacao = depois - antes
+                            pct_var = round((variacao / antes * 100), 1) if antes > 0 else 0
+                            fluxo_sem.append({
+                                'status': status,
+                                'label': STATUS_LABELS.get(status, status),
+                                'antes': antes,
+                                'depois': depois,
+                                'variacao': variacao,
+                                'pct_variacao': pct_var
+                            })
+                        fluxo_sem = sorted(fluxo_sem, key=lambda x: x['variacao'], reverse=True)
+                        
+                        # Matriz visual sem onboarding
+                        matriz_crosstab_sem = pd.crosstab(
+                            sem_validos['status_seller_antes'], 
+                            sem_validos['status_seller_depois'],
+                            margins=False
+                        )
+                        
+                        for s in status_presentes_mat:
+                            if s not in matriz_crosstab_sem.index:
+                                matriz_crosstab_sem.loc[s] = 0
+                            if s not in matriz_crosstab_sem.columns:
+                                matriz_crosstab_sem[s] = 0
+                        matriz_crosstab_sem = matriz_crosstab_sem.reindex(index=status_presentes_mat, columns=status_presentes_mat, fill_value=0)
+                        
+                        matriz_visual_sem = []
+                        max_count_sem = 1
+                        if matriz_crosstab_sem.size > 0:
+                            max_val_sem = matriz_crosstab_sem.values.max()
+                            if max_val_sem > 0:
+                                max_count_sem = max_val_sem
+                        
+                        for status_de in status_presentes_mat:
+                            row = {'de': status_de, 'de_label': STATUS_LABELS.get(status_de, status_de), 'transicoes': []}
+                            total_de = int(matriz_crosstab_sem.loc[status_de].sum())
+                            for status_para in status_presentes_mat:
+                                count = int(matriz_crosstab_sem.loc[status_de, status_para])
+                                pct = round(count / total_de * 100, 1) if total_de > 0 else 0
+                                # Usar função de classificação de transição
+                                tipo = get_transition_type(status_de, status_para)
+                                intensidade = round(count / max_count_sem, 2)
+                                row['transicoes'].append({
+                                    'para': status_para,
+                                    'para_label': STATUS_LABELS.get(status_para, status_para),
+                                    'count': count,
+                                    'pct': pct,
+                                    'tipo': tipo,
+                                    'intensidade': intensidade
+                                })
+                            row['total'] = total_de
+                            matriz_visual_sem.append(row)
+                        
+                        pct_up_sem = round(up_sem / total_sem * 100, 1) if total_sem > 0 else 0
+                        pct_down_sem = round(down_sem / total_sem * 100, 1) if total_sem > 0 else 0
+                        
+                        matriz_onboarding['sem_onboarding'] = {
+                            'tipo': 'transicao',
+                            'total': total_sem,
+                            'upgrade': up_sem,
+                            'downgrade': down_sem,
+                            'estavel': estavel_sem,
+                            'pct_upgrade': pct_up_sem,
+                            'pct_downgrade': pct_down_sem,
+                            'pct_estavel': round(estavel_sem / total_sem * 100, 1) if total_sem > 0 else 0,
+                            'fluxo_liquido': fluxo_sem,
+                            'matriz_visual': matriz_visual_sem,
+                            'status_order': [STATUS_LABELS.get(s, s) for s in status_presentes_mat],
+                            'aging_range': f"{int(aging_onb_min)}-{int(aging_onb_max)} dias"
+                        }
+                        
+                        # Comparativo tradicional
+                        pct_up_onb = matriz_onboarding['com_onboarding'].get('pct_upgrade', 0)
+                        pct_down_onb = matriz_onboarding['com_onboarding'].get('pct_downgrade', 0)
+                        
+                        matriz_onboarding['comparativo'] = {
+                            'tipo': 'transicao',
+                            'diff_upgrade': round(pct_up_onb - pct_up_sem, 1),
+                            'diff_downgrade': round(pct_down_onb - pct_down_sem, 1),
+                            'aging_range': f"{int(aging_onb_min)}-{int(aging_onb_max)} dias"
+                        }
+                        
+                        matriz_onboarding['disponivel'] = True
+                        
+                        print(f"      Com Onboarding: Upgrade {pct_up_onb}% | Downgrade {pct_down_onb}%")
+                        print(f"      Sem Onboarding: Upgrade {pct_up_sem}% | Downgrade {pct_down_sem}%")
+                        print(f"      Diferença: Upgrade {matriz_onboarding['comparativo']['diff_upgrade']:+.1f}pp | Downgrade {matriz_onboarding['comparativo']['diff_downgrade']:+.1f}pp")
+    
+    dashboard_data['onboarding']['matriz_transicao'] = matriz_onboarding
     
 else:
     print("  ⚠️ Dados de onboarding não disponíveis")
@@ -1471,7 +2504,7 @@ def generate_onboarding_uplift_section():
                             <span class="text-muted" style="font-size:0.7rem;">{tamanho.get('pct_teste', 0)}% do total</span>
                         </div>
                         <div class="card" style="background:var(--bg-secondary);padding:12px;text-align:center;">
-                            <span class="text-muted" style="font-size:0.75rem;">N Grupo Controle</span>
+                            <span class="text-muted" style="font-size:0.75rem;">N Sem Onboarding</span>
                             <div style="font-weight:600;">{tamanho.get('n_controle', uplift['grupo_controle']['n'])}</div>
                             <span class="text-muted" style="font-size:0.7rem;">{tamanho.get('pct_controle', 0)}% do total</span>
                         </div>
@@ -1550,7 +2583,7 @@ def generate_onboarding_uplift_section():
                                     <td>{por_grupo.get('onboarding', {}).get('churn_mediana', 0)}%</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Grupo Controle</strong></td>
+                                    <td><strong>Sem Onboarding</strong></td>
                                     <td>{por_grupo.get('grupo_controle', {}).get('n_com_churn', 0)}</td>
                                     <td>{por_grupo.get('grupo_controle', {}).get('churn_medio', 0)}%</td>
                                     <td>{por_grupo.get('grupo_controle', {}).get('churn_mediana', 0)}%</td>
@@ -1873,6 +2906,265 @@ def generate_onboarding_insights():
     
     return html
 
+def generate_onboarding_transicao_section():
+    """Gera seção de análise de evolução/transição comparativa para onboarding"""
+    matriz = dashboard_data.get('onboarding', {}).get('matriz_transicao', {})
+    if not matriz.get('disponivel'):
+        return '<div class="insight-box warning"><p>Análise de transição não disponível. Carregue uma base do mês anterior para análise.</p></div>'
+    
+    com_onb = matriz.get('com_onboarding', {})
+    sem_onb = matriz.get('sem_onboarding', {})
+    comp = matriz.get('comparativo', {})
+    
+    if not com_onb or not sem_onb:
+        return ''
+    
+    tipo_analise = com_onb.get('tipo', 'transicao')
+    aging_range = comp.get('aging_range', 'similar')
+    
+    # Se é análise de evolução (lojas novas sem status anterior)
+    if tipo_analise == 'evolucao':
+        pct_com = com_onb.get('pct_evoluiram', 0)
+        pct_sem = sem_onb.get('pct_evoluiram', 0)
+        diff_evolucao = comp.get('diff_evolucao', 0)
+        diff_class = 'positive' if diff_evolucao > 0 else ('negative' if diff_evolucao < 0 else '')
+        p_value = comp.get('p_value', 1.0)
+        significativo = comp.get('significativo', False)
+        sig_badge = '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.6875rem;background:var(--success-surface);color:var(--success-text);margin-top:8px;">✅ Estatisticamente Significativo</span>' if significativo else '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.6875rem;background:var(--warning-surface);color:var(--warning-text);margin-top:8px;">⚠️ Não Significativo</span>'
+        
+        # Gerar gráfico comparativo unificado
+        dist_com = com_onb.get('dist_status', [])
+        dist_sem = sem_onb.get('dist_status', [])
+        
+        # Preparar dados para gráfico comparativo
+        status_labels = [d['label'] for d in dist_com]
+        pct_com_list = [d['pct'] for d in dist_com]
+        pct_sem_list = []
+        for s in [d['status'] for d in dist_com]:
+            found = next((d['pct'] for d in dist_sem if d['status'] == s), 0)
+            pct_sem_list.append(found)
+        
+        # Gerar linhas comparativas
+        comparative_rows = ''
+        max_pct = max(max(pct_com_list) if pct_com_list else 1, max(pct_sem_list) if pct_sem_list else 1)
+        for i, d in enumerate(dist_com):
+            pct_c = d['pct']
+            pct_s = pct_sem_list[i] if i < len(pct_sem_list) else 0
+            diff = round(pct_c - pct_s, 1)
+            diff_txt = f'+{diff}' if diff > 0 else str(diff)
+            diff_color = 'var(--success-text)' if diff > 0 else ('var(--danger-text)' if diff < 0 else 'var(--nimbus-neutral-text-low)')
+            
+            bar_width_c = round(pct_c / max_pct * 100, 1) if max_pct > 0 else 0
+            bar_width_s = round(pct_s / max_pct * 100, 1) if max_pct > 0 else 0
+            
+            # Cor baseada no status
+            status_class = 'positive' if d['status'] not in ['not informed', 'no-seller', 'struggling-seller'] else ('warning' if d['status'] == 'struggling-seller' else 'negative')
+            bar_color_c = 'var(--nimbus-primary-interactive)'
+            bar_color_s = 'var(--nimbus-neutral-text-disabled)'
+            
+            comparative_rows += f'''
+            <div style="margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                    <span style="font-size:0.75rem;font-weight:500;">{d['label']}</span>
+                    <span style="font-size:0.75rem;color:{diff_color};font-weight:600;">{diff_txt}pp</span>
+                </div>
+                <div style="display:flex;gap:4px;align-items:center;">
+                    <div style="flex:1;height:12px;background:var(--nimbus-neutral-surface-highlight);border-radius:4px;overflow:hidden;position:relative;">
+                        <div style="width:{bar_width_c}%;height:100%;background:{bar_color_c};position:absolute;top:0;left:0;opacity:0.9;"></div>
+                    </div>
+                    <span style="font-size:0.6875rem;width:40px;text-align:right;color:var(--nimbus-primary-interactive);">{pct_c}%</span>
+                </div>
+                <div style="display:flex;gap:4px;align-items:center;margin-top:2px;">
+                    <div style="flex:1;height:12px;background:var(--nimbus-neutral-surface-highlight);border-radius:4px;overflow:hidden;position:relative;">
+                        <div style="width:{bar_width_s}%;height:100%;background:{bar_color_s};position:absolute;top:0;left:0;"></div>
+                    </div>
+                    <span style="font-size:0.6875rem;width:40px;text-align:right;color:var(--nimbus-neutral-text-low);">{pct_s}%</span>
+                </div>
+            </div>
+            '''
+        
+        html = f'''
+            <h2 class="section-title">📊 Evolução de Status - Lojas Novas</h2>
+            <div class="insight-box info">
+                <h4>Comparativo: Com Onboarding vs Sem Onboarding</h4>
+                <p>As lojas do Onboarding V2 eram novas e não tinham status em Dezembro. Comparamos sua evolução com lojas de mesma idade ({aging_range}) que <strong>não</strong> participaram do onboarding.</p>
+            </div>
+            
+            <div class="grid-3" style="margin-top:16px;">
+                <div class="card" style="text-align:center;background:var(--nimbus-primary-surface);border:1px solid var(--nimbus-primary-interactive);">
+                    <div class="card-title">🎓 Com Onboarding</div>
+                    <div class="card-value gradient" style="font-size:2rem;">{pct_com}%</div>
+                    <div class="card-subtitle">evoluíram para seller</div>
+                    <p class="text-muted" style="font-size:0.6875rem;margin-top:4px;">{com_onb.get('evoluiram', 0):,} de {com_onb.get('total', 0):,} lojas</p>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <div class="card-title">📋 Sem Onboarding</div>
+                    <div class="card-value" style="font-size:2rem;color:var(--nimbus-neutral-text-low);">{pct_sem}%</div>
+                    <div class="card-subtitle">evoluíram para seller</div>
+                    <p class="text-muted" style="font-size:0.6875rem;margin-top:4px;">{sem_onb.get('evoluiram', 0):,} de {sem_onb.get('total', 0):,} lojas</p>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <div class="card-title">📈 Diferença</div>
+                    <div style="font-size:2rem;font-weight:700;" class="{diff_class}">{("+" if diff_evolucao > 0 else "")}{diff_evolucao}pp</div>
+                    <div class="card-subtitle">p-value: {p_value}</div>
+                    {sig_badge}
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:16px;">
+                <div class="card-title">📊 Distribuição Comparativa por Status</div>
+                <p class="text-muted" style="font-size:0.6875rem;margin-bottom:16px;">
+                    <span style="display:inline-block;width:12px;height:12px;background:var(--nimbus-primary-interactive);border-radius:2px;margin-right:4px;"></span> Com Onboarding ({com_onb.get('total', 0):,} lojas) 
+                    <span style="margin-left:16px;display:inline-block;width:12px;height:12px;background:var(--nimbus-neutral-text-disabled);border-radius:2px;margin-right:4px;"></span> Sem Onboarding ({sem_onb.get('total', 0):,} lojas)
+                </p>
+                {comparative_rows}
+            </div>
+        '''
+        
+        return html
+    
+    # Análise tradicional de transição (upgrade/downgrade)
+    diff_up = comp.get('diff_upgrade', 0)
+    diff_down = comp.get('diff_downgrade', 0)
+    diff_up_class = 'positive' if diff_up > 0 else ('negative' if diff_up < 0 else '')
+    diff_down_class = 'positive' if diff_down < 0 else ('negative' if diff_down > 0 else '')
+    
+    def generate_matriz_visual_html(data, titulo):
+        matriz_visual = data.get('matriz_visual', [])
+        status_order = data.get('status_order', [])
+        if not matriz_visual:
+            return ''
+        
+        header_cells = '<th>De / Para</th>'
+        for status in status_order:
+            header_cells += f'<th class="matriz-header">{status}</th>'
+        
+        body_rows = ''
+        for row in matriz_visual:
+            # Calcular max POR LINHA para cada tipo de transição
+            row_upgrades = [t['count'] for t in row['transicoes'] if t['tipo'] == 'upgrade' and t['count'] > 0]
+            row_downgrades = [t['count'] for t in row['transicoes'] if t['tipo'] == 'downgrade' and t['count'] > 0]
+            row_estavel = [t['count'] for t in row['transicoes'] if t['tipo'] == 'estavel' and t['count'] > 0]
+            
+            max_upgrade_row = max(row_upgrades) if row_upgrades else 1
+            max_downgrade_row = max(row_downgrades) if row_downgrades else 1
+            max_estavel_row = max(row_estavel) if row_estavel else 1
+            
+            cells = f'<td class="matriz-row-header">{row["de_label"]}</td>'
+            for t in row['transicoes']:
+                tipo_class = f'matriz-{t["tipo"]}'
+                
+                # Calcular intensidade POR LINHA
+                if t['count'] > 0:
+                    if t['tipo'] == 'upgrade':
+                        intensity = t['count'] / max_upgrade_row
+                    elif t['tipo'] == 'downgrade':
+                        intensity = t['count'] / max_downgrade_row
+                    else:
+                        intensity = t['count'] / max_estavel_row
+                else:
+                    intensity = 0
+                
+                opacity = 0.15 + (intensity * 0.6)
+                
+                if t['tipo'] == 'upgrade':
+                    bg = f'rgba(34, 197, 94, {opacity})'
+                elif t['tipo'] == 'downgrade':
+                    bg = f'rgba(239, 68, 68, {opacity})'
+                else:
+                    bg = f'rgba(156, 163, 175, {opacity})'
+                
+                cells += f'<td class="matriz-cell {tipo_class}" style="background:{bg};">{t["count"]:,}<br><span class="matriz-pct">{t["pct"]}%</span></td>'
+            body_rows += f'<tr>{cells}</tr>'
+        
+        return f'''
+        <div class="card" style="margin-top:12px;overflow-x:auto;">
+            <div class="card-title">{titulo}</div>
+            <table class="matriz-table">
+                <thead><tr>{header_cells}</tr></thead>
+                <tbody>{body_rows}</tbody>
+            </table>
+            <div class="matriz-legenda">
+                <span class="legenda-item"><span class="legenda-cor matriz-upgrade"></span> Upgrade</span>
+                <span class="legenda-item"><span class="legenda-cor matriz-estavel"></span> Manteve</span>
+                <span class="legenda-item"><span class="legenda-cor matriz-downgrade"></span> Downgrade</span>
+                <span class="legenda-item" style="margin-left:16px;"><em>Escala de cor = volume por linha</em></span>
+            </div>
+        </div>
+        '''
+    
+    html = f'''
+            <h2 class="section-title">📊 Matriz de Transição de Status</h2>
+            <div class="insight-box info">
+                <h4>Comparativo: Com Onboarding vs Sem Onboarding</h4>
+                <p>Comparação de lojas que participaram do Onboarding V2 com lojas de mesma idade ({aging_range}) que <strong>não</strong> participaram. Análise do período Dezembro → Janeiro.</p>
+            </div>
+            
+            <div class="grid-2">
+                <div>
+                    <h3 style="font-size:0.875rem;margin-bottom:12px;color:var(--nimbus-primary-interactive);">🎓 Com Onboarding ({com_onb.get("total", 0):,} lojas)</h3>
+                    <div class="risk-matrix" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
+                            <h3 style="color:#22c55e;">{com_onb.get('upgrade', 0):,}</h3>
+                            <p style="color:#22c55e;font-weight:600;">⬆️ Upgrade</p>
+                            <p>{com_onb.get('pct_upgrade', 0)}%</p>
+                        </div>
+                        <div class="risk-card" style="background:#6b728020;border:2px solid #6b7280;">
+                            <h3 style="color:#6b7280;">{com_onb.get('estavel', 0):,}</h3>
+                            <p style="color:#6b7280;font-weight:600;">➡️ Estável</p>
+                            <p>{com_onb.get('pct_estavel', 0)}%</p>
+                        </div>
+                        <div class="risk-card" style="background:#ef444420;border:2px solid #ef4444;">
+                            <h3 style="color:#ef4444;">{com_onb.get('downgrade', 0):,}</h3>
+                            <p style="color:#ef4444;font-weight:600;">⬇️ Downgrade</p>
+                            <p>{com_onb.get('pct_downgrade', 0)}%</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-size:0.875rem;margin-bottom:12px;color:var(--nimbus-neutral-text-low);">📋 Sem Onboarding ({sem_onb.get("total", 0):,} lojas)</h3>
+                    <div class="risk-matrix" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
+                            <h3 style="color:#22c55e;">{sem_onb.get('upgrade', 0):,}</h3>
+                            <p style="color:#22c55e;font-weight:600;">⬆️ Upgrade</p>
+                            <p>{sem_onb.get('pct_upgrade', 0)}%</p>
+                        </div>
+                        <div class="risk-card" style="background:#6b728020;border:2px solid #6b7280;">
+                            <h3 style="color:#6b7280;">{sem_onb.get('estavel', 0):,}</h3>
+                            <p style="color:#6b7280;font-weight:600;">➡️ Estável</p>
+                            <p>{sem_onb.get('pct_estavel', 0)}%</p>
+                        </div>
+                        <div class="risk-card" style="background:#ef444420;border:2px solid #ef4444;">
+                            <h3 style="color:#ef4444;">{sem_onb.get('downgrade', 0):,}</h3>
+                            <p style="color:#ef4444;font-weight:600;">⬇️ Downgrade</p>
+                            <p>{sem_onb.get('pct_downgrade', 0)}%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:16px;text-align:center;">
+                <div class="card-title">📈 Diferença (Com Onboarding vs Sem Onboarding)</div>
+                <div class="grid-2" style="max-width:400px;margin:0 auto;">
+                    <div>
+                        <div style="font-size:0.75rem;color:var(--nimbus-neutral-text-low);">Upgrade</div>
+                        <div style="font-size:1.5rem;font-weight:700;" class="{diff_up_class}">{("+" if diff_up > 0 else "")}{diff_up}pp</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.75rem;color:var(--nimbus-neutral-text-low);">Downgrade</div>
+                        <div style="font-size:1.5rem;font-weight:700;" class="{diff_down_class}">{("+" if diff_down > 0 else "")}{diff_down}pp</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid-2" style="margin-top:16px;">
+                <div>{generate_matriz_visual_html(com_onb, "📊 Matriz - Com Onboarding")}</div>
+                <div>{generate_matriz_visual_html(sem_onb, "📊 Matriz - Sem Onboarding")}</div>
+            </div>
+    '''
+    
+    return html
+
 # Helpers para tabelas
 ns_rows = ''.join([f"<tr><td>{m['mes']}</td><td>{m['total_new_sellers']:,}</td><td>{m['com_lifecycle']}</td><td class='{'positive' if m['pct_cobertura']>5 else 'neutral' if m['pct_cobertura']>2 else ''}'>{m['pct_cobertura']}%</td></tr>" for m in dashboard_data['new_sellers']['por_mes'][:6]])
 
@@ -2154,30 +3446,385 @@ insights_risco_html = generate_insights_html(insights_risco)
 insights_cobertura_html = generate_insights_html(insights_cobertura)
 insights_webinars_html = generate_insights_html(insights_webinars)
 
+# =============================================================================
+# GERAR HTML DA ABA DE ICP
+# =============================================================================
+def get_icp_color(icp):
+    colors = {'ICP 1': '#0059d5', 'ICP 2': '#22c55e', 'ICP 3': '#f97316', 'ICP 4': '#ef4444'}
+    return colors.get(icp, '#6b7280')
+
+def get_icp_bg(icp):
+    bgs = {'ICP 1': '#0059d520', 'ICP 2': '#22c55e20', 'ICP 3': '#f9731620', 'ICP 4': '#ef444420'}
+    return bgs.get(icp, '#6b728020')
+
+# Cards de resumo por ICP
+icp_cards_html = ''
+for d in dashboard_data['icp']['por_icp']:
+    icp_name = d['icp']
+    color = get_icp_color(icp_name)
+    bg = get_icp_bg(icp_name)
+    icp_cards_html += f'''<div class="risk-card" style="background:{bg};border:2px solid {color};">
+        <h3 style="color:{color};">{d['total']:,}</h3>
+        <p style="color:{color};font-weight:600;">{icp_name}</p>
+        <p>{d['pct_base']}% da base</p>
+    </div>'''
+
+# Tabela comparativa
+icp_table_rows_html = ''
+for d in dashboard_data['icp']['por_icp']:
+    if d['icp'] == 'Não Classificado':
+        continue
+    icp_name = d['icp']
+    color = get_icp_color(icp_name)
+    sellers_class = 'positive' if d['pct_sellers'] > 30 else ('neutral' if d['pct_sellers'] > 15 else 'negative')
+    churn_class = 'positive' if d['pct_risco_churn'] < 20 else ('neutral' if d['pct_risco_churn'] < 30 else 'negative')
+    icp_table_rows_html += f'''<tr>
+        <td><strong style="color:{color};">{icp_name}</strong></td>
+        <td>{d['total']:,}</td>
+        <td class="{sellers_class}">{d['pct_sellers']}%</td>
+        <td>R$ {d['gmv_medio']:,.0f}</td>
+        <td class="{churn_class}">{d['pct_risco_churn']}%</td>
+        <td>{d['pct_onboarding']}% ({d['n_onboarding']:,})</td>
+        <td>{d['pct_webinar']}% ({d['n_webinar']:,})</td>
+    </tr>'''
+
+# Distribuição de status por ICP
+icp_status_cards_html = ''
+for d in dashboard_data['icp']['por_icp']:
+    if d['icp'] == 'Não Classificado':
+        continue
+    icp_name = d['icp']
+    status_bars = ''
+    for s in d['status_dist'][:6]:
+        bar_color = '#22c55e' if s['status'] in SELLER_STATUS else ('#ef4444' if s['status'] == 'no-seller' else '#f97316')
+        status_bars += f'''<div style="display:flex;align-items:center;margin-bottom:4px;">
+            <div style="width:100px;font-size:0.75rem;">{s['label']}</div>
+            <div style="flex:1;height:16px;background:var(--nimbus-neutral-surface-highlight);border-radius:4px;overflow:hidden;">
+                <div style="width:{s['pct']}%;height:100%;background:{bar_color};"></div>
+            </div>
+            <div style="width:60px;text-align:right;font-size:0.75rem;">{s['pct']}%</div>
+        </div>'''
+    icp_status_cards_html += f'''<div class="card">
+        <div class="card-title">{icp_name}</div>
+        <p class="text-muted">{d['total']:,} lojas | {d['pct_sellers']}% sellers | GMV Total: R$ {d['gmv_total']:,.0f}</p>
+        {status_bars}
+    </div>'''
+
+# Insights de ICP
+icp_insights_html = ''
+for d in dashboard_data['icp']['por_icp']:
+    if d['icp'] == 'Não Classificado':
+        continue
+    icp_insights_html += f'<li><strong>{d["icp"]}:</strong> {d["total"]:,} lojas ({d["pct_base"]}%), {d["pct_sellers"]}% são sellers, risco médio de {d["pct_risco_churn"]}%</li>'
+
 matriz_html = ''
 if matriz_transicao['disponivel']:
+    # Top transições HTML
+    top_up_html = ''
+    if matriz_transicao.get('top_upgrades'):
+        top_up_rows = ''.join([
+            f"<tr><td>{t['de']}</td><td>→</td><td>{t['para']}</td><td class='positive'>{t['count']:,}</td></tr>"
+            for t in matriz_transicao['top_upgrades']
+        ])
+        top_up_html = f'''
+        <div class="card" style="margin-top:16px;">
+            <div class="card-title">🔝 Top Upgrades</div>
+            <table class="mini-table">
+                <thead><tr><th>De</th><th></th><th>Para</th><th>Lojas</th></tr></thead>
+                <tbody>{top_up_rows}</tbody>
+            </table>
+        </div>
+        '''
+    
+    top_down_html = ''
+    if matriz_transicao.get('top_downgrades'):
+        top_down_rows = ''.join([
+            f"<tr><td>{t['de']}</td><td>→</td><td>{t['para']}</td><td class='negative'>{t['count']:,}</td></tr>"
+            for t in matriz_transicao['top_downgrades']
+        ])
+        top_down_html = f'''
+        <div class="card" style="margin-top:16px;">
+            <div class="card-title">🔻 Top Downgrades</div>
+            <table class="mini-table">
+                <thead><tr><th>De</th><th></th><th>Para</th><th>Lojas</th></tr></thead>
+                <tbody>{top_down_rows}</tbody>
+            </table>
+        </div>
+        '''
+    
+    # Entradas e saídas (removido - agora incluído na matriz com "not informed")
+    entradas_saidas_html = ''
+    
+    # Gerar tabela visual da matriz de transição com escala de cores POR LINHA
+    matriz_visual_html = ''
+    if matriz_transicao.get('matriz_visual'):
+        status_headers = matriz_transicao.get('status_order', [])
+        header_row = '<th class="matriz-corner">De \\ Para</th>' + ''.join([f'<th class="matriz-header">{s}</th>' for s in status_headers]) + '<th class="matriz-total">Total</th>'
+        
+        body_rows = ''
+        for row in matriz_transicao['matriz_visual']:
+            # Calcular max POR LINHA para cada tipo de transição
+            row_upgrades = [t['count'] for t in row['transicoes'] if t['tipo'] == 'upgrade' and t['count'] > 0]
+            row_downgrades = [t['count'] for t in row['transicoes'] if t['tipo'] == 'downgrade' and t['count'] > 0]
+            row_estavel = [t['count'] for t in row['transicoes'] if t['tipo'] == 'estavel' and t['count'] > 0]
+            
+            max_upgrade_row = max(row_upgrades) if row_upgrades else 1
+            max_downgrade_row = max(row_downgrades) if row_downgrades else 1
+            max_estavel_row = max(row_estavel) if row_estavel else 1
+            
+            cells = f'<td class="matriz-row-header">{row["de_label"]}</td>'
+            for t in row['transicoes']:
+                if t['count'] > 0:
+                    # Calcular intensidade baseada no tipo - ESCALA POR LINHA
+                    if t['tipo'] == 'upgrade':
+                        intensity = t['count'] / max_upgrade_row
+                        # Verde: de claro (0.2) a escuro (0.8) - usando rgb(34, 197, 94)
+                        opacity = 0.15 + (intensity * 0.65)
+                        bg_color = f'rgba(34, 197, 94, {opacity})'
+                    elif t['tipo'] == 'downgrade':
+                        intensity = t['count'] / max_downgrade_row
+                        # Vermelho: de claro (0.2) a escuro (0.8) - usando rgb(239, 68, 68)
+                        opacity = 0.15 + (intensity * 0.65)
+                        bg_color = f'rgba(239, 68, 68, {opacity})'
+                    else:
+                        intensity = t['count'] / max_estavel_row
+                        # Cinza: de claro a mais visível
+                        opacity = 0.1 + (intensity * 0.4)
+                        bg_color = f'rgba(156, 163, 175, {opacity})'
+                    
+                    css_class = 'matriz-upgrade' if t['tipo'] == 'upgrade' else ('matriz-downgrade' if t['tipo'] == 'downgrade' else 'matriz-estavel')
+                    cells += f'<td class="matriz-cell {css_class}" style="background:{bg_color};" title="{t["pct"]}%"><span class="matriz-count">{t["count"]:,}</span><span class="matriz-pct">{t["pct"]}%</span></td>'
+                else:
+                    cells += f'<td class="matriz-cell matriz-zero">-</td>'
+            cells += f'<td class="matriz-total-cell">{row["total"]:,}</td>'
+            body_rows += f'<tr>{cells}</tr>'
+        
+        matriz_visual_html = f'''
+        <div class="card" style="margin-top:16px;overflow-x:auto;">
+            <div class="card-title">📊 Matriz de Transição Completa</div>
+            <p class="text-muted" style="margin-bottom:12px;">Linhas = Status em Dezembro | Colunas = Status em Janeiro | Intensidade da cor = volume por linha</p>
+            <table class="matriz-table">
+                <thead><tr>{header_row}</tr></thead>
+                <tbody>{body_rows}</tbody>
+            </table>
+            <div class="matriz-legenda">
+                <span class="legenda-item"><span class="legenda-cor" style="background:rgba(34, 197, 94, 0.3);"></span> Upgrade (claro)</span>
+                <span class="legenda-item"><span class="legenda-cor" style="background:rgba(34, 197, 94, 0.8);"></span> Upgrade (intenso)</span>
+                <span class="legenda-item"><span class="legenda-cor" style="background:rgba(239, 68, 68, 0.3);"></span> Downgrade (claro)</span>
+                <span class="legenda-item"><span class="legenda-cor" style="background:rgba(239, 68, 68, 0.8);"></span> Downgrade (intenso)</span>
+                <span class="legenda-item"><span class="legenda-cor" style="background:rgba(156, 163, 175, 0.3);"></span> Manteve</span>
+            </div>
+        </div>
+        '''
+    
+    # Gerar insights de fluxo líquido com detalhamento
+    fluxo_liquido_html = ''
+    if matriz_transicao.get('fluxo_liquido'):
+        fluxo = matriz_transicao['fluxo_liquido']
+        
+        # Separar ganhadores e perdedores
+        ganhadores = [f for f in fluxo if f['variacao'] > 0]
+        perdedores = [f for f in fluxo if f['variacao'] < 0]
+        
+        # Ganhadores com detalhamento
+        ganhadores_html = ''
+        for i, g in enumerate(ganhadores[:4]):
+            entradas_detalhe = g.get('entradas_detalhe', [])
+            saidas_detalhe = g.get('saidas_detalhe', [])
+            entradas_str = ', '.join([f"{e['de']}: {e['count']:,}" for e in entradas_detalhe[:3]]) if entradas_detalhe else 'N/A'
+            saidas_str = ', '.join([f"{s['para']}: {s['count']:,}" for s in saidas_detalhe[:3]]) if saidas_detalhe else 'N/A'
+            
+            ganhadores_html += f'''
+            <div class="fluxo-item fluxo-positivo fluxo-expandable" onclick="toggleFluxoDetalhe('ganhador-{i}')">
+                <div class="fluxo-main">
+                    <span class="fluxo-status">{g["label"]}</span>
+                    <span class="fluxo-valor">+{g["variacao"]:,}</span>
+                    <span class="fluxo-pct">(+{g["pct_variacao"]}%)</span>
+                    <span class="fluxo-expand-icon">▼</span>
+                </div>
+                <div id="ganhador-{i}" class="fluxo-detalhe" style="display:none;">
+                    <div class="fluxo-detalhe-row"><strong>Entradas ({g.get("entradas", 0):,}):</strong> {entradas_str}</div>
+                    <div class="fluxo-detalhe-row"><strong>Saídas ({g.get("saidas", 0):,}):</strong> {saidas_str}</div>
+                </div>
+            </div>'''
+        
+        # Perdedores com detalhamento
+        perdedores_html = ''
+        for i, p in enumerate(perdedores[:4]):
+            entradas_detalhe = p.get('entradas_detalhe', [])
+            saidas_detalhe = p.get('saidas_detalhe', [])
+            entradas_str = ', '.join([f"{e['de']}: {e['count']:,}" for e in entradas_detalhe[:3]]) if entradas_detalhe else 'N/A'
+            saidas_str = ', '.join([f"{s['para']}: {s['count']:,}" for s in saidas_detalhe[:3]]) if saidas_detalhe else 'N/A'
+            
+            perdedores_html += f'''
+            <div class="fluxo-item fluxo-negativo fluxo-expandable" onclick="toggleFluxoDetalhe('perdedor-{i}')">
+                <div class="fluxo-main">
+                    <span class="fluxo-status">{p["label"]}</span>
+                    <span class="fluxo-valor">{p["variacao"]:,}</span>
+                    <span class="fluxo-pct">({p["pct_variacao"]}%)</span>
+                    <span class="fluxo-expand-icon">▼</span>
+                </div>
+                <div id="perdedor-{i}" class="fluxo-detalhe" style="display:none;">
+                    <div class="fluxo-detalhe-row"><strong>Entradas ({p.get("entradas", 0):,}):</strong> {entradas_str}</div>
+                    <div class="fluxo-detalhe-row"><strong>Saídas ({p.get("saidas", 0):,}):</strong> {saidas_str}</div>
+                </div>
+            </div>'''
+        
+        # Calcular balanço líquido geral
+        balanco = matriz_transicao['upgrade'] - matriz_transicao['downgrade']
+        balanco_class = 'positive' if balanco > 0 else 'negative' if balanco < 0 else ''
+        balanco_sinal = '+' if balanco > 0 else ''
+        
+        fluxo_liquido_html = f'''
+        <div class="card" style="margin-top:16px;">
+            <div class="card-title">📈 Fluxo Líquido por Status</div>
+            <p class="text-muted" style="margin-bottom:12px;">Clique em cada status para ver de onde vieram as entradas e para onde foram as saídas</p>
+            <div class="insight-box info" style="margin-bottom:16px;">
+                <p><strong>Balanço Geral:</strong> <span class="{balanco_class}">{balanco_sinal}{balanco:,} lojas</span> — Diferença entre upgrades ({matriz_transicao['upgrade']:,}) e downgrades ({matriz_transicao['downgrade']:,})</p>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <h4 style="color:var(--success-text);margin-bottom:8px;">📈 Status que Ganharam Lojas</h4>
+                    <div class="fluxo-lista">{ganhadores_html if ganhadores_html else '<p class="text-muted">Nenhum status com ganho</p>'}</div>
+                </div>
+                <div>
+                    <h4 style="color:var(--danger-text);margin-bottom:8px;">📉 Status que Perderam Lojas</h4>
+                    <div class="fluxo-lista">{perdedores_html if perdedores_html else '<p class="text-muted">Nenhum status com perda</p>'}</div>
+                </div>
+            </div>
+        </div>
+        '''
+    
+    ni_data = matriz_transicao.get('not_informed', {})
+    ni_total = ni_data.get('total', 0)
+    ni_virou_seller = ni_data.get('virou_seller', 0)
+    ni_virou_no_seller = ni_data.get('virou_no_seller', 0)
+    ni_pct_seller = ni_data.get('pct_seller', 0)
+    ni_pct_no_seller = ni_data.get('pct_no_seller', 0)
+    
     matriz_html = f'''
-    <div class="grid-3">
-        <div class="card upgrade-card">
-            <div class="card-title">⬆️ Upgrade</div>
-            <div class="card-value">{matriz_transicao['upgrade']:,}</div>
-            <div class="card-subtitle">{matriz_transicao['pct_upgrade']}%</div>
+    <div class="insight-box info" style="margin-bottom:16px;">
+        <h4>📊 Lojas com Status Definido em {matriz_transicao['mes_anterior']}</h4>
+        <p>Análise de transição apenas para lojas que já tinham status definido (não inclui "não classificados").</p>
+    </div>
+    <div class="risk-matrix" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
+            <h3 style="color:#22c55e;">{matriz_transicao['upgrade']:,}</h3>
+            <p style="color:#22c55e;font-weight:600;">⬆️ Upgrade</p>
+            <p>{matriz_transicao['pct_upgrade']}%</p>
         </div>
-        <div class="card stable-card">
-            <div class="card-title">➡️ Estável</div>
-            <div class="card-value">{matriz_transicao['estavel']:,}</div>
-            <div class="card-subtitle">{matriz_transicao['pct_estavel']}%</div>
+        <div class="risk-card" style="background:#6b728020;border:2px solid #6b7280;">
+            <h3 style="color:#6b7280;">{matriz_transicao['estavel']:,}</h3>
+            <p style="color:#6b7280;font-weight:600;">➡️ Estável</p>
+            <p>{matriz_transicao['pct_estavel']}%</p>
         </div>
-        <div class="card downgrade-card">
-            <div class="card-title">⬇️ Downgrade</div>
-            <div class="card-value">{matriz_transicao['downgrade']:,}</div>
-            <div class="card-subtitle">{matriz_transicao['pct_downgrade']}%</div>
+        <div class="risk-card" style="background:#ef444420;border:2px solid #ef4444;">
+            <h3 style="color:#ef4444;">{matriz_transicao['downgrade']:,}</h3>
+            <p style="color:#ef4444;font-weight:600;">⬇️ Downgrade</p>
+            <p>{matriz_transicao['pct_downgrade']}%</p>
         </div>
     </div>
-    <p class="text-center text-muted">Comparativo: {matriz_transicao['mes_anterior']} → {matriz_transicao['mes_atual']}</p>
+    <p class="text-center text-muted">Lojas com status definido: {matriz_transicao.get('total_comparado', 0):,}</p>
+    
+    <div class="insight-box warning" style="margin-top:24px;margin-bottom:16px;">
+        <h4>🆕 Lojas Novas (Não Classificadas em {matriz_transicao['mes_anterior']})</h4>
+        <p>Estas {ni_total:,} lojas eram "não classificadas" em dezembro e agora têm status definido.</p>
+    </div>
+    <div class="risk-matrix" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
+            <h3 style="color:#22c55e;">{ni_virou_seller:,}</h3>
+            <p style="color:#22c55e;font-weight:600;">✅ Viraram Seller</p>
+            <p>{ni_pct_seller}% das lojas novas</p>
+        </div>
+        <div class="risk-card" style="background:#f9731620;border:2px solid #f97316;">
+            <h3 style="color:#f97316;">{ni_virou_no_seller:,}</h3>
+            <p style="color:#f97316;font-weight:600;">⚠️ Viraram No-Seller</p>
+            <p>{ni_pct_no_seller}% das lojas novas</p>
+        </div>
+    </div>
+    <p class="text-center text-muted">Total de lojas não classificadas em {matriz_transicao['mes_anterior']}: {ni_total:,}</p>
+    {entradas_saidas_html}
+    {matriz_visual_html}
+    {fluxo_liquido_html}
+    <div class="grid-2">
+        {top_up_html}
+        {top_down_html}
+    </div>
     '''
 else:
     matriz_html = '<div class="insight-box warning"><h4>📊 Matriz de Transição</h4><p>Carregue uma base do mês anterior na pasta <code>data/base_geral/</code></p></div>'
+
+# Matriz de transição de webinars
+webinar_transicao_html = ''
+matriz_web = dashboard_data['webinars'].get('matriz_transicao', {})
+if matriz_web.get('disponivel'):
+    # Cards de resumo
+    comp = matriz_web.get('comparativo', {})
+    diff_up = comp.get('diff_upgrade', 0)
+    diff_down = comp.get('diff_downgrade', 0)
+    
+    diff_up_class = 'positive' if diff_up > 0 else ('negative' if diff_up < 0 else '')
+    diff_down_class = 'negative' if diff_down > 0 else ('positive' if diff_down < 0 else '')
+    
+    # Fluxo líquido de webinars
+    fluxo_web = matriz_web.get('fluxo_liquido', [])
+    ganhadores_web = [f for f in fluxo_web if f['variacao'] > 0]
+    perdedores_web = [f for f in fluxo_web if f['variacao'] < 0]
+    
+    ganhadores_web_html = ''
+    for g in ganhadores_web[:4]:
+        ganhadores_web_html += f'<div class="fluxo-item fluxo-positivo"><span class="fluxo-status">{g["label"]}</span><span class="fluxo-valor">+{g["variacao"]:,}</span><span class="fluxo-pct">(+{g["pct_variacao"]}%)</span></div>'
+    
+    perdedores_web_html = ''
+    for p in perdedores_web[:4]:
+        perdedores_web_html += f'<div class="fluxo-item fluxo-negativo"><span class="fluxo-status">{p["label"]}</span><span class="fluxo-valor">{p["variacao"]:,}</span><span class="fluxo-pct">({p["pct_variacao"]}%)</span></div>'
+    
+    # Balanço líquido
+    balanco_web = matriz_web['upgrade'] - matriz_web['downgrade']
+    balanco_web_class = 'positive' if balanco_web > 0 else ('negative' if balanco_web < 0 else '')
+    balanco_web_sinal = '+' if balanco_web > 0 else ''
+    
+    webinar_transicao_html = f'''
+    <div class="insight-box info">
+        <h4>📊 Transição de Status - Dezembro → Janeiro</h4>
+        <p>Análise de como as <strong>{matriz_web.get("total", 0):,} lojas</strong> que participaram de webinars evoluíram de status ao longo do período.</p>
+    </div>
+    <div class="risk-matrix" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
+            <h3 style="color:#22c55e;">{matriz_web['upgrade']:,}</h3>
+            <p style="color:#22c55e;font-weight:600;">⬆️ Upgrade</p>
+            <p>{matriz_web['pct_upgrade']}% <span class="{diff_up_class}">({("+" if diff_up > 0 else "")}{diff_up}pp vs base)</span></p>
+        </div>
+        <div class="risk-card" style="background:#6b728020;border:2px solid #6b7280;">
+            <h3 style="color:#6b7280;">{matriz_web['estavel']:,}</h3>
+            <p style="color:#6b7280;font-weight:600;">➡️ Estável</p>
+            <p>{matriz_web['pct_estavel']}%</p>
+        </div>
+        <div class="risk-card" style="background:#ef444420;border:2px solid #ef4444;">
+            <h3 style="color:#ef4444;">{matriz_web['downgrade']:,}</h3>
+            <p style="color:#ef4444;font-weight:600;">⬇️ Downgrade</p>
+            <p>{matriz_web['pct_downgrade']}% <span class="{diff_down_class}">({("+" if diff_down > 0 else "")}{diff_down}pp vs base)</span></p>
+        </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+        <div class="card-title">📈 Fluxo Líquido por Status (Impactados por Webinar)</div>
+        <div class="insight-box info" style="margin-bottom:16px;">
+            <p><strong>Balanço Geral:</strong> <span class="{balanco_web_class}">{balanco_web_sinal}{balanco_web:,} lojas</span> — Upgrades ({matriz_web['upgrade']:,}) menos downgrades ({matriz_web['downgrade']:,})</p>
+        </div>
+        <div class="grid-2">
+            <div>
+                <h4 style="color:var(--success-text);margin-bottom:8px;">📈 Status que Ganharam Lojas</h4>
+                <div class="fluxo-lista">{ganhadores_web_html if ganhadores_web_html else '<p class="text-muted">Nenhum status com ganho</p>'}</div>
+            </div>
+            <div>
+                <h4 style="color:var(--danger-text);margin-bottom:8px;">📉 Status que Perderam Lojas</h4>
+                <div class="fluxo-lista">{perdedores_web_html if perdedores_web_html else '<p class="text-muted">Nenhum status com perda</p>'}</div>
+            </div>
+        </div>
+    </div>
+    '''
+else:
+    webinar_transicao_html = '<div class="insight-box warning"><p>Matriz de transição não disponível. Carregue a base de dezembro para comparar.</p></div>'
 
 # Comparativo MS webinar
 ms_comparison_rows = ''.join([
@@ -2454,6 +4101,176 @@ html_content = f'''<!DOCTYPE html>
             font-weight: 600;
         }}
         tr:hover {{ background: var(--nimbus-neutral-surface-highlight); }}
+        
+        /* Mini Tables (for matrix transitions) */
+        .mini-table {{ margin-top: var(--spacing-2); }}
+        .mini-table th, .mini-table td {{ 
+            padding: var(--spacing-2); 
+            font-size: 0.75rem; 
+        }}
+        .mini-table td:nth-child(2) {{ 
+            text-align: center; 
+            color: var(--nimbus-neutral-text-low); 
+        }}
+        .mini-table td:last-child {{ text-align: right; font-weight: 600; }}
+        
+        /* Matriz de Transição Visual */
+        .matriz-table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: var(--spacing-3);
+        }}
+        .matriz-table th, .matriz-table td {{
+            padding: var(--spacing-2);
+            text-align: center;
+            border: 1px solid var(--nimbus-neutral-interactive);
+        }}
+        .matriz-corner {{
+            background: var(--nimbus-neutral-surface-highlight);
+            font-weight: 600;
+            font-size: 0.625rem;
+            text-transform: uppercase;
+        }}
+        .matriz-header {{
+            background: var(--nimbus-neutral-surface-highlight);
+            font-weight: 600;
+            font-size: 0.625rem;
+            white-space: nowrap;
+        }}
+        .matriz-row-header {{
+            background: var(--nimbus-neutral-surface-highlight);
+            font-weight: 600;
+            text-align: left !important;
+            white-space: nowrap;
+        }}
+        .matriz-cell {{
+            position: relative;
+            min-width: 60px;
+            padding: var(--spacing-2) !important;
+        }}
+        .matriz-count {{
+            display: block;
+            font-weight: 600;
+            font-size: 0.8125rem;
+        }}
+        .matriz-pct {{
+            display: block;
+            font-size: 0.625rem;
+            color: var(--nimbus-neutral-text-low);
+        }}
+        .matriz-upgrade {{
+            background: rgba(34, 197, 94, 0.15);
+        }}
+        .matriz-upgrade .matriz-count {{ color: var(--success-text); }}
+        .matriz-estavel {{
+            background: rgba(156, 163, 175, 0.15);
+        }}
+        .matriz-estavel .matriz-count {{ color: var(--nimbus-neutral-text-high); font-weight: 700; }}
+        .matriz-downgrade {{
+            background: rgba(239, 68, 68, 0.15);
+        }}
+        .matriz-downgrade .matriz-count {{ color: var(--danger-text); }}
+        .matriz-zero {{
+            color: var(--nimbus-neutral-text-disabled);
+        }}
+        .matriz-total {{
+            background: var(--nimbus-neutral-surface);
+            font-weight: 600;
+        }}
+        .matriz-total-cell {{
+            background: var(--nimbus-neutral-surface-highlight);
+            font-weight: 600;
+        }}
+        .matriz-legenda {{
+            display: flex;
+            gap: var(--spacing-4);
+            margin-top: var(--spacing-3);
+            justify-content: center;
+        }}
+        .legenda-item {{
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: 0.75rem;
+            color: var(--nimbus-neutral-text-low);
+        }}
+        .legenda-cor {{
+            width: 16px;
+            height: 16px;
+            border-radius: var(--radius-sm);
+        }}
+        .legenda-cor.matriz-upgrade {{ background: rgba(34, 197, 94, 0.4); }}
+        .legenda-cor.matriz-estavel {{ background: rgba(156, 163, 175, 0.4); }}
+        .legenda-cor.matriz-downgrade {{ background: rgba(239, 68, 68, 0.4); }}
+        
+        /* Fluxo Líquido */
+        .fluxo-lista {{
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-2);
+        }}
+        .fluxo-item {{
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radius-sm);
+        }}
+        .fluxo-expandable {{
+            cursor: pointer;
+            transition: background 0.2s;
+        }}
+        .fluxo-expandable:hover {{
+            filter: brightness(0.95);
+        }}
+        .fluxo-main {{
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }}
+        .fluxo-positivo {{
+            background: rgba(34, 197, 94, 0.1);
+        }}
+        .fluxo-negativo {{
+            background: rgba(239, 68, 68, 0.1);
+        }}
+        .fluxo-status {{
+            flex: 1;
+            font-weight: 500;
+        }}
+        .fluxo-valor {{
+            font-weight: 700;
+            font-size: 0.9375rem;
+        }}
+        .fluxo-positivo .fluxo-valor {{ color: var(--success-text); }}
+        .fluxo-negativo .fluxo-valor {{ color: var(--danger-text); }}
+        .fluxo-pct {{
+            font-size: 0.75rem;
+            color: var(--nimbus-neutral-text-low);
+        }}
+        .fluxo-expand-icon {{
+            font-size: 0.625rem;
+            color: var(--nimbus-neutral-text-low);
+            transition: transform 0.2s;
+        }}
+        .fluxo-item.expanded .fluxo-expand-icon {{
+            transform: rotate(180deg);
+        }}
+        .fluxo-detalhe {{
+            padding: var(--spacing-2) var(--spacing-3);
+            background: rgba(0,0,0,0.1);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+        }}
+        .fluxo-detalhe-row {{
+            padding: 2px 0;
+        }}
+        
+        /* Matriz com escala de cores */
+        .matriz-cell.intensidade-alta {{
+            font-weight: 700;
+        }}
         
         /* Insight Boxes */
         .insight-box {{
@@ -2782,7 +4599,8 @@ html_content = f'''<!DOCTYPE html>
     <div class="tabs">
         <div class="tab active" onclick="showTab('resumo')">Resumo Executivo</div>
         <div class="tab" onclick="showTab('base')">Visão da Base</div>
-        <div class="tab" onclick="showTab('merchant')">Merchant Services</div>
+        <div class="tab" onclick="showTab('icp')">Análise por ICP</div>
+        <div class="tab" onclick="showTab('merchant')">Merchant Services <span class="badge soon">em atualização</span></div>
         <div class="tab" onclick="showTab('risco')">Risco de Churn</div>
         <div class="tab" onclick="showTab('cobertura')">Cobertura Lifecycle</div>
         <div class="tab" onclick="showTab('webinars')">Projeto: Webinars</div>
@@ -2812,8 +4630,8 @@ html_content = f'''<!DOCTYPE html>
                 <table>
                     <thead><tr><th>Grupo</th><th>New Sellers</th><th>% do Total</th><th>Descrição</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>Onboarding V2</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][0]['n']:,}</td><td class="positive">{dashboard_data['new_sellers']['impacto_por_projeto'][0]['pct']}%</td><td>Grupo Teste</td></tr>
-                        <tr><td><strong>Grupo Controle</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][1]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][1]['pct']}%</td><td>Criados a partir de Out/2025, sem onboarding</td></tr>
+                        <tr><td><strong>Com Onboarding</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][0]['n']:,}</td><td class="positive">{dashboard_data['new_sellers']['impacto_por_projeto'][0]['pct']}%</td><td>Participantes do Onboarding V2</td></tr>
+                        <tr><td><strong>Sem Onboarding</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][1]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][1]['pct']}%</td><td>Criados a partir de Out/2025, sem onboarding</td></tr>
                         <tr><td><strong>Base Antiga</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][2]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][2]['pct']}%</td><td>Criados antes de Out/2025</td></tr>
                         <tr><td><strong>Webinars</strong></td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][3]['n']:,}</td><td>{dashboard_data['new_sellers']['impacto_por_projeto'][3]['pct']}%</td><td>Participaram de webinars</td></tr>
                     </tbody>
@@ -2837,13 +4655,82 @@ html_content = f'''<!DOCTYPE html>
             <h2 class="section-title">Distribuição por Status</h2>
             <div class="two-columns">
                 <div class="card"><div class="card-title">Pirâmide de Status</div><div class="chart-container"><canvas id="chartStatusBase"></canvas></div></div>
-                <div class="card"><div class="card-title">Performance por Status</div><table><thead><tr><th>Status</th><th>Lojas</th><th>GMV Médio</th><th>Churn</th></tr></thead><tbody>{''.join([f'<tr><td><span class="status-dot" style="background:{["#c80003","#c87b00","#f7c77a","#7af7c7","#00c87b","#00935b","#0059d5"][STATUS_ORDER.index(s["status"]) if s["status"] in STATUS_ORDER else 0]};"></span><strong>{s["label"]}</strong></td><td>{s["count"]:,}</td><td>R$ {s["gmv_medio"]:,.0f}</td><td class="{"positive" if s["churn_prob"]<25 else "neutral" if s["churn_prob"]<45 else "negative"}">{s["churn_prob"]}%</td></tr>' for s in dashboard_data['status_base']['distribuicao']])}</tbody></table></div>
+                <div class="card"><div class="card-title">Performance por Status</div><table><thead><tr><th>Status</th><th>Lojas</th><th>GMV Médio</th><th>Risco de Churn</th></tr></thead><tbody>{''.join([f'<tr><td><span class="status-dot" style="background:{["#888888","#c80003","#c87b00","#f7c77a","#7af7c7","#00c87b","#00935b","#0059d5"][STATUS_ORDER.index(s["status"]) if s["status"] in STATUS_ORDER else 0]};"></span><strong>{s["label"]}</strong></td><td>{s["count"]:,}</td><td>R$ {s["gmv_medio"]:,.0f}</td><td class="{"positive" if s["churn_prob"]<25 else "neutral" if s["churn_prob"]<45 else "negative"}">{s["churn_prob"]}%</td></tr>' for s in dashboard_data['status_base']['distribuicao']])}</tbody></table></div>
             </div>
             
             <h2 class="section-title">Matriz de Transição</h2>
             {matriz_html}
             
             {insights_base_html}
+        </div>
+        
+        <!-- ICP ANALYSIS -->
+        <div id="icp" class="tab-content">
+            <h2 class="section-title">Análise por ICP (Ideal Customer Profile)</h2>
+            
+            <div class="insight-box info">
+                <h4>📊 Sobre a análise de ICP</h4>
+                <p>Comparativo de performance entre os perfis de cliente ideal (ICP 1 a 4), incluindo taxa de conversão para seller, risco de churn e participação em projetos de lifecycle.</p>
+            </div>
+            
+            <div class="risk-matrix" style="grid-template-columns: repeat(5, 1fr);">
+                {icp_cards_html}
+            </div>
+            
+            <h2 class="section-title" style="margin-top:32px;">Comparativo de Performance por ICP</h2>
+            
+            <div class="card" style="overflow-x:auto;">
+                <table style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>ICP</th>
+                            <th>Lojas</th>
+                            <th>% Sellers</th>
+                            <th>GMV Médio</th>
+                            <th>Risco Churn</th>
+                            <th>% Onboarding</th>
+                            <th>% Webinars</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {icp_table_rows_html}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="grid-2" style="margin-top:24px;">
+                <div class="card">
+                    <div class="card-title">📊 % de Sellers por ICP</div>
+                    <div class="chart-container"><canvas id="chartIcpSellers"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">🚨 Risco de Churn por ICP</div>
+                    <div class="chart-container"><canvas id="chartIcpChurn"></canvas></div>
+                </div>
+            </div>
+            
+            <div class="grid-2" style="margin-top:16px;">
+                <div class="card">
+                    <div class="card-title">🎓 Participação no Onboarding por ICP</div>
+                    <div class="chart-container"><canvas id="chartIcpOnboarding"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">📹 Participação em Webinars por ICP</div>
+                    <div class="chart-container"><canvas id="chartIcpWebinars"></canvas></div>
+                </div>
+            </div>
+            
+            <h2 class="section-title" style="margin-top:32px;">Distribuição de Status por ICP</h2>
+            <div class="grid-2">
+                {icp_status_cards_html}
+            </div>
+            
+            <div class="insights-section">
+                <h3>💡 Insights de ICP</h3>
+                <ul>
+                    {icp_insights_html}
+                </ul>
+            </div>
         </div>
         
         <!-- MERCHANT SERVICES -->
@@ -2969,9 +4856,12 @@ html_content = f'''<!DOCTYPE html>
                 {''.join([f'<div class="quartile-card" style="background:{q["color"]}15;border:2px solid {q["color"]};"><h4 style="color:{q["color"]};">{q["name"]}</h4><div class="quartile-row"><span class="quartile-label">Com Webinar</span><span class="quartile-value" style="color:{q["color"]};">{q["pct_com"]}%</span></div><div class="quartile-row"><span class="quartile-label">Sem Webinar</span><span class="quartile-value">{q["pct_sem"]}%</span></div><div class="quartile-row"><span class="quartile-label">Diferença</span><span class="quartile-value {"positive" if q["diff_pp"]<0 else "negative" if q["diff_pp"]>0 else ""}">{("+" if q["diff_pp"]>0 else "")}{q["diff_pp"]}pp</span></div></div>' for q in dashboard_data['webinars']['risk_quartiles_comparison']])}
             </div>
             
+            <h2 class="section-title">Transição de Status: Impactados por Webinar</h2>
+            {webinar_transicao_html}
+            
             <h2 class="section-title">Impacto em New Sellers</h2>
             <div class="card">
-                <table><thead><tr><th>Mês</th><th>New Sellers</th><th>Com Webinar</th><th>%</th></tr></thead><tbody>{''.join([f'<tr><td>{m["mes"]}</td><td>{m["total_new_sellers"]:,}</td><td>{m["com_lifecycle"]}</td><td class="{"positive" if m["pct_cobertura"]>5 else "neutral" if m["pct_cobertura"]>2 else ""}">{m["pct_cobertura"]}%</td></tr>' for m in dashboard_data['webinars']['new_sellers_impacto'][:6]])}</tbody></table>
+                <table><thead><tr><th>Mês</th><th>New Sellers</th><th>Com Webinar</th><th>%</th></tr></thead><tbody>{''.join([f'<tr><td>{m["mes"]}</td><td>{m["total_new_sellers"]:,}</td><td>{m["por_grupo"]["webinar"]["n"]}</td><td class="{"positive" if m["por_grupo"]["webinar"]["pct"]>5 else "neutral" if m["por_grupo"]["webinar"]["pct"]>2 else ""}">{m["por_grupo"]["webinar"]["pct"]}%</td></tr>' for m in dashboard_data['webinars']['new_sellers_impacto'][:6]])}</tbody></table>
             </div>
             
             <h2 class="section-title">Impacto em Adoção de Merchant Services</h2>
@@ -3066,6 +4956,8 @@ html_content = f'''<!DOCTYPE html>
             
             {generate_onboarding_uplift_section()}
             
+            {generate_onboarding_transicao_section()}
+            
             {generate_onboarding_insights()}
         </div>
     </div>
@@ -3114,6 +5006,7 @@ html_content = f'''<!DOCTYPE html>
         
         /* Nimbus Color Palette for Status */
         const statusColors = {{
+            'not informed': '#888888',   /* Neutral - cinza (Não Classificado) */
             'no-seller': '#c80003',      /* Danger - vermelho */
             'struggling-seller': '#c87b00', /* Warning - laranja */
             'tiny-seller': '#f7c77a',    /* Warning light */
@@ -3143,6 +5036,19 @@ html_content = f'''<!DOCTYPE html>
             document.getElementById(id).classList.add('active');
             event.target.classList.add('active');
             setTimeout(initCharts, 50);
+        }}
+        
+        /* Toggle Fluxo Detalhe */
+        function toggleFluxoDetalhe(id) {{
+            const el = document.getElementById(id);
+            const parent = el.closest('.fluxo-item');
+            if (el.style.display === 'none') {{
+                el.style.display = 'block';
+                parent.classList.add('expanded');
+            }} else {{
+                el.style.display = 'none';
+                parent.classList.remove('expanded');
+            }}
         }}
         
         /* Chart.js Global Config - Nimbus Theme */
@@ -3464,6 +5370,59 @@ html_content = f'''<!DOCTYPE html>
                         maintainAspectRatio: false,
                         plugins: {{ legend: {{ display: false }} }}
                     }}
+                }});
+            }}
+            
+            // ICP Charts
+            const icpData = data.icp.por_icp.filter(d => d.icp !== 'Não Classificado');
+            const icpLabels = icpData.map(d => d.icp);
+            const icpColors = {{'ICP 1': '#0059d5', 'ICP 2': '#22c55e', 'ICP 3': '#f97316', 'ICP 4': '#ef4444'}};
+            
+            const ctxIcpSellers = document.getElementById('chartIcpSellers');
+            if (ctxIcpSellers && !ctxIcpSellers.chart) {{
+                ctxIcpSellers.chart = new Chart(ctxIcpSellers, {{
+                    type: 'bar',
+                    data: {{
+                        labels: icpLabels,
+                        datasets: [{{ data: icpData.map(d => d.pct_sellers), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
+                    }},
+                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 100, ticks: {{ callback: v => v + '%' }} }} }} }}
+                }});
+            }}
+            
+            const ctxIcpChurn = document.getElementById('chartIcpChurn');
+            if (ctxIcpChurn && !ctxIcpChurn.chart) {{
+                ctxIcpChurn.chart = new Chart(ctxIcpChurn, {{
+                    type: 'bar',
+                    data: {{
+                        labels: icpLabels,
+                        datasets: [{{ data: icpData.map(d => d.pct_risco_churn), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
+                    }},
+                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 50, ticks: {{ callback: v => v + '%' }} }} }} }}
+                }});
+            }}
+            
+            const ctxIcpOnboarding = document.getElementById('chartIcpOnboarding');
+            if (ctxIcpOnboarding && !ctxIcpOnboarding.chart) {{
+                ctxIcpOnboarding.chart = new Chart(ctxIcpOnboarding, {{
+                    type: 'bar',
+                    data: {{
+                        labels: icpLabels,
+                        datasets: [{{ data: icpData.map(d => d.pct_onboarding), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
+                    }},
+                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 50, ticks: {{ callback: v => v + '%' }} }} }} }}
+                }});
+            }}
+            
+            const ctxIcpWebinars = document.getElementById('chartIcpWebinars');
+            if (ctxIcpWebinars && !ctxIcpWebinars.chart) {{
+                ctxIcpWebinars.chart = new Chart(ctxIcpWebinars, {{
+                    type: 'bar',
+                    data: {{
+                        labels: icpLabels,
+                        datasets: [{{ data: icpData.map(d => d.pct_webinar), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
+                    }},
+                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 20, ticks: {{ callback: v => v + '%' }} }} }} }}
                 }});
             }}
             
