@@ -760,6 +760,68 @@ elif len(meses_disponiveis) >= 2:
 else:
     print("  ⚠️ Apenas 1 mês disponível")
 
+# Calcular Matriz de Transição por ICP (agora que temos base_dezembro)
+# O ICP é fixo - usamos o valor de janeiro para classificar as lojas
+# e comparamos status_seller de dezembro vs janeiro
+
+ICP_ORDER = ['ICP 1', 'ICP 2', 'ICP 3', 'ICP 4', 'Não Classificado']
+
+# Criar coluna ICP em lojas_ativas
+if 'model_icp' in lojas_ativas.columns:
+    lojas_ativas['icp'] = lojas_ativas['model_icp'].fillna('Não Classificado')
+    lojas_ativas['icp'] = lojas_ativas['icp'].replace({'Fall Back': 'Não Classificado'})
+
+icp_transicao = []
+
+if matriz_transicao['disponivel'] and base_dezembro is not None and 'icp' in lojas_ativas.columns:
+    print("  📊 Calculando matriz de transição por ICP...")
+    
+    # Preparar base de dezembro
+    base_dez = base_dezembro.copy()
+    if 'id_store' not in base_dez.columns and 'store_id' in base_dez.columns:
+        base_dez = base_dez.rename(columns={'store_id': 'id_store'})
+    
+    for icp in ICP_ORDER:
+        if icp == 'Não Classificado':
+            continue
+        
+        # Lojas com esse ICP em janeiro (ICP é fixo)
+        lojas_icp = lojas_ativas[lojas_ativas['icp'] == icp][['id_store', 'status_seller']].copy()
+        lojas_icp = lojas_icp.rename(columns={'status_seller': 'status_jan'})
+        
+        # Merge com dezembro para pegar status anterior
+        merged = lojas_icp.merge(
+            base_dez[['id_store', 'status_seller']].rename(columns={'status_seller': 'status_dez'}),
+            on='id_store',
+            how='inner'
+        )
+        
+        if len(merged) > 0:
+            # Calcular transições usando vetorização
+            merged['tipo'] = merged.apply(
+                lambda x: get_transition_type(x['status_dez'], x['status_jan']), axis=1
+            )
+            
+            upgrades = len(merged[merged['tipo'] == 'upgrade'])
+            downgrades = len(merged[merged['tipo'] == 'downgrade'])
+            estaveis = len(merged[merged['tipo'] == 'estavel'])
+            total_icp = len(merged)
+            
+            icp_transicao.append({
+                'icp': icp,
+                'total': total_icp,
+                'upgrade': upgrades,
+                'downgrade': downgrades,
+                'estavel': estaveis,
+                'pct_upgrade': round(upgrades / total_icp * 100, 1) if total_icp > 0 else 0,
+                'pct_downgrade': round(downgrades / total_icp * 100, 1) if total_icp > 0 else 0,
+                'pct_estavel': round(estaveis / total_icp * 100, 1) if total_icp > 0 else 0
+            })
+    
+    if icp_transicao:
+        for t in icp_transicao:
+            print(f"    {t['icp']}: ↑{t['pct_upgrade']}% | →{t['pct_estavel']}% | ↓{t['pct_downgrade']}%")
+
 # =============================================================================
 # ANÁLISE DE NEW SELLERS
 # =============================================================================
@@ -1398,6 +1460,93 @@ print(f"  ⚪ Não classificados: {icp_analysis['total_nao_classificados']:,} lo
 for icp_data in icp_analysis['por_icp']:
     if icp_data['icp'] != 'Não Classificado':
         print(f"  📊 {icp_data['icp']}: {icp_data['total']:,} lojas ({icp_data['pct_sellers']}% sellers, {icp_data['pct_risco_churn']}% risco)")
+
+# Análise de Idade por ICP (quadrantes tempo x status)
+print("  📊 Analisando idade das lojas por ICP...")
+
+# Definir faixas de idade (em dias)
+AGING_RANGES = [
+    {'label': '0-30 dias', 'min': 0, 'max': 30},
+    {'label': '31-90 dias', 'min': 31, 'max': 90},
+    {'label': '91-180 dias', 'min': 91, 'max': 180},
+    {'label': '181-365 dias', 'min': 181, 'max': 365},
+    {'label': '+1 ano', 'min': 366, 'max': 999999}
+]
+
+icp_aging_analysis = []
+for icp in ICP_ORDER:
+    if icp == 'Não Classificado':
+        continue
+    subset = lojas_ativas[lojas_ativas['icp'] == icp]
+    if len(subset) == 0:
+        continue
+    
+    aging_data = {
+        'icp': icp,
+        'total': len(subset),
+        'aging_medio': round(subset['aging_clean'].mean(), 0) if subset['aging_clean'].notna().any() else 0,
+        'por_faixa': [],
+        'quadrantes': []
+    }
+    
+    # Análise por faixa de idade
+    for faixa in AGING_RANGES:
+        faixa_subset = subset[(subset['aging_clean'] >= faixa['min']) & (subset['aging_clean'] <= faixa['max'])]
+        if len(faixa_subset) > 0:
+            sellers_faixa = faixa_subset[faixa_subset['status_seller'].isin(SELLER_STATUS)]
+            no_sellers_faixa = faixa_subset[faixa_subset['status_seller'] == 'no-seller']
+            aging_data['por_faixa'].append({
+                'faixa': faixa['label'],
+                'total': len(faixa_subset),
+                'pct': round(len(faixa_subset) / len(subset) * 100, 1),
+                'sellers': len(sellers_faixa),
+                'pct_sellers': round(len(sellers_faixa) / len(faixa_subset) * 100, 1) if len(faixa_subset) > 0 else 0,
+                'no_sellers': len(no_sellers_faixa),
+                'pct_no_sellers': round(len(no_sellers_faixa) / len(faixa_subset) * 100, 1) if len(faixa_subset) > 0 else 0
+            })
+    
+    # Quadrantes: Tempo x Status (simplificado: Novo/Antigo x Seller/No-Seller)
+    idade_mediana = subset['aging_clean'].median()
+    novos = subset[subset['aging_clean'] <= idade_mediana]
+    antigos = subset[subset['aging_clean'] > idade_mediana]
+    
+    aging_data['quadrantes'] = [
+        {
+            'quadrante': 'Novos + Sellers',
+            'descricao': 'Conversão rápida (bom)',
+            'count': len(novos[novos['status_seller'].isin(SELLER_STATUS)]),
+            'pct': round(len(novos[novos['status_seller'].isin(SELLER_STATUS)]) / len(subset) * 100, 1) if len(subset) > 0 else 0,
+            'cor': '#22c55e'
+        },
+        {
+            'quadrante': 'Novos + No-Seller',
+            'descricao': 'Em evolução (potencial)',
+            'count': len(novos[novos['status_seller'] == 'no-seller']),
+            'pct': round(len(novos[novos['status_seller'] == 'no-seller']) / len(subset) * 100, 1) if len(subset) > 0 else 0,
+            'cor': '#f97316'
+        },
+        {
+            'quadrante': 'Antigos + Sellers',
+            'descricao': 'Base consolidada',
+            'count': len(antigos[antigos['status_seller'].isin(SELLER_STATUS)]),
+            'pct': round(len(antigos[antigos['status_seller'].isin(SELLER_STATUS)]) / len(subset) * 100, 1) if len(subset) > 0 else 0,
+            'cor': '#0059d5'
+        },
+        {
+            'quadrante': 'Antigos + No-Seller',
+            'descricao': 'Risco (não converteram)',
+            'count': len(antigos[antigos['status_seller'] == 'no-seller']),
+            'pct': round(len(antigos[antigos['status_seller'] == 'no-seller']) / len(subset) * 100, 1) if len(subset) > 0 else 0,
+            'cor': '#ef4444'
+        }
+    ]
+    
+    icp_aging_analysis.append(aging_data)
+
+dashboard_data['icp']['aging'] = icp_aging_analysis
+
+# Matriz de Transição por ICP - já foi calculada após a matriz geral
+dashboard_data['icp']['transicao'] = icp_transicao
 
 # =============================================================================
 # WEBINARS - COM COMPARATIVO DE MERCHANT SERVICES
@@ -3517,6 +3666,82 @@ for d in dashboard_data['icp']['por_icp']:
         continue
     icp_insights_html += f'<li><strong>{d["icp"]}:</strong> {d["total"]:,} lojas ({d["pct_base"]}%), {d["pct_sellers"]}% são sellers, risco médio de {d["pct_risco_churn"]}%</li>'
 
+# Matriz de transição por ICP
+icp_transicao_html = ''
+if dashboard_data['icp'].get('transicao') and len(dashboard_data['icp']['transicao']) > 0:
+    icp_transicao_html = '''<h2 class="section-title" style="margin-top:32px;">📈 Matriz de Transição por ICP (Dez → Jan)</h2>
+    <div class="risk-matrix" style="grid-template-columns: repeat(4, 1fr);">'''
+    
+    for t in dashboard_data['icp']['transicao']:
+        color = get_icp_color(t['icp'])
+        bg = get_icp_bg(t['icp'])
+        icp_transicao_html += f'''
+        <div class="card" style="border-left:4px solid {color};">
+            <div class="card-title" style="color:{color};">{t['icp']}</div>
+            <p class="text-muted">{t['total']:,} lojas comparadas</p>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <div style="flex:1;text-align:center;padding:8px;background:#22c55e20;border-radius:8px;">
+                    <div style="font-size:1.25rem;font-weight:700;color:#22c55e;">↑ {t['pct_upgrade']}%</div>
+                    <div style="font-size:0.7rem;color:#666;">Upgrade ({t['upgrade']:,})</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:8px;background:#6b728020;border-radius:8px;">
+                    <div style="font-size:1.25rem;font-weight:700;color:#6b7280;">→ {t['pct_estavel']}%</div>
+                    <div style="font-size:0.7rem;color:#666;">Estável ({t['estavel']:,})</div>
+                </div>
+                <div style="flex:1;text-align:center;padding:8px;background:#ef444420;border-radius:8px;">
+                    <div style="font-size:1.25rem;font-weight:700;color:#ef4444;">↓ {t['pct_downgrade']}%</div>
+                    <div style="font-size:0.7rem;color:#666;">Downgrade ({t['downgrade']:,})</div>
+                </div>
+            </div>
+        </div>'''
+    
+    icp_transicao_html += '</div>'
+
+# Quadrantes de Idade x Status por ICP
+icp_aging_html = ''
+if dashboard_data['icp'].get('aging') and len(dashboard_data['icp']['aging']) > 0:
+    icp_aging_html = '''<h2 class="section-title" style="margin-top:32px;">🕐 Quadrantes: Tempo x Status por ICP</h2>
+    <div class="insight-box info">
+        <h4>📊 Análise de maturidade</h4>
+        <p>Entenda se os no-sellers estão em fase inicial (ainda vão converter) ou se são lojas antigas que nunca converteram (risco de abandono).</p>
+    </div>
+    <div class="grid-2" style="margin-top:16px;">'''
+    
+    for aging in dashboard_data['icp']['aging']:
+        color = get_icp_color(aging['icp'])
+        icp_aging_html += f'''
+        <div class="card">
+            <div class="card-title" style="color:{color};">{aging['icp']} - Idade média: {int(aging['aging_medio'])} dias</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">'''
+        
+        for q in aging['quadrantes']:
+            icp_aging_html += f'''
+                <div style="padding:12px;background:{q['cor']}15;border-radius:8px;border-left:3px solid {q['cor']};">
+                    <div style="font-size:1.5rem;font-weight:700;color:{q['cor']};">{q['pct']}%</div>
+                    <div style="font-size:0.8rem;font-weight:600;">{q['quadrante']}</div>
+                    <div style="font-size:0.7rem;color:#666;">{q['descricao']} ({q['count']:,})</div>
+                </div>'''
+        
+        icp_aging_html += '''
+            </div>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--nimbus-neutral-surface-highlight);">
+                <div style="font-size:0.75rem;color:#666;font-weight:600;">Distribuição por faixa de idade:</div>
+                <div style="display:flex;gap:4px;margin-top:4px;">'''
+        
+        for f in aging['por_faixa']:
+            bar_width = max(f['pct'] * 2, 10)
+            icp_aging_html += f'''<div style="flex:0 0 {bar_width}px;text-align:center;">
+                    <div style="height:30px;background:linear-gradient(to top, #22c55e {f['pct_sellers']}%, #ef4444 {f['pct_sellers']}%);border-radius:4px;" title="{f['faixa']}: {f['pct_sellers']}% sellers"></div>
+                    <div style="font-size:0.6rem;color:#888;margin-top:2px;">{f['faixa'].replace(' dias','d').replace(' ano','a')}</div>
+                </div>'''
+        
+        icp_aging_html += '''
+                </div>
+            </div>
+        </div>'''
+    
+    icp_aging_html += '</div>'
+
 matriz_html = ''
 if matriz_transicao['disponivel']:
     # Top transições HTML
@@ -4698,27 +4923,9 @@ html_content = f'''<!DOCTYPE html>
                 </table>
             </div>
             
-            <div class="grid-2" style="margin-top:24px;">
-                <div class="card">
-                    <div class="card-title">📊 % de Sellers por ICP</div>
-                    <div class="chart-container"><canvas id="chartIcpSellers"></canvas></div>
-                </div>
-                <div class="card">
-                    <div class="card-title">🚨 Risco de Churn por ICP</div>
-                    <div class="chart-container"><canvas id="chartIcpChurn"></canvas></div>
-                </div>
-            </div>
+            {icp_transicao_html}
             
-            <div class="grid-2" style="margin-top:16px;">
-                <div class="card">
-                    <div class="card-title">🎓 Participação no Onboarding por ICP</div>
-                    <div class="chart-container"><canvas id="chartIcpOnboarding"></canvas></div>
-                </div>
-                <div class="card">
-                    <div class="card-title">📹 Participação em Webinars por ICP</div>
-                    <div class="chart-container"><canvas id="chartIcpWebinars"></canvas></div>
-                </div>
-            </div>
+            {icp_aging_html}
             
             <h2 class="section-title" style="margin-top:32px;">Distribuição de Status por ICP</h2>
             <div class="grid-2">
@@ -5370,59 +5577,6 @@ html_content = f'''<!DOCTYPE html>
                         maintainAspectRatio: false,
                         plugins: {{ legend: {{ display: false }} }}
                     }}
-                }});
-            }}
-            
-            // ICP Charts
-            const icpData = data.icp.por_icp.filter(d => d.icp !== 'Não Classificado');
-            const icpLabels = icpData.map(d => d.icp);
-            const icpColors = {{'ICP 1': '#0059d5', 'ICP 2': '#22c55e', 'ICP 3': '#f97316', 'ICP 4': '#ef4444'}};
-            
-            const ctxIcpSellers = document.getElementById('chartIcpSellers');
-            if (ctxIcpSellers && !ctxIcpSellers.chart) {{
-                ctxIcpSellers.chart = new Chart(ctxIcpSellers, {{
-                    type: 'bar',
-                    data: {{
-                        labels: icpLabels,
-                        datasets: [{{ data: icpData.map(d => d.pct_sellers), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
-                    }},
-                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 100, ticks: {{ callback: v => v + '%' }} }} }} }}
-                }});
-            }}
-            
-            const ctxIcpChurn = document.getElementById('chartIcpChurn');
-            if (ctxIcpChurn && !ctxIcpChurn.chart) {{
-                ctxIcpChurn.chart = new Chart(ctxIcpChurn, {{
-                    type: 'bar',
-                    data: {{
-                        labels: icpLabels,
-                        datasets: [{{ data: icpData.map(d => d.pct_risco_churn), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
-                    }},
-                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 50, ticks: {{ callback: v => v + '%' }} }} }} }}
-                }});
-            }}
-            
-            const ctxIcpOnboarding = document.getElementById('chartIcpOnboarding');
-            if (ctxIcpOnboarding && !ctxIcpOnboarding.chart) {{
-                ctxIcpOnboarding.chart = new Chart(ctxIcpOnboarding, {{
-                    type: 'bar',
-                    data: {{
-                        labels: icpLabels,
-                        datasets: [{{ data: icpData.map(d => d.pct_onboarding), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
-                    }},
-                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 50, ticks: {{ callback: v => v + '%' }} }} }} }}
-                }});
-            }}
-            
-            const ctxIcpWebinars = document.getElementById('chartIcpWebinars');
-            if (ctxIcpWebinars && !ctxIcpWebinars.chart) {{
-                ctxIcpWebinars.chart = new Chart(ctxIcpWebinars, {{
-                    type: 'bar',
-                    data: {{
-                        labels: icpLabels,
-                        datasets: [{{ data: icpData.map(d => d.pct_webinar), backgroundColor: icpLabels.map(l => icpColors[l]), borderRadius: 4 }}]
-                    }},
-                    options: {{ responsive: true, maintainAspectRatio: false, plugins: {{ legend: {{ display: false }} }}, scales: {{ y: {{ max: 20, ticks: {{ callback: v => v + '%' }} }} }} }}
                 }});
             }}
             
