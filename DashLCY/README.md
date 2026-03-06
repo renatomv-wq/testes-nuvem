@@ -69,6 +69,8 @@ O dashboard é acessado após login na página inicial (`index.html`). A senha �
 2. Conecte o repositório no Vercel
 3. Deploy automático a cada push
 
+**Segurança:** Não commite API keys, senhas ou segredos no repositório. Use variáveis de ambiente no Vercel (ou arquivo `.env` local, já ignorado pelo Git) para qualquer credencial.
+
 ## Funcionalidades
 
 - **Resumo Executivo**: Big numbers, new sellers, matriz de transição, risco

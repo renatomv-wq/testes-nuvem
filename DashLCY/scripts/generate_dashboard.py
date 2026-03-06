@@ -4626,6 +4626,7 @@ html_content = f'''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Dashboard Impacto - Lifecycle BR</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Geist Font from Vercel (Nimbus Typography) -->
