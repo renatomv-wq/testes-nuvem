@@ -27,13 +27,19 @@ print("=" * 70)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 
-# Caminhos alternativos (para compatibilidade com bases existentes)
-ALT_BASE_PATH_JAN = '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - Jan ok.csv'
-ALT_BASE_PATH_DEZ = '/Users/renatovieira/Downloads/base_br_diciembre_2024.csv'
-ALT_BASE_PATH_MS = '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - 13_02_2026 - BR - Base Stores para Lifecycle.csv'
-ALT_BASE_PATH = ALT_BASE_PATH_JAN  # Base principal agora é janeiro
-ALT_WEBINAR_PATH = '/Users/renatovieira/Downloads/Webinars - geral até Dezembro_25 - Raw Data_data (4).csv'
-ALT_NEWSELLERS_PATH = '/Users/renatovieira/Downloads/Raw Data Total Stores (2).csv'
+# Caminhos alternativos (podem ser sobrescritos por variáveis de ambiente)
+# Ex: DASHLCY_BASE_JAN=/caminho/para/jan.csv python generate_dashboard.py
+ALT_BASE_PATH_JAN = os.environ.get('DASHLCY_BASE_JAN', '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - Jan ok.csv')
+ALT_BASE_PATH_FEV = os.environ.get('DASHLCY_BASE_FEV', '/Users/renatovieira/Downloads/Base Stores para Lifecycle - 04_03_2026 - Base_BR_Lifecycle.csv')
+ALT_BASE_PATH_DEZ = os.environ.get('DASHLCY_BASE_DEZ', '/Users/renatovieira/Downloads/base_br_diciembre_2024.csv')
+ALT_BASE_PATH_MS = os.environ.get('DASHLCY_BASE_MS', '/Users/renatovieira/Downloads/BR - Base Stores para Lifecycle - 13_02_2026 - BR - Base Stores para Lifecycle.csv')
+ALT_BASE_PATH = ALT_BASE_PATH_JAN
+ALT_WEBINAR_PATH = os.environ.get('DASHLCY_WEBINAR', '/Users/renatovieira/Downloads/Webinars - geral até Dezembro_25 - Raw Data_data (4).csv')
+ALT_NEWSELLERS_PATH = os.environ.get('DASHLCY_NEWSELLERS', '/Users/renatovieira/Downloads/Raw Data Total Stores (2).csv')
+ALT_NEWSELLERS_FEV_PATH = os.environ.get('DASHLCY_NEWSELLERS_FEV', '/Users/reantovieira/Downloads/New Sellers Fev.csv')
+
+# Base de exemplo (formato desafio/template) - usada quando não há bases em data/base_geral/
+DEMO_BASE_PATH = os.path.join(DATA_DIR, 'base_lifecycle_10k.csv')
 
 STATUS_ORDER = ['not informed', 'no-seller', 'struggling-seller', 'tiny-seller', 'small-seller', 
                 'medium-seller', 'large-seller', 'top-seller']
@@ -49,6 +55,9 @@ STATUS_LABELS = {
     'not informed': 'Não informado'
 }
 SELLER_STATUS = ['tiny-seller', 'small-seller', 'medium-seller', 'large-seller', 'top-seller']
+
+# Rótulos de mês para matriz de transição (Janeiro, Fevereiro, Dezembro)
+MES_LABELS = {'2026-01': 'Janeiro', '2026-02': 'Fevereiro', '2024-12': 'Dezembro'}
 
 # Categorias de risco (binário: 0 = sem risco, 1 = com risco)
 RISK_QUARTILES = [
@@ -117,6 +126,39 @@ def find_latest_file(folder, pattern='*.csv'):
     if not files:
         return None
     return files[0][0]
+
+def _convert_demo_base_to_standard(df):
+    """Converte base no formato desafio/template (base_lifecycle_10k) para o formato esperado pelo dashboard."""
+    df = df.copy()
+    # Considerar ativo e trial como "paying" para análise
+    if 'status_conta' in df.columns:
+        df = df[df['status_conta'].isin(['ativo', 'trial'])].copy()
+    df['merchant_finance_status'] = 'paying'
+    df = df.rename(columns={
+        'merchant_id': 'id_store',
+        'idade_loja_dias': 'aging',
+        'gmv_ultimos_30d': 'gmv_mes',
+        'gmv_ultimos_90d': 'gmv_90d_local',
+        'numero_vendas_30d': 'orders_mes',
+        'numero_vendas_90d': 'orders_90d',
+    })
+    if 'aging' in df.columns:
+        df['aging_clean'] = pd.to_numeric(df['aging'], errors='coerce').fillna(0)
+    else:
+        df['aging'] = 0
+        df['aging_clean'] = 0
+    # Merchant Services (formato sim/nao)
+    for col_old, col_new in [('usa_nuvem_marketing', 'nuvemmarketing'), ('usa_nuvem_chat', 'nuvemchat')]:
+        if col_old in df.columns:
+            df[col_new] = df[col_old].astype(str).str.strip().str.lower().isin(['sim', 'true', '1', 'yes'])
+        else:
+            df[col_new] = False
+    for col in ['nuvempago', 'nuvemenvio', 'pdv']:
+        if col not in df.columns:
+            df[col] = False
+    # Churn não disponível na base de exemplo
+    df['predictive_churn_probability'] = np.nan
+    return df
 
 def load_base_geral():
     """Carrega todas as bases gerais de lojas - Janeiro como principal, Dezembro para campos legados"""
@@ -240,6 +282,40 @@ def load_base_geral():
         
         bases['2026-01'] = df_jan
         
+        # Carregar base de fevereiro para comparação Jan x Fev (mesma estrutura; Fev tem time_to_first_order)
+        if os.path.exists(ALT_BASE_PATH_FEV):
+            print(f"  📂 Carregando base de FEVEREIRO para comparação: {os.path.basename(ALT_BASE_PATH_FEV)}")
+            df_fev = pd.read_csv(ALT_BASE_PATH_FEV, low_memory=False)
+            df_fev = df_fev.rename(columns={
+                'store_id': 'id_store',
+                'current_segment': 'status_seller',
+                'main_user_email': 'main_user',
+                'domain': 'store_name',
+                'gmv30': 'gmv_mes_local',
+                'gmv90': 'gmv_90d_local',
+                'orders30': 'orders_mes',
+                'orders90': 'orders_90d',
+                'current_plan_name': 'plan',
+                'current_plan_type': 'plan_type',
+            })
+            df_fev['created_at'] = pd.to_datetime(df_fev['created_at'], errors='coerce')
+            df_fev['aging'] = (pd.Timestamp.now() - df_fev['created_at']).dt.days
+            df_fev['aging_clean'] = df_fev['aging'].fillna(0)
+            df_fev['merchant_finance_status'] = 'paying'
+            if 'is_potential_churn' in df_fev.columns:
+                df_fev['predictive_churn_probability'] = df_fev['is_potential_churn']
+                df_fev['predictive_churn'] = df_fev['is_potential_churn'].apply(
+                    lambda x: 'high' if x == 1 else ('low' if x == 0 else None)
+                )
+                if 'potential_churn_profile' in df_fev.columns:
+                    df_fev['predictive_churn_profile'] = df_fev['potential_churn_profile']
+            # Coluna extra de Fev: time_to_first_order; em Jan não existe - alinhar para comparações
+            if 'time_to_first_order' not in df_jan.columns:
+                df_jan['time_to_first_order'] = np.nan
+                bases['2026-01'] = df_jan
+            bases['2026-02'] = df_fev
+            print(f"  ✅ Base Fev: {len(df_fev):,} lojas (comparação Jan x Fev disponível)")
+
         # Informar campos não disponíveis
         if campos_nao_disponiveis:
             print(f"  ⚠️ CAMPOS NÃO ATUALIZADOS:")
@@ -252,6 +328,14 @@ def load_base_geral():
         df = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
         df = df[df['merchant_finance_status'] == 'paying'].copy()
         bases['2024-12'] = df
+
+    # Fallback para base de exemplo (data/base_lifecycle_10k.csv) - projeto autocontido
+    elif not bases and os.path.exists(DEMO_BASE_PATH):
+        print(f"  📂 Usando base de EXEMPLO (modo demo): {os.path.basename(DEMO_BASE_PATH)}")
+        df = pd.read_csv(DEMO_BASE_PATH, low_memory=False)
+        df = _convert_demo_base_to_standard(df)
+        bases['2025-03'] = df
+        print(f"  ✅ Base demo: {len(df):,} lojas (ativo+trial). Coloque bases em data/base_geral/ para dados reais.")
     
     return bases
 
@@ -293,6 +377,15 @@ def load_new_sellers():
         except:
             df = pd.read_csv(ALT_NEWSELLERS_PATH, low_memory=False)
         new_sellers_por_mes['2026-01'] = df
+    
+    # New Sellers de fevereiro (lista específica)
+    if os.path.exists(ALT_NEWSELLERS_FEV_PATH) and '2026-02' not in new_sellers_por_mes:
+        print(f"  📂 New Sellers Fev: {os.path.basename(ALT_NEWSELLERS_FEV_PATH)}")
+        try:
+            df_fev = pd.read_csv(ALT_NEWSELLERS_FEV_PATH, low_memory=False)
+            new_sellers_por_mes['2026-02'] = df_fev
+        except Exception as e:
+            print(f"  ⚠️ Erro ao carregar New Sellers Fev: {e}")
     
     return new_sellers_por_mes
 
@@ -529,14 +622,182 @@ matriz_transicao = {
     'top_downgrades': []
 }
 
-# Tentar carregar base de dezembro para comparação
+# Tentar carregar base de dezembro para comparação (usada só se não houver Jan+Fev)
 base_dezembro = None
 if os.path.exists(ALT_BASE_PATH_DEZ):
     print(f"  📂 Carregando base de Dezembro para comparação...")
     base_dezembro = pd.read_csv(ALT_BASE_PATH_DEZ, low_memory=False)
     base_dezembro = base_dezembro[base_dezembro['merchant_finance_status'] == 'paying'].copy()
 
-if base_dezembro is not None:
+# Prioridade 1: Matriz de transição Jan → Fev (evolução completa de status)
+if '2026-01' in bases_mensais and '2026-02' in bases_mensais:
+    base_anterior = bases_mensais['2026-01']
+    base_atual = bases_mensais['2026-02']
+    mes_anterior = '2026-01'
+    mes_atual = '2026-02'
+    
+    print(f"  📈 Comparando: {mes_anterior} → {mes_atual} (matriz completa)")
+    
+    id_col_ant = 'id_store' if 'id_store' in base_anterior.columns else 'store_id'
+    id_col_atu = 'id_store' if 'id_store' in base_atual.columns else 'store_id'
+    
+    merged = base_anterior[[id_col_ant, 'status_seller']].merge(
+        base_atual[[id_col_atu, 'status_seller']],
+        left_on=id_col_ant, right_on=id_col_atu,
+        how='inner',
+        suffixes=('_antes', '_depois')
+    )
+    
+    merged['tier_antes'] = merged['status_seller_antes'].apply(get_status_tier)
+    merged['tier_depois'] = merged['status_seller_depois'].apply(get_status_tier)
+    
+    lojas_continuam = merged[(merged['tier_antes'] >= 0) & (merged['tier_depois'] >= 0)]
+    
+    lojas_continuam = lojas_continuam.copy()
+    lojas_continuam['tipo_transicao'] = lojas_continuam.apply(
+        lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+    )
+    
+    lojas_not_informed = lojas_continuam[lojas_continuam['status_seller_antes'] == 'not informed']
+    lojas_com_status = lojas_continuam[lojas_continuam['status_seller_antes'] != 'not informed']
+    
+    upgrade = len(lojas_com_status[lojas_com_status['tipo_transicao'] == 'upgrade'])
+    downgrade = len(lojas_com_status[lojas_com_status['tipo_transicao'] == 'downgrade'])
+    estavel = len(lojas_com_status[lojas_com_status['tipo_transicao'] == 'estavel'])
+    
+    total = upgrade + downgrade + estavel
+    
+    ni_total = len(lojas_not_informed)
+    ni_virou_seller = len(lojas_not_informed[lojas_not_informed['tipo_transicao'] == 'upgrade'])
+    ni_virou_no_seller = len(lojas_not_informed[lojas_not_informed['status_seller_depois'] == 'no-seller'])
+    ni_pct_seller = round(ni_virou_seller / ni_total * 100, 1) if ni_total > 0 else 0
+    ni_pct_no_seller = round(ni_virou_no_seller / ni_total * 100, 1) if ni_total > 0 else 0
+    
+    lojas_upgrade = lojas_com_status[lojas_com_status['tipo_transicao'] == 'upgrade']
+    lojas_downgrade = lojas_com_status[lojas_com_status['tipo_transicao'] == 'downgrade']
+    
+    top_upgrades = lojas_upgrade.groupby(['status_seller_antes', 'status_seller_depois']).size().sort_values(ascending=False).head(5)
+    top_downgrades = lojas_downgrade.groupby(['status_seller_antes', 'status_seller_depois']).size().sort_values(ascending=False).head(5)
+    
+    jan_ids = set(base_atual[id_col_atu].dropna().astype(int))
+    ant_ids = set(base_anterior[id_col_ant].dropna().astype(int))
+    lojas_novas = len(jan_ids - ant_ids)
+    lojas_sairam = len(ant_ids - jan_ids)
+    
+    matriz_crosstab = pd.crosstab(
+        lojas_continuam['status_seller_antes'],
+        lojas_continuam['status_seller_depois'],
+        margins=False
+    )
+    
+    status_presentes = [s for s in STATUS_ORDER if s in matriz_crosstab.index or s in matriz_crosstab.columns]
+    for status in status_presentes:
+        if status not in matriz_crosstab.index:
+            matriz_crosstab.loc[status] = 0
+        if status not in matriz_crosstab.columns:
+            matriz_crosstab[status] = 0
+    matriz_crosstab = matriz_crosstab.reindex(index=status_presentes, columns=status_presentes, fill_value=0)
+    
+    matriz_visual = []
+    for status_de in status_presentes:
+        row = {'de': status_de, 'de_label': STATUS_LABELS.get(status_de, status_de), 'transicoes': []}
+        total_de = int(matriz_crosstab.loc[status_de].sum())
+        for status_para in status_presentes:
+            count = int(matriz_crosstab.loc[status_de, status_para])
+            pct = round(count / total_de * 100, 1) if total_de > 0 else 0
+            tipo = get_transition_type(status_de, status_para)
+            row['transicoes'].append({
+                'para': status_para, 'para_label': STATUS_LABELS.get(status_para, status_para),
+                'count': count, 'pct': pct, 'tipo': tipo
+            })
+        row['total'] = total_de
+        matriz_visual.append(row)
+    
+    fluxo_liquido = []
+    for status in status_presentes:
+        antes = int((lojas_continuam['status_seller_antes'] == status).sum())
+        depois = int((lojas_continuam['status_seller_depois'] == status).sum())
+        variacao = depois - antes
+        pct_var = round((variacao / antes * 100), 1) if antes > 0 else 0
+        entradas_df = lojas_continuam[(lojas_continuam['status_seller_antes'] != status) & (lojas_continuam['status_seller_depois'] == status)]
+        entradas_por_origem = entradas_df['status_seller_antes'].value_counts().head(5).to_dict()
+        entradas_detalhe = [{'de': STATUS_LABELS.get(orig, orig), 'count': int(cnt)} for orig, cnt in entradas_por_origem.items()]
+        saidas_df = lojas_continuam[(lojas_continuam['status_seller_antes'] == status) & (lojas_continuam['status_seller_depois'] != status)]
+        saidas_por_destino = saidas_df['status_seller_depois'].value_counts().head(5).to_dict()
+        saidas_detalhe = [{'para': STATUS_LABELS.get(dest, dest), 'count': int(cnt)} for dest, cnt in saidas_por_destino.items()]
+        fluxo_liquido.append({
+            'status': status, 'label': STATUS_LABELS.get(status, status),
+            'antes': antes, 'depois': depois, 'variacao': variacao, 'pct_variacao': pct_var,
+            'entradas': int(len(entradas_df)), 'saidas': int(len(saidas_df)),
+            'entradas_detalhe': entradas_detalhe, 'saidas_detalhe': saidas_detalhe
+        })
+    fluxo_liquido = sorted(fluxo_liquido, key=lambda x: x['variacao'], reverse=True)
+    
+    matriz_transicao = {
+        'disponivel': True,
+        'mes_anterior': mes_anterior,
+        'mes_atual': mes_atual,
+        'upgrade': upgrade,
+        'downgrade': downgrade,
+        'estavel': estavel,
+        'pct_upgrade': round(upgrade / total * 100, 1) if total > 0 else 0,
+        'pct_downgrade': round(downgrade / total * 100, 1) if total > 0 else 0,
+        'pct_estavel': round(estavel / total * 100, 1) if total > 0 else 0,
+        'lojas_novas': lojas_novas,
+        'lojas_sairam': lojas_sairam,
+        'total_comparado': total,
+        'not_informed': {
+            'total': ni_total, 'virou_seller': ni_virou_seller, 'virou_no_seller': ni_virou_no_seller,
+            'pct_seller': ni_pct_seller, 'pct_no_seller': ni_pct_no_seller
+        },
+        'top_upgrades': [{'de': STATUS_LABELS.get(de, de), 'para': STATUS_LABELS.get(para, para), 'count': int(count)} for (de, para), count in top_upgrades.items()],
+        'top_downgrades': [{'de': STATUS_LABELS.get(de, de), 'para': STATUS_LABELS.get(para, para), 'count': int(count)} for (de, para), count in top_downgrades.items()],
+        'matriz_visual': matriz_visual,
+        'status_order': [STATUS_LABELS.get(s, s) for s in status_presentes],
+        'fluxo_liquido': fluxo_liquido,
+        'detalhes': []
+    }
+    
+    print(f"  ✅ Upgrade: {matriz_transicao['upgrade']:,} ({matriz_transicao['pct_upgrade']}%)")
+    print(f"  ➡️ Estável: {matriz_transicao['estavel']:,} ({matriz_transicao['pct_estavel']}%)")
+    print(f"  ⬇️ Downgrade: {matriz_transicao['downgrade']:,} ({matriz_transicao['pct_downgrade']}%)")
+    print(f"  📊 Não Classificados (Jan): {ni_total:,} → {ni_virou_seller:,} viraram seller ({ni_pct_seller}%)")
+    print(f"  🆕 Lojas novas: {lojas_novas:,} | 🚪 Saíram: {lojas_sairam:,}")
+
+    # Comparativo com mês anterior: transição Dez→Jan para insight de tendência
+    if base_dezembro is not None and '2026-01' in bases_mensais:
+        base_dez = base_dezembro
+        base_jan = bases_mensais['2026-01']
+        id_d = 'id_store' if 'id_store' in base_dez.columns else 'store_id'
+        id_j = 'id_store' if 'id_store' in base_jan.columns else 'store_id'
+        merged_ant = base_dez[[id_d, 'status_seller']].merge(
+            base_jan[[id_j, 'status_seller']],
+            left_on=id_d, right_on=id_j, how='inner', suffixes=('_antes', '_depois')
+        )
+        merged_ant['tier_antes'] = merged_ant['status_seller_antes'].apply(get_status_tier)
+        merged_ant['tier_depois'] = merged_ant['status_seller_depois'].apply(get_status_tier)
+        lojas_ant = merged_ant[(merged_ant['tier_antes'] >= 0) & (merged_ant['tier_depois'] >= 0)]
+        lojas_ant = lojas_ant[lojas_ant['status_seller_antes'] != 'not informed']
+        lojas_ant = lojas_ant.copy()
+        lojas_ant['tipo_transicao'] = lojas_ant.apply(
+            lambda x: get_transition_type(x['status_seller_antes'], x['status_seller_depois']), axis=1
+        )
+        up_ant = len(lojas_ant[lojas_ant['tipo_transicao'] == 'upgrade'])
+        down_ant = len(lojas_ant[lojas_ant['tipo_transicao'] == 'downgrade'])
+        estavel_ant = len(lojas_ant[lojas_ant['tipo_transicao'] == 'estavel'])
+        total_ant = up_ant + down_ant + estavel_ant
+        balanco_ant = up_ant - down_ant
+        pct_up_ant = round(up_ant / total_ant * 100, 1) if total_ant > 0 else 0
+        pct_down_ant = round(down_ant / total_ant * 100, 1) if total_ant > 0 else 0
+        matriz_transicao['comparativo_mes_anterior'] = {
+            'upgrade': up_ant, 'downgrade': down_ant, 'estavel': estavel_ant, 'balanco': balanco_ant,
+            'pct_upgrade': pct_up_ant, 'pct_downgrade': pct_down_ant,
+            'total_comparado': total_ant,
+            'mes_de': '2024-12', 'mes_para': '2026-01'
+        }
+        print(f"  📊 Transição anterior (Dez→Jan): upgrade {up_ant:,}, downgrade {down_ant:,}, balanço {balanco_ant:+,}")
+
+elif base_dezembro is not None:
     base_anterior = base_dezembro
     base_atual = lojas_ativas
     mes_anterior = '2024-12'
@@ -783,9 +1044,8 @@ elif len(meses_disponiveis) >= 2:
 else:
     print("  ⚠️ Apenas 1 mês disponível")
 
-# Calcular Matriz de Transição por ICP (agora que temos base_dezembro)
-# O ICP é fixo - usamos o valor de janeiro para classificar as lojas
-# e comparamos status_seller de dezembro vs janeiro
+# Calcular Matriz de Transição por ICP
+# Usa base anterior (Dez ou Jan) vs base atual (Jan ou Fev) conforme a matriz de transição
 
 ICP_ORDER = ['ICP 1', 'ICP 2', 'ICP 3', 'ICP 4', 'Não Classificado']
 
@@ -796,38 +1056,43 @@ if 'model_icp' in lojas_ativas.columns:
 
 icp_transicao = []
 
-if matriz_transicao['disponivel'] and base_dezembro is not None and 'icp' in lojas_ativas.columns:
+# Base anterior para ICP: Dez (se matriz for Dec→atual) ou Jan (se matriz for Jan→Fev)
+base_para_icp = None
+if matriz_transicao['disponivel'] and 'icp' in lojas_ativas.columns:
+    if matriz_transicao.get('mes_anterior') == '2026-01' and '2026-01' in bases_mensais:
+        base_para_icp = bases_mensais['2026-01'].copy()
+    elif base_dezembro is not None:
+        base_para_icp = base_dezembro.copy()
+    if base_para_icp is not None:
+        if 'id_store' not in base_para_icp.columns and 'store_id' in base_para_icp.columns:
+            base_para_icp = base_para_icp.rename(columns={'store_id': 'id_store'})
+
+if base_para_icp is not None:
     print("  📊 Calculando matriz de transição por ICP...")
-    
-    # Preparar base de dezembro
-    base_dez = base_dezembro.copy()
-    if 'id_store' not in base_dez.columns and 'store_id' in base_dez.columns:
-        base_dez = base_dez.rename(columns={'store_id': 'id_store'})
     
     for icp in ICP_ORDER:
         if icp == 'Não Classificado':
             continue
         
-        # Lojas com esse ICP em janeiro (ICP é fixo)
+        # Lojas com esse ICP na base atual (ICP é da base atual)
         lojas_icp = lojas_ativas[lojas_ativas['icp'] == icp][['id_store', 'status_seller']].copy()
-        lojas_icp = lojas_icp.rename(columns={'status_seller': 'status_jan'})
+        lojas_icp = lojas_icp.rename(columns={'status_seller': 'status_depois'})
         
-        # Merge com dezembro para pegar status anterior
+        # Merge com base anterior para pegar status antes
         merged = lojas_icp.merge(
-            base_dez[['id_store', 'status_seller']].rename(columns={'status_seller': 'status_dez'}),
+            base_para_icp[['id_store', 'status_seller']].rename(columns={'status_seller': 'status_antes'}),
             on='id_store',
             how='inner'
         )
         
         if len(merged) > 0:
-            # Calcular transições usando vetorização
             merged['tipo'] = merged.apply(
-                lambda x: get_transition_type(x['status_dez'], x['status_jan']), axis=1
+                lambda x: get_transition_type(x['status_antes'], x['status_depois']), axis=1
             )
             
-            upgrades = len(merged[merged['tipo'] == 'upgrade'])
-            downgrades = len(merged[merged['tipo'] == 'downgrade'])
-            estaveis = len(merged[merged['tipo'] == 'estavel'])
+            upgrades = int((merged['tipo'] == 'upgrade').sum())
+            downgrades = int((merged['tipo'] == 'downgrade').sum())
+            estaveis = int((merged['tipo'] == 'estavel').sum())
             total_icp = len(merged)
             
             icp_transicao.append({
@@ -858,16 +1123,24 @@ for mes_ns, df_ns in sorted(new_sellers_por_mes.items(), reverse=True):
     ids_new_sellers = set(df_ns[ns_id_col].unique())
     total_ns = len(ids_new_sellers)
     
-    # Converter datas
+    # Converter datas e normalizar para naive (evitar tz-aware vs tz-naive em comparações/subtrações)
+    def _to_naive(ser):
+        if ser is None or len(ser) == 0:
+            return ser
+        return ser.apply(lambda x: x.replace(tzinfo=None) if pd.notna(x) and getattr(x, 'tzinfo', None) else x)
     if 'created_at' in df_ns.columns:
         df_ns['created_at'] = pd.to_datetime(df_ns['created_at'], dayfirst=True, errors='coerce')
+        df_ns['created_at'] = _to_naive(df_ns['created_at'])
     if 'first_seller_at' in df_ns.columns:
         df_ns['first_seller_at'] = pd.to_datetime(df_ns['first_seller_at'], dayfirst=True, errors='coerce')
+        df_ns['first_seller_at'] = _to_naive(df_ns['first_seller_at'])
     
     # Classificar em 3 grupos: Com Onboarding, Sem Onboarding, Base Antiga
     def classificar_ns(row):
         store_id = row[ns_id_col]
         created = row.get('created_at')
+        if pd.notna(created) and getattr(created, 'tzinfo', None) is not None:
+            created = created.replace(tzinfo=None)
         if store_id in ids_onboarding:
             return 'onboarding'
         elif pd.notna(created) and created >= pd.Timestamp('2025-10-01'):
@@ -1228,6 +1501,60 @@ for col in MERCHANT_COLS:
 print(f"  📊 Base Total: {len(lojas_ativas):,} lojas | Média MS: {round(lojas_ativas['qtd_merchant_services'].mean(), 2)}")
 print(f"  📊 Sellers: {len(lojas_sellers):,} lojas | Média MS: {ms_media_sellers}")
 
+# Por Status de Seller - Análise de oportunidades
+print("  📊 Analisando MS por Status de Seller...")
+ms_por_status = []
+for status in STATUS_ORDER:
+    lojas_status = lojas_ativas[lojas_ativas['status_seller'] == status]
+    if len(lojas_status) > 0:
+        status_data = {
+            'status': status,
+            'label': STATUS_LABELS.get(status, status),
+            'total_lojas': len(lojas_status),
+            'media_produtos': round(lojas_status['qtd_merchant_services'].mean(), 2),
+            'sem_ms': int((lojas_status['qtd_merchant_services'] == 0).sum()),
+            'pct_sem_ms': round((lojas_status['qtd_merchant_services'] == 0).sum() / len(lojas_status) * 100, 1),
+            'gmv_medio': round(lojas_status['gmv_mes_local'].mean(), 2),
+            'produtos': []
+        }
+        for col in MERCHANT_COLS:
+            total = int(lojas_status[col].sum())
+            pct = round(lojas_status[col].mean() * 100, 1)
+            status_data['produtos'].append({
+                'produto': PRODUTO_NAMES[col],
+                'codigo': col,
+                'lojas': total,
+                'pct': pct
+            })
+        ms_por_status.append(status_data)
+
+# Por ICP - Análise de oportunidades
+print("  📊 Analisando MS por ICP...")
+ms_por_icp = []
+ICP_VALUES = ['ICP 1', 'ICP 2', 'ICP 3', 'ICP 4', 'Não Classificado']
+for icp in ICP_VALUES:
+    lojas_icp = lojas_ativas[lojas_ativas['icp'] == icp]
+    if len(lojas_icp) > 0:
+        icp_data = {
+            'icp': icp,
+            'total_lojas': len(lojas_icp),
+            'media_produtos': round(lojas_icp['qtd_merchant_services'].mean(), 2),
+            'sem_ms': int((lojas_icp['qtd_merchant_services'] == 0).sum()),
+            'pct_sem_ms': round((lojas_icp['qtd_merchant_services'] == 0).sum() / len(lojas_icp) * 100, 1),
+            'gmv_medio': round(lojas_icp['gmv_mes_local'].mean(), 2),
+            'produtos': []
+        }
+        for col in MERCHANT_COLS:
+            total = int(lojas_icp[col].sum())
+            pct = round(lojas_icp[col].mean() * 100, 1)
+            icp_data['produtos'].append({
+                'produto': PRODUTO_NAMES[col],
+                'codigo': col,
+                'lojas': total,
+                'pct': pct
+            })
+        ms_por_icp.append(icp_data)
+
 # Top combinações
 combo_counts = lojas_ativas['combo_produtos'].value_counts().head(15)
 ms_combinacoes = [
@@ -1339,6 +1666,45 @@ dashboard_data['resumo'] = {
     'churn_prob_media': round(lojas_com_churn['predictive_churn_probability'].mean() * 100, 2)
 }
 
+# Comparativo Jan x Fev (quando as duas bases estão carregadas)
+dashboard_data['comparativo_jan_fev'] = None
+if '2026-01' in bases_mensais and '2026-02' in bases_mensais:
+    b_jan = bases_mensais['2026-01']
+    b_fev = bases_mensais['2026-02']
+    sellers_jan = b_jan[b_jan['status_seller'].isin(SELLER_STATUS)]
+    sellers_fev = b_fev[b_fev['status_seller'].isin(SELLER_STATUS)]
+    gmv_jan = b_jan['gmv_mes_local'].sum()
+    gmv_fev = b_fev['gmv_mes_local'].sum()
+    n_jan = len(b_jan)
+    n_fev = len(b_fev)
+    pct_sellers_jan = len(sellers_jan) / n_jan * 100 if n_jan > 0 else 0
+    pct_sellers_fev = len(sellers_fev) / n_fev * 100 if n_fev > 0 else 0
+    churn_jan = b_jan['predictive_churn_probability'].mean() * 100 if 'predictive_churn_probability' in b_jan.columns else None
+    churn_fev = b_fev['predictive_churn_probability'].mean() * 100 if 'predictive_churn_probability' in b_fev.columns else None
+    dashboard_data['comparativo_jan_fev'] = {
+        'jan': {
+            'total_lojas_ativas': n_jan,
+            'total_lojas_sellers': len(sellers_jan),
+            'pct_sellers': round(pct_sellers_jan, 1),
+            'gmv_total': round(gmv_jan, 2),
+            'churn_prob_media': round(churn_jan, 2) if churn_jan is not None else None,
+        },
+        'fev': {
+            'total_lojas_ativas': n_fev,
+            'total_lojas_sellers': len(sellers_fev),
+            'pct_sellers': round(pct_sellers_fev, 1),
+            'gmv_total': round(gmv_fev, 2),
+            'churn_prob_media': round(churn_fev, 2) if churn_fev is not None else None,
+        },
+        'delta': {
+            'lojas_ativas': n_fev - n_jan,
+            'lojas_sellers': len(sellers_fev) - len(sellers_jan),
+            'pct_sellers_pp': round(pct_sellers_fev - pct_sellers_jan, 1),
+            'gmv_total': round(gmv_fev - gmv_jan, 2),
+            'gmv_pct': round((gmv_fev - gmv_jan) / gmv_jan * 100, 1) if gmv_jan and gmv_jan != 0 else None,
+        },
+    }
+
 dashboard_data['new_sellers'] = new_sellers_analysis
 dashboard_data['matriz_transicao'] = matriz_transicao
 dashboard_data['risk_quartiles'] = risk_quartiles_data
@@ -1398,6 +1764,10 @@ dashboard_data['merchant_services'] = {
         'media': ms_media_sellers,
         'por_produto': ms_por_produto_sellers
     },
+    # Análise por Status de Seller
+    'por_status': ms_por_status,
+    # Análise por ICP
+    'por_icp': ms_por_icp,
     'combinacoes': ms_combinacoes,
     'cross_sell': cross_sell,
     'cross_sell_lojas': cross_sell_lojas,  # Lista de lojas para download
@@ -3455,6 +3825,58 @@ def generate_afinidade_rows():
         rows.append(f"<tr><td><strong>{a['produto']}</strong></td><td>{a['total_clientes']:,}</td><td>{relacionados}</td></tr>")
     return ''.join(rows)
 
+# Abreviações e cores para cada Merchant Service
+MS_DISPLAY = {
+    'Nuvem Pago': {'abbr': 'Pago', 'color': '#0059d5'},      # Azul Nimbus
+    'Nuvem Envio': {'abbr': 'Envio', 'color': '#00935b'},    # Verde escuro
+    'Nuvem Marketing': {'abbr': 'Mkt', 'color': '#9333ea'},  # Roxo
+    'PDV': {'abbr': 'PDV', 'color': '#f97316'},              # Laranja
+    'Nuvem Chat': {'abbr': 'Chat', 'color': '#0891b2'}       # Ciano
+}
+
+def generate_ms_por_status_html():
+    """Gera HTML da tabela de MS por Status de Seller"""
+    rows = []
+    for s in dashboard_data['merchant_services']['por_status']:
+        produtos_bars = ''
+        for p in s['produtos']:
+            ms_info = MS_DISPLAY.get(p['produto'], {'abbr': p['produto'][:4], 'color': '#64748b'})
+            color = ms_info['color']
+            abbr = ms_info['abbr']
+            produtos_bars += f'<div style="display:inline-block;margin:2px;padding:2px 6px;background:{color}20;border-radius:4px;font-size:10px;border-left:3px solid {color};"><span style="font-weight:600;color:{color};">{p["pct"]}%</span> <span style="color:#374151;">{abbr}</span></div>'
+        
+        oportunidade_class = 'positive' if s['pct_sem_ms'] < 40 else 'neutral' if s['pct_sem_ms'] < 60 else 'negative'
+        rows.append(f'''<tr>
+            <td><strong>{s['label']}</strong></td>
+            <td>{s['total_lojas']:,}</td>
+            <td>{s['media_produtos']}</td>
+            <td class="{oportunidade_class}">{s['sem_ms']:,} ({s['pct_sem_ms']}%)</td>
+            <td style="min-width:280px;">{produtos_bars}</td>
+        </tr>''')
+    return ''.join(rows)
+
+def generate_ms_por_icp_html():
+    """Gera HTML da tabela de MS por ICP"""
+    rows = []
+    for icp in dashboard_data['merchant_services']['por_icp']:
+        produtos_bars = ''
+        for p in icp['produtos']:
+            ms_info = MS_DISPLAY.get(p['produto'], {'abbr': p['produto'][:4], 'color': '#64748b'})
+            color = ms_info['color']
+            abbr = ms_info['abbr']
+            produtos_bars += f'<div style="display:inline-block;margin:2px;padding:2px 6px;background:{color}20;border-radius:4px;font-size:10px;border-left:3px solid {color};"><span style="font-weight:600;color:{color};">{p["pct"]}%</span> <span style="color:#374151;">{abbr}</span></div>'
+        
+        oportunidade_class = 'positive' if icp['pct_sem_ms'] < 40 else 'neutral' if icp['pct_sem_ms'] < 60 else 'negative'
+        rows.append(f'''<tr>
+            <td><strong>{icp['icp']}</strong></td>
+            <td>{icp['total_lojas']:,}</td>
+            <td>{icp['media_produtos']}</td>
+            <td class="{oportunidade_class}">{icp['sem_ms']:,} ({icp['pct_sem_ms']}%)</td>
+            <td>R$ {icp['gmv_medio']:,.0f}</td>
+            <td style="min-width:280px;">{produtos_bars}</td>
+        </tr>''')
+    return ''.join(rows)
+
 # =============================================================================
 # GERAR INSIGHTS AUTOMÁTICOS PARA CADA ABA
 # =============================================================================
@@ -3717,7 +4139,9 @@ for d in dashboard_data['icp']['por_icp']:
 # Matriz de transição por ICP
 icp_transicao_html = ''
 if dashboard_data['icp'].get('transicao') and len(dashboard_data['icp']['transicao']) > 0:
-    icp_transicao_html = '''<h2 class="section-title" style="margin-top:32px;">📈 Matriz de Transição por ICP (Dez → Jan)</h2>
+    _icp_mes_ant = MES_LABELS.get(matriz_transicao.get('mes_anterior'), (matriz_transicao.get('mes_anterior') or 'mês ant.')[:3])
+    _icp_mes_atu = MES_LABELS.get(matriz_transicao.get('mes_atual'), (matriz_transicao.get('mes_atual') or 'mês at.')[:3])
+    icp_transicao_html = f'''<h2 class="section-title" style="margin-top:32px;">📈 Matriz de Transição por ICP ({_icp_mes_ant} → {_icp_mes_atu})</h2>
     <div class="risk-matrix" style="grid-template-columns: repeat(4, 1fr);">'''
     
     for t in dashboard_data['icp']['transicao']:
@@ -3791,7 +4215,11 @@ if dashboard_data['icp'].get('aging') and len(dashboard_data['icp']['aging']) > 
     icp_aging_html += '</div>'
 
 matriz_html = ''
+
 if matriz_transicao['disponivel']:
+    mes_anterior_label = MES_LABELS.get(matriz_transicao.get('mes_anterior'), matriz_transicao.get('mes_anterior') or 'mês anterior')
+    mes_atual_label = MES_LABELS.get(matriz_transicao.get('mes_atual'), matriz_transicao.get('mes_atual') or 'mês atual')
+    
     # Top transições HTML
     top_up_html = ''
     if matriz_transicao.get('top_upgrades'):
@@ -3875,7 +4303,7 @@ if matriz_transicao['disponivel']:
         matriz_visual_html = f'''
         <div class="card" style="margin-top:16px;overflow-x:auto;">
             <div class="card-title">📊 Matriz de Transição Completa</div>
-            <p class="text-muted" style="margin-bottom:12px;">Linhas = Status em Dezembro | Colunas = Status em Janeiro | Intensidade da cor = volume por linha</p>
+            <p class="text-muted" style="margin-bottom:12px;">Linhas = Status em {mes_anterior_label} | Colunas = Status em {mes_atual_label} | Intensidade da cor = volume por linha</p>
             <table class="matriz-table">
                 <thead><tr>{header_row}</tr></thead>
                 <tbody>{body_rows}</tbody>
@@ -3975,11 +4403,38 @@ if matriz_transicao['disponivel']:
     ni_pct_seller = ni_data.get('pct_seller', 0)
     ni_pct_no_seller = ni_data.get('pct_no_seller', 0)
     
+    # Comparativo com mês anterior (seta e tendência como no resumo executivo)
+    comparativo_insight_html = ''
+    comp = matriz_transicao.get('comparativo_mes_anterior')
+    if comp:
+        mes_ant_de = MES_LABELS.get(comp['mes_de'], comp['mes_de'])
+        mes_ant_para = MES_LABELS.get(comp['mes_para'], comp['mes_para'])
+        balanco_atual = matriz_transicao['upgrade'] - matriz_transicao['downgrade']
+        balanco_ant = comp['balanco']
+        diff_balanco = balanco_atual - balanco_ant
+        trend_balanco = ''
+        if diff_balanco != 0:
+            is_pos = diff_balanco > 0
+            arrow_class = 'up' if is_pos else 'down'
+            arrow_svg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5H7z"/></svg>' if is_pos else '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5H7z"/></svg>'
+            sinal = '+' if diff_balanco > 0 else ''
+            trend_balanco = f' <span class="trend-arrow {arrow_class}">{arrow_svg}{sinal}{diff_balanco:,} lojas</span>'
+        trend_pct_up = generate_trend_arrow(matriz_transicao['pct_upgrade'], comp.get('pct_upgrade'), is_lower_better=False)
+        comparativo_insight_html = f'''
+    <div class="insight-box info" style="margin-bottom:16px;">
+        <h4>📈 Comparativo com o mês anterior</h4>
+        <p>Transição atual: <strong>{mes_anterior_label} → {mes_atual_label}</strong>. Mês anterior: <strong>{mes_ant_de} → {mes_ant_para}</strong>.</p>
+        <p><strong>Balanço (upgrades − downgrades):</strong> {balanco_atual:+,} lojas neste período. No período anterior: {balanco_ant:+,} lojas.{trend_balanco}</p>
+        <p><strong>% Upgrades:</strong> {matriz_transicao['pct_upgrade']}% neste período. No período anterior: {comp.get('pct_upgrade', 0)}%.{(' ' + trend_pct_up) if trend_pct_up else ''}</p>
+    </div>
+'''
+
     matriz_html = f'''
     <div class="insight-box info" style="margin-bottom:16px;">
-        <h4>📊 Lojas com Status Definido em {matriz_transicao['mes_anterior']}</h4>
-        <p>Análise de transição apenas para lojas que já tinham status definido (não inclui "não classificados").</p>
+        <h4>📊 Lojas com Status Definido em {mes_anterior_label}</h4>
+        <p>Análise de transição de status de {mes_anterior_label} para {mes_atual_label}. Apenas lojas que já tinham status definido (não inclui "não classificados").</p>
     </div>
+    {comparativo_insight_html}
     <div class="risk-matrix" style="grid-template-columns: repeat(3, 1fr);">
         <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
             <h3 style="color:#22c55e;">{matriz_transicao['upgrade']:,}</h3>
@@ -4000,8 +4455,8 @@ if matriz_transicao['disponivel']:
     <p class="text-center text-muted">Lojas com status definido: {matriz_transicao.get('total_comparado', 0):,}</p>
     
     <div class="insight-box warning" style="margin-top:24px;margin-bottom:16px;">
-        <h4>🆕 Lojas Novas (Não Classificadas em {matriz_transicao['mes_anterior']})</h4>
-        <p>Estas {ni_total:,} lojas eram "não classificadas" em dezembro e agora têm status definido.</p>
+        <h4>🆕 Lojas Novas (Não Classificadas em {mes_anterior_label})</h4>
+        <p>Estas {ni_total:,} lojas eram "não classificadas" em {mes_anterior_label} e agora têm status definido em {mes_atual_label}.</p>
     </div>
     <div class="risk-matrix" style="grid-template-columns: repeat(2, 1fr);">
         <div class="risk-card" style="background:#22c55e20;border:2px solid #22c55e;">
@@ -4015,7 +4470,7 @@ if matriz_transicao['disponivel']:
             <p>{ni_pct_no_seller}% das lojas novas</p>
         </div>
     </div>
-    <p class="text-center text-muted">Total de lojas não classificadas em {matriz_transicao['mes_anterior']}: {ni_total:,}</p>
+    <p class="text-center text-muted">Total de lojas não classificadas em {mes_anterior_label}: {ni_total:,}</p>
     {entradas_saidas_html}
     {matriz_visual_html}
     {fluxo_liquido_html}
@@ -4104,6 +4559,67 @@ ms_comparison_rows = ''.join([
     f"<tr><td><strong>{p['produto']}</strong></td><td>{dashboard_data['webinars']['merchant_services']['com_webinar']['por_produto'][i]['pct']}%</td><td>{p['pct']}%</td><td class='{'positive' if p['diff']>0 else 'negative' if p['diff']<0 else ''}'>{'+' if p['diff']>0 else ''}{p['diff']}pp</td></tr>"
     for i, p in enumerate(dashboard_data['webinars']['merchant_services']['sem_webinar']['por_produto'])
 ])
+
+# Bloco HTML do comparativo Jan x Fev (evita f-string aninhada no template)
+comparativo_jan_fev_html = ''
+if dashboard_data.get('comparativo_jan_fev'):
+    c = dashboard_data['comparativo_jan_fev']
+    gmv_pct = c['delta'].get('gmv_pct')
+    gmv_cell = f"{gmv_pct:+.1f}%" if gmv_pct is not None else '-'
+    comparativo_jan_fev_html = f'''
+            <h2 class="section-title">Comparativo Janeiro x Fevereiro</h2>
+            <div class="card" style="margin-bottom:24px;">
+                <div class="card-title">Métricas lado a lado</div>
+                <table>
+                    <thead><tr><th>Métrica</th><th>Jan 2026</th><th>Fev 2026</th><th>Variação (Δ)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Lojas ativas</strong></td><td>{c["jan"]["total_lojas_ativas"]:,}</td><td>{c["fev"]["total_lojas_ativas"]:,}</td><td class="{'negative' if c['delta']['lojas_ativas'] < 0 else 'positive'}">{c['delta']['lojas_ativas']:+,}</td></tr>
+                        <tr><td><strong>Lojas sellers</strong></td><td>{c["jan"]["total_lojas_sellers"]:,}</td><td>{c["fev"]["total_lojas_sellers"]:,}</td><td class="{'negative' if c['delta']['lojas_sellers'] < 0 else 'positive'}">{c['delta']['lojas_sellers']:+,}</td></tr>
+                        <tr><td><strong>% Sellers</strong></td><td>{c["jan"]["pct_sellers"]}%</td><td>{c["fev"]["pct_sellers"]}%</td><td class="{'negative' if c['delta']['pct_sellers_pp'] < 0 else 'positive'}">{c['delta']['pct_sellers_pp']:+.1f} p.p.</td></tr>
+                        <tr><td><strong>GMV total</strong></td><td>R$ {c["jan"]["gmv_total"]/1e6:.1f}M</td><td>R$ {c["fev"]["gmv_total"]/1e6:.1f}M</td><td class="{'negative' if (gmv_pct or 0) < 0 else 'positive'}">{gmv_cell}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            '''
+
+# Setas comparativo vs mês anterior para Big Numbers (quando há Jan vs Fev)
+big_numbers_trends = {
+    'lojas_ativas': '',
+    'lojas_sellers': '',
+    'gmv': '',
+    'cobertura': '',
+    'risco': ''
+}
+if dashboard_data.get('comparativo_jan_fev'):
+    c = dashboard_data['comparativo_jan_fev']
+    d = c['delta']
+    da = d['lojas_ativas']
+    if da != 0:
+        melhor = da > 0
+        cls = 'positive' if melhor else 'negative'
+        sinal = '+' if da > 0 else ''
+        big_numbers_trends['lojas_ativas'] = f'<div class="card-trend {cls}">{"↑" if melhor else "↓"} {sinal}{da:,} vs mês ant. ({"melhoramos" if melhor else "pioramos"})</div>'
+    ds = d['lojas_sellers']
+    if ds != 0:
+        melhor = ds > 0
+        cls = 'positive' if melhor else 'negative'
+        sinal = '+' if ds > 0 else ''
+        big_numbers_trends['lojas_sellers'] = f'<div class="card-trend {cls}">{"↑" if melhor else "↓"} {sinal}{ds:,} vs mês ant. ({"melhoramos" if melhor else "pioramos"})</div>'
+    gmv_pct = d.get('gmv_pct')
+    if gmv_pct is not None and gmv_pct != 0:
+        melhor = gmv_pct > 0
+        cls = 'positive' if melhor else 'negative'
+        sinal = '+' if gmv_pct > 0 else ''
+        big_numbers_trends['gmv'] = f'<div class="card-trend {cls}">{"↑" if melhor else "↓"} {sinal}{gmv_pct:.1f}% vs mês ant. ({"melhoramos" if melhor else "pioramos"})</div>'
+    churn_jan = c['jan'].get('churn_prob_media')
+    churn_fev = c['fev'].get('churn_prob_media')
+    if churn_jan is not None and churn_fev is not None:
+        diff_pp = churn_fev - churn_jan
+        if diff_pp != 0:
+            melhor = diff_pp < 0
+            cls = 'positive' if melhor else 'negative'
+            sinal = '+' if diff_pp > 0 else ''
+            big_numbers_trends['risco'] = f'<div class="card-trend {cls}">{"↓" if melhor else "↑"} {sinal}{diff_pp:.1f}pp vs mês ant. ({"melhoramos" if melhor else "pioramos"})</div>'
 
 html_content = f'''<!DOCTYPE html>
 <html lang="pt-BR">
@@ -4334,6 +4850,11 @@ html_content = f'''<!DOCTYPE html>
             font-size: 0.75rem; 
             color: var(--nimbus-neutral-text-low); 
             margin-top: var(--spacing-1); 
+        }}
+        .card-trend {{
+            font-size: 0.6875rem;
+            margin-top: var(--spacing-2);
+            font-weight: 500;
         }}
         
         /* Status Colors - Semáforo */
@@ -4866,7 +5387,7 @@ html_content = f'''<!DOCTYPE html>
 <body>
     <div class="header">
         <h1>Dashboard Impacto - Lifecycle BR</h1>
-        <p>Base: {dashboard_data['resumo']['data_base']} | {len(meses_disponiveis)} mês(es) carregado(s)</p>
+        <p>Base: {dashboard_data['resumo']['data_base']}{' | Comparação Jan x Fev' if dashboard_data.get('comparativo_jan_fev') else ''} | {len(meses_disponiveis)} mês(es) carregado(s)</p>
     </div>
     
     <div class="tabs">
@@ -4875,7 +5396,7 @@ html_content = f'''<!DOCTYPE html>
         <div class="tab" onclick="showTab('icp')">Análise por ICP</div>
         <div class="tab" onclick="showTab('merchant')">Merchant Services</div>
         <div class="tab" onclick="showTab('risco')">Risco de Churn</div>
-        <div class="tab" onclick="showTab('cobertura')">Cobertura Lifecycle</div>
+        <div class="tab" onclick="showTab('cobertura')">Cobertura Lifecycle <span class="badge soon">em atualização</span></div>
         <div class="tab" onclick="showTab('webinars')">Projeto: Webinars</div>
         <div class="tab" onclick="showTab('onboarding')">Projeto: Onboarding</div>
         <div class="tab disabled">Human in the Loop <span class="badge soon">em breve</span></div>
@@ -4886,12 +5407,13 @@ html_content = f'''<!DOCTYPE html>
         <div id="resumo" class="tab-content active">
             <h2 class="section-title">Big Numbers</h2>
             <div class="grid grid-5">
-                <div class="card"><div class="card-title">Lojas Ativas</div><div class="card-value gradient">{dashboard_data['resumo']['total_lojas_ativas']:,}</div><div class="card-subtitle">pagantes</div></div>
-                <div class="card"><div class="card-title">Lojas Sellers</div><div class="card-value">{dashboard_data['resumo']['total_lojas_sellers']:,}</div><div class="card-subtitle">{dashboard_data['resumo']['pct_sellers']}%</div></div>
-                <div class="card"><div class="card-title">GMV Total</div><div class="card-value">R$ {dashboard_data['resumo']['gmv_total']/1000000:.1f}M</div></div>
-                <div class="card"><div class="card-title">Cobertura</div><div class="card-value positive">{dashboard_data['resumo']['pct_cobertura']}%</div><div class="card-subtitle">{dashboard_data['resumo']['n_cobertas']:,} lojas</div></div>
-                <div class="card"><div class="card-title">Risco Médio</div><div class="card-value negative">{dashboard_data['resumo']['churn_prob_media']}%</div></div>
+                <div class="card"><div class="card-title">Lojas Ativas</div><div class="card-value gradient">{dashboard_data['resumo']['total_lojas_ativas']:,}</div><div class="card-subtitle">pagantes (base atual)</div>{big_numbers_trends['lojas_ativas']}</div>
+                <div class="card"><div class="card-title">Lojas Sellers</div><div class="card-value">{dashboard_data['resumo']['total_lojas_sellers']:,}</div><div class="card-subtitle">{dashboard_data['resumo']['pct_sellers']}%</div>{big_numbers_trends['lojas_sellers']}</div>
+                <div class="card"><div class="card-title">GMV Total</div><div class="card-value">R$ {dashboard_data['resumo']['gmv_total']/1000000:.1f}M</div><div class="card-subtitle">base atual</div>{big_numbers_trends['gmv']}</div>
+                <div class="card"><div class="card-title">Cobertura</div><div class="card-value positive">{dashboard_data['resumo']['pct_cobertura']}%</div><div class="card-subtitle">{dashboard_data['resumo']['n_cobertas']:,} lojas</div>{big_numbers_trends['cobertura']}</div>
+                <div class="card"><div class="card-title">Risco Médio</div><div class="card-value negative">{dashboard_data['resumo']['churn_prob_media']}%</div><div class="card-subtitle">média base atual</div>{big_numbers_trends['risco']}</div>
             </div>
+            {comparativo_jan_fev_html}
             
             <h2 class="section-title">Impacto em New Sellers por Projeto</h2>
             <div class="grid grid-5">
@@ -5058,6 +5580,45 @@ html_content = f'''<!DOCTYPE html>
                         </tbody>
                     </table>
                 </div>
+            </div>
+            
+            <h2 class="section-title">Adoção por Status de Seller</h2>
+            <p class="text-muted" style="margin-top:-8px;margin-bottom:16px;">Oportunidades de adoção de MS em cada segmento de seller</p>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Lojas</th>
+                            <th>Média Produtos</th>
+                            <th>Sem MS (oportunidade)</th>
+                            <th>Adoção por Produto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {generate_ms_por_status_html()}
+                    </tbody>
+                </table>
+            </div>
+            
+            <h2 class="section-title">Adoção por ICP</h2>
+            <p class="text-muted" style="margin-top:-8px;margin-bottom:16px;">Análise de oportunidades por perfil de cliente ideal</p>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ICP</th>
+                            <th>Lojas</th>
+                            <th>Média Produtos</th>
+                            <th>Sem MS (oportunidade)</th>
+                            <th>GMV Médio</th>
+                            <th>Adoção por Produto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {generate_ms_por_icp_html()}
+                    </tbody>
+                </table>
             </div>
             
             {insights_ms_html}
@@ -5672,7 +6233,7 @@ html_content = f'''<!DOCTYPE html>
 '''
 
 # Salvar
-output_path = os.path.join(BASE_DIR, 'index.html')
+output_path = os.path.join(BASE_DIR, 'dashboard.html')
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(html_content)
 

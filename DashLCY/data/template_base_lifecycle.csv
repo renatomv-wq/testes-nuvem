@@ -1,0 +1,6 @@
+merchant_id,status_conta,status_seller,dias_desde_ativacao,idade_loja_dias,gmv_ultimos_30d,gmv_ultimos_90d,numero_vendas_30d,numero_vendas_90d,usa_nuvem_marketing,usa_nuvem_chat,usa_concorrente
+100001,trial,no-seller,15,45,0,0,0,0,nao,nao,nao
+100002,ativo,tiny-seller,120,180,2500,7200,12,38,sim,nao,nao
+100003,ativo,struggling-seller,90,200,800,2100,5,18,nao,sim,sim
+100004,churnado,no-seller,365,400,0,0,0,0,nao,nao,nao
+100005,ativo,small-seller,30,60,15000,42000,45,120,sim,sim,nao

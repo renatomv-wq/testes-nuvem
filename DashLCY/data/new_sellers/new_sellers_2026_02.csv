@@ -1,0 +1,1237 @@
+store_id,country_code,domain,created_at,first_payment,first_seller_at,current_plan_name,current_segment,vertical_name
+7160915,BR,prefixosv2,2026-01-12T18:09:39.000Z,2026-01-27T00:41:10.000Z,2026-02-01,plan-impulso,small-seller,clothing
+7014004,BR,beea2,2025-12-01T12:12:08.000Z,2025-12-11T23:34:07.000Z,2026-02-01,plan-impulso,tiny-seller,clothing
+6829331,BR,myrrhaamourperfumes,2025-10-14T02:08:23.000Z,2025-11-03T18:11:18.000Z,2026-02-01,plan-essencial,struggling-seller,health_beauty
+6569653,BR,atelievirtudeefe,2025-08-05T14:00:06.000Z,2025-09-17T18:28:25.000Z,2026-02-01,plan-essencial,tiny-seller,not informed
+7045750,BR,suplanutri,2025-12-09T17:33:22.000Z,2026-01-26T18:07:18.000Z,2026-02-01,plan-impulso,small-seller,other
+7068703,BR,glowamourmakeup,2025-12-15T19:23:25.000Z,2025-12-23T12:13:13.000Z,2026-02-01,plan-essencial,tiny-seller,health_beauty
+7075398,BR,lsdoutlet2,2025-12-17T13:14:32.000Z,2025-12-29T11:53:53.000Z,2026-02-01,plan-impulso,medium-seller,clothing
+7028452,BR,jafe6,2025-12-04T14:43:14.000Z,2025-12-04T19:48:45.000Z,2026-02-01,plan-essencial,tiny-seller,gifts
+6218887,BR,hevn,2025-05-12T23:30:48.000Z,2025-12-16T18:43:25.000Z,2026-02-01,plan-essencial,tiny-seller,clothing
+6867918,BR,newlabsvita,2025-10-23T15:09:03.000Z,2025-10-30T14:48:42.000Z,2026-02-01,plan-essencial,tiny-seller,health_beauty
+7152008,BR,useviana295,2026-01-10T01:49:42.000Z,2026-01-18T01:30:30.000Z,2026-02-01,plan-essencial,tiny-seller,not informed
+3215113,BR,layanneandrade,2023-05-23T13:18:15.000Z,2026-01-08T15:01:23.000Z,2026-02-01,plan-essencial,tiny-seller,art
+6217156,BR,agroper,2025-05-12T18:32:53.000Z,2025-07-15T17:24:00.000Z,2026-02-01,plan-essencial,struggling-seller,home_garden
+6968667,BR,ricardoshopconfeccoes,2025-11-19T14:46:54.000Z,2025-11-25T19:01:12.000Z,2026-02-01,plan-impulso,small-seller,clothing
+6439968,BR,lojasfervo,2025-07-03T13:37:35.000Z,2025-07-11T11:19:33.000Z,2026-02-01,plan-impulso,tiny-seller,clothing_accesories
+6851352,BR,cherobomperfumes,2025-10-19T22:02:25.000Z,2025-10-20T02:40:31.000Z,2026-02-01,plan-essencial,tiny-seller,health_beauty
+7123001,BR,cubica6,2026-01-03T21:27:06.000Z,2026-01-10T19:28:04.000Z,2026-02-01,plan-essencial,tiny-seller,art
+6578241,BR,sinhorita2,2025-08-07T13:12:20.000Z,2025-08-15T14:49:17.000Z,2026-02-01,plan-essencial,struggling-seller,not informed
+6305160,BR,dropmercado2,2025-05-31T15:40:22.000Z,2025-07-04T17:53:08.000Z,2026-02-01,plan-impulso,tiny-seller,cars
+7041794,BR,hmrfitness,2025-12-08T19:07:29.000Z,2025-12-09T14:51:05.000Z,2026-02-01,plan-impulso,tiny-seller,not informed
+6311439,BR,quadrodecinema,2025-06-02T13:59:23.000Z,2025-06-06T18:06:26.000Z,2026-02-01,plan-essencial,tiny-seller,other
+7053138,BR,maisonjscohauteparfumerie,2025-12-11T11:50:27.000Z,2025-12-29T19:02:26.000Z,2026-02-01,plan-essencial,tiny-seller,health_beauty
+6995838,BR,blimpshop,2025-11-26T15:22:58.000Z,2025-12-02T20:20:18.000Z,2026-02-01,plan-impulso,tiny-seller,clothing
+6798840,BR,lcperfumariaarabes,2025-10-06T01:03:18.000Z,2025-11-01T00:19:35.000Z,2026-02-01,plan-essencial,struggling-seller,health_beauty
+6999610,BR,prefixzay12,2025-11-27T12:53:03.000Z,2026-01-14T15:47:46.000Z,2026-02-01,plan-essencial,tiny-seller,clothing
+3458053,BR,casebrecultural,2023-07-17T17:05:32.000Z,2025-11-25T20:20:06.000Z,2026-02-01,plan-essencial,tiny-seller,other
+7161629,BR,elabella47,2026-01-12T20:05:30.000Z,2026-01-14T15:57:57.000Z,2026-02-01,plan-impulso,small-seller,clothing
+7224012,BR,lisifit,2026-01-26T18:53:10.000Z,2026-01-27T22:08:07.000Z,2026-02-01,plan-essencial,small-seller,clothing
+3539252,BR,lojadobert,2023-08-03T20:27:37.000Z,2023-08-10T20:40:09.000Z,2026-02-01,plan-impulso,tiny-seller,art
+6716905,BR,pinhaokids,2025-09-14T00:56:49.000Z,2025-09-24T17:41:47.000Z,2026-02-01,plan-essencial,small-seller,gifts
+6945698,BR,amlingerie8,2025-11-13T01:19:11.000Z,2025-11-24T20:51:19.000Z,2026-02-01,plan-essencial,tiny-seller,not informed
+6709461,BR,lojavrlstore,2025-09-11T18:26:42.000Z,2025-10-24T21:22:56.000Z,2026-02-01,plan-impulso,tiny-seller,clothing
+7195417,BR,lojapoptopkids,2026-01-20T04:15:36.000Z,2026-01-26T14:08:19.000Z,2026-02-01,plan-essencial,tiny-seller,clothing
+6684608,BR,flagstore3,2025-09-04T19:23:11.000Z,2025-09-15T13:39:34.000Z,2026-02-01,plan-impulso,tiny-seller,clothing
+2335014,BR,kizunaotaku,2022-08-11T15:20:44.000Z,2022-08-11T19:24:39.000Z,2026-02-01,plan-essencial,tiny-seller,clothing
+7010029,BR,maisonlumierebeauty,2025-11-30T11:04:54.000Z,2026-01-23T19:09:10.000Z,2026-02-01,plan-essencial,small-seller,health_beauty
+7113098,BR,sivy2,2025-12-31T02:41:42.000Z,2026-01-09T00:11:33.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+6991824,BR,garvieperfumaria,2025-11-25T17:45:23.000Z,2025-11-27T20:28:50.000Z,2026-02-02,plan-essencial,tiny-seller,other
+7005182,BR,buscabuscaimportados,2025-11-28T19:13:31.000Z,2025-12-15T18:51:34.000Z,2026-02-02,plan-impulso,tiny-seller,not informed
+7002708,BR,wcshoes3,2025-11-28T01:03:36.000Z,2026-01-07T16:28:43.000Z,2026-02-02,plan-escala,medium-seller,clothing
+4971614,BR,faccopedras,2024-07-17T22:26:00.000Z,2024-07-24T14:43:10.000Z,2026-02-02,plan-impulso,small-seller,other
+7039903,BR,yahwehover,2025-12-08T06:07:58.000Z,2025-12-17T08:36:55.000Z,2026-02-02,plan-impulso,tiny-seller,clothing
+6501171,BR,easebears,2025-07-18T19:07:04.000Z,2025-08-01T15:09:40.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+6743360,BR,akvasolutions,2025-09-21T02:59:09.000Z,2026-01-08T17:34:09.000Z,2026-02-02,plan-impulso,small-seller,not informed
+7165821,BR,asvezestembage2,2026-01-13T16:53:49.000Z,2026-01-16T11:11:52.000Z,2026-02-02,plan-escala,small-seller,other
+6914141,BR,bbskincare,2025-11-04T17:48:55.000Z,2025-12-02T19:17:43.000Z,2026-02-02,plan-impulso,tiny-seller,health_beauty
+6846098,BR,charizard,2025-10-17T23:49:01.000Z,2025-12-01T16:29:26.000Z,2026-02-02,plan-essencial,tiny-seller,toys
+6995779,BR,lojacamcollections,2025-11-26T15:11:42.000Z,2025-12-07T04:01:09.000Z,2026-02-02,plan-essencial,tiny-seller,sports
+7094876,BR,firekstore3,2025-12-23T21:52:57.000Z,2026-01-21T13:12:59.000Z,2026-02-02,plan-essencial,small-seller,not informed
+7044102,BR,bemestaresaude16,2025-12-09T10:34:13.000Z,2025-12-14T23:41:05.000Z,2026-02-02,plan-essencial,tiny-seller,other
+2435016,BR,abdallahmarcos,2022-09-22T14:17:13.000Z,2022-12-24T18:52:10.000Z,2026-02-02,plan-comeco,tiny-seller,not informed
+5859045,BR,ateliedanieladesa,2025-02-18T16:25:09.000Z,2025-02-27T02:16:16.000Z,2026-02-02,plan-essencial,struggling-seller,art
+2488950,BR,izzy5,2022-10-13T00:03:53.000Z,2024-08-28T00:39:40.000Z,2026-02-02,plan-essencial,struggling-seller,clothing_accesories
+6678038,BR,atelierbarbaramelo,2025-09-03T02:05:19.000Z,2025-10-30T16:17:17.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+3446355,BR,soltora,2023-07-14T15:03:42.000Z,2025-12-23T16:02:29.000Z,2026-02-02,plan-impulso,tiny-seller,not informed
+6863523,BR,essenciaversatil3,2025-10-22T16:35:02.000Z,2025-10-23T01:29:14.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+7178515,BR,adesivosjeisi,2026-01-16T00:26:13.000Z,2026-01-22T00:35:22.000Z,2026-02-02,plan-essencial,tiny-seller,not informed
+6256424,BR,winetimebrasil,2025-05-20T20:46:57.000Z,2025-07-02T18:20:10.000Z,2026-02-02,plan-escala,medium-seller,food_drinks
+6608068,BR,amie10,2025-08-15T17:51:10.000Z,2025-08-15T18:54:22.000Z,2026-02-02,plan-essencial,tiny-seller,not informed
+6668558,BR,movebambini,2025-08-31T21:06:00.000Z,2025-09-09T12:15:50.000Z,2026-02-02,plan-essencial,small-seller,not informed
+3905526,BR,criadosnomato,2023-11-01T02:56:08.000Z,2025-11-25T16:29:53.000Z,2026-02-02,plan-essencial,tiny-seller,clothing_accesories
+7075411,BR,thalvionsuplementos,2025-12-17T13:15:57.000Z,2026-01-20T20:42:29.000Z,2026-02-02,plan-escala,tiny-seller,health_beauty
+7159299,BR,usenoix,2026-01-12T12:40:51.000Z,2026-01-12T17:46:59.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+3259081,BR,lemorgan,2023-06-01T12:13:52.000Z,2023-11-07T20:35:58.000Z,2026-02-02,plan-impulso,tiny-seller,health_beauty
+7184429,BR,chiclass,2026-01-17T16:18:06.000Z,2026-01-17T18:04:33.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+7209469,BR,hortifrutisantafe,2026-01-22T22:17:31.000Z,2026-01-28T22:43:50.000Z,2026-02-02,plan-essencial,medium-seller,food_drinks
+6900884,BR,mundoanimalagrocenter,2025-10-31T18:08:09.000Z,2025-12-20T20:33:08.000Z,2026-02-02,plan-essencial,tiny-seller,pets
+6769835,BR,saladetrofeus,2025-09-28T01:29:53.000Z,2026-01-21T21:43:48.000Z,2026-02-02,plan-essencial,tiny-seller,not informed
+7230287,BR,paulalacos5,2026-01-27T21:29:57.000Z,2026-01-29T00:39:05.000Z,2026-02-02,plan-essencial,medium-seller,other
+7190988,BR,gbpartystore,2026-01-19T14:09:10.000Z,2026-01-24T19:24:39.000Z,2026-02-02,plan-essencial,small-seller,other
+7053857,BR,motionlaboutlet,2025-12-11T15:17:50.000Z,2025-12-20T14:21:57.000Z,2026-02-02,plan-impulso,small-seller,clothing
+1632862,BR,storeglamour2,2021-04-02T18:46:46.000Z,2026-01-20T18:15:26.000Z,2026-02-02,plan-essencial,tiny-seller,clothing
+2934338,BR,lianaoficiial,2023-03-09T17:20:12.000Z,2026-01-21T15:18:10.000Z,2026-02-02,plan-essencial,small-seller,clothing
+6950320,BR,apexlion,2025-11-14T08:59:36.000Z,2025-12-17T09:08:14.000Z,2026-02-02,plan-impulso,tiny-seller,clothing
+6102661,BR,amagiadoanalogico,2025-04-16T01:23:29.000Z,2025-08-22T19:11:35.000Z,2026-02-02,plan-essencial,tiny-seller,electronics_it
+2754061,BR,danangstore,2023-01-15T18:54:58.000Z,2025-07-28T20:12:22.000Z,2026-02-03,plan-essencial,tiny-seller,health_beauty
+7017646,BR,yaze4,2025-12-02T00:58:14.000Z,2026-01-23T15:28:45.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6242526,BR,dorismodaintima5,2025-05-17T20:16:46.000Z,2026-01-27T13:38:01.000Z,2026-02-03,plan-essencial,small-seller,clothing
+5663156,BR,pretinhaarty,2025-01-05T19:48:56.000Z,2025-06-23T20:19:51.000Z,2026-02-03,plan-essencial,tiny-seller,art
+7099252,BR,madestreet,2025-12-26T13:46:21.000Z,2025-12-28T19:46:15.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6073894,BR,ladylove6,2025-04-09T19:07:44.000Z,2025-05-16T20:47:26.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+3463601,BR,roic2,2023-07-18T17:06:30.000Z,2024-04-23T19:43:23.000Z,2026-02-03,plan-impulso,tiny-seller,other
+6863901,BR,mysterashop,2025-10-22T17:50:05.000Z,2025-12-23T18:02:05.000Z,2026-02-03,plan-essencial,tiny-seller,art
+6727032,BR,aflordapelesexshop2,2025-09-16T20:13:06.000Z,2025-09-23T20:32:18.000Z,2026-02-03,plan-essencial,tiny-seller,erotics
+7044911,BR,lab60,2025-12-09T14:38:45.000Z,2025-12-15T15:25:03.000Z,2026-02-03,plan-essencial,tiny-seller,art
+5519853,BR,battutoss,2024-11-24T01:04:56.000Z,2025-05-08T12:36:25.000Z,2026-02-03,plan-essencial,tiny-seller,food_drinks
+4293069,BR,luxgymmodafitness,2024-02-13T14:12:20.000Z,2024-03-14T12:03:31.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+4738146,BR,camilamacedomodas,2024-05-23T20:14:38.000Z,2024-05-30T11:54:04.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6514361,BR,fagovivabem,2025-07-22T16:29:42.000Z,2025-07-29T17:03:03.000Z,2026-02-03,plan-essencial,tiny-seller,health_beauty
+6233768,BR,cianeatelie,2025-05-15T19:37:45.000Z,2025-06-02T12:29:07.000Z,2026-02-03,plan-impulso,tiny-seller,gifts
+6685904,BR,bijuballet2,2025-09-05T00:58:43.000Z,2025-10-22T15:07:33.000Z,2026-02-03,plan-essencial,tiny-seller,clothing_accesories
+7040523,BR,maliciasensualcare,2025-12-08T14:12:29.000Z,2026-01-10T23:41:31.000Z,2026-02-03,plan-essencial,tiny-seller,not informed
+7167547,BR,priamcompany,2026-01-13T21:33:37.000Z,2026-01-30T04:54:50.000Z,2026-02-03,plan-essencial,small-seller,not informed
+7129479,BR,todalindacloset6,2026-01-05T16:37:20.000Z,2026-01-12T21:58:59.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6271967,BR,afestarola,2025-05-24T00:52:38.000Z,2025-06-12T20:09:30.000Z,2026-02-03,plan-essencial,struggling-seller,art
+7044322,BR,lojadorogerio11,2025-12-09T12:22:08.000Z,2026-01-30T13:43:27.000Z,2026-02-03,plan-impulso,small-seller,art
+5268230,BR,alegriabox,2024-09-25T20:10:01.000Z,2025-01-20T19:25:43.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6674909,BR,blisspapelaria2,2025-09-02T14:22:26.000Z,2025-11-24T19:54:18.000Z,2026-02-03,plan-impulso,tiny-seller,not informed
+5075840,BR,biaayabecasualbag,2024-08-12T11:34:30.000Z,2024-08-31T18:12:35.000Z,2026-02-03,plan-essencial,tiny-seller,clothing_accesories
+5414400,BR,especialistaderobalo,2024-10-29T18:54:02.000Z,2026-01-14T20:55:01.000Z,2026-02-03,plan-essencial,tiny-seller,sports
+6672770,BR,jonhybravo2,2025-09-01T22:06:26.000Z,2025-09-17T14:21:23.000Z,2026-02-03,plan-essencial,tiny-seller,health_beauty
+6993426,BR,tfstore38,2025-11-25T23:20:02.000Z,2025-12-02T21:26:55.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6398270,BR,usecajue,2025-06-23T16:34:50.000Z,2025-07-02T14:11:59.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+5772007,BR,usebeliah,2025-01-30T03:25:23.000Z,2025-05-27T17:12:57.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+6814901,BR,kayconbrutos,2025-10-09T20:14:09.000Z,2025-10-13T16:10:33.000Z,2026-02-03,plan-escala,tiny-seller,jewelry
+5255074,BR,diegograndifotografia,2024-09-23T12:01:21.000Z,2025-01-06T18:18:21.000Z,2026-02-03,plan-impulso,struggling-seller,home_garden
+6996053,BR,velezalimentos,2025-11-26T16:18:19.000Z,2025-12-23T12:30:17.000Z,2026-02-03,plan-escala,tiny-seller,not informed
+3376187,BR,lovepapers,2023-06-28T17:23:11.000Z,2023-07-10T19:52:24.000Z,2026-02-03,plan-essencial,struggling-seller,gifts
+7172237,BR,prefixevo57,2026-01-14T19:43:14.000Z,2026-01-14T19:51:00.000Z,2026-02-03,plan-essencial,small-seller,food_drinks
+6959735,BR,caugomez,2025-11-17T14:15:06.000Z,2025-12-16T22:35:17.000Z,2026-02-03,plan-essencial,tiny-seller,art
+7168512,BR,bizudosouza,2026-01-14T00:40:11.000Z,2026-01-18T20:40:23.000Z,2026-02-03,plan-essencial,small-seller,art
+7092085,BR,lojamaricota4,2025-12-22T22:09:08.000Z,2026-01-05T13:45:25.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+7213721,BR,zaneshoes,2026-01-23T21:32:59.000Z,2026-01-31T13:51:11.000Z,2026-02-03,plan-essencial,small-seller,clothing
+6704697,BR,belezanatacosmeticos,2025-09-10T15:59:15.000Z,2025-09-17T12:39:00.000Z,2026-02-03,plan-essencial,tiny-seller,health_beauty
+7103033,BR,fratpapelaria,2025-12-27T17:50:15.000Z,2026-01-20T00:42:03.000Z,2026-02-03,plan-essencial,tiny-seller,office_supplies
+7099314,BR,fantasiaencantada,2025-12-26T14:07:30.000Z,2026-01-05T12:17:11.000Z,2026-02-03,plan-essencial,small-seller,clothing
+6689600,BR,fuckingbarba,2025-09-06T03:46:59.000Z,2025-12-17T22:03:47.000Z,2026-02-03,plan-impulso,small-seller,health_beauty
+7230418,BR,tobloom,2026-01-27T21:58:01.000Z,2026-01-29T16:33:46.000Z,2026-02-03,plan-impulso,medium-seller,clothing
+6201597,BR,provessiaquecedores,2025-05-08T14:31:37.000Z,2025-06-13T18:22:00.000Z,2026-02-03,plan-essencial,tiny-seller,home_garden
+2540094,BR,onfire18,2022-11-01T01:59:14.000Z,2023-05-06T03:14:31.000Z,2026-02-03,plan-impulso,tiny-seller,jewelry
+7175725,BR,amelieperfumaria,2026-01-15T15:19:29.000Z,2026-01-16T18:49:25.000Z,2026-02-03,plan-impulso,medium-seller,health_beauty
+2148666,BR,acmnotebooks,2022-05-01T15:55:44.000Z,2022-06-10T06:50:45.000Z,2026-02-03,plan-impulso,tiny-seller,it
+7077031,BR,joalheriaturmalinarosa,2025-12-17T20:43:09.000Z,2025-12-23T21:38:38.000Z,2026-02-03,plan-escala,small-seller,jewelry
+7108661,BR,ldactive,2025-12-29T17:53:57.000Z,2026-01-20T15:03:13.000Z,2026-02-03,plan-essencial,tiny-seller,not informed
+6888391,BR,deborafabiane,2025-10-28T19:06:41.000Z,2025-11-12T10:22:52.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+5656436,BR,claramaiastore,2025-01-03T21:40:52.000Z,2025-03-31T21:31:03.000Z,2026-02-03,plan-impulso,tiny-seller,clothing
+2172573,BR,goodlift,2022-05-15T15:10:16.000Z,2025-12-01T19:55:02.000Z,2026-02-03,plan-essencial,tiny-seller,clothing
+7192481,BR,milagrosocompostoemagrece,2026-01-19T18:26:58.000Z,2026-01-21T13:19:19.000Z,2026-02-03,plan-impulso,small-seller,not informed
+6886818,BR,cheirodocecosmeticos2,2025-10-28T14:03:44.000Z,2025-11-15T13:23:21.000Z,2026-02-03,plan-impulso,struggling-seller,health_beauty
+7018352,BR,biscolata,2025-12-02T05:21:46.000Z,2026-01-20T00:20:42.000Z,2026-02-03,plan-essencial,tiny-seller,food_drinks
+7178687,BR,dabombstore,2026-01-16T01:08:18.000Z,2026-01-16T21:42:26.000Z,2026-02-04,plan-essencial,small-seller,not informed
+6898444,BR,boireecacador,2025-10-30T23:09:25.000Z,2025-11-13T02:01:34.000Z,2026-02-04,plan-impulso,struggling-seller,not informed
+6914013,BR,phyteactive2,2025-11-04T17:21:01.000Z,2025-11-04T18:45:14.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+7122087,BR,noellestore,2026-01-03T17:10:19.000Z,2026-01-03T18:04:50.000Z,2026-02-04,plan-essencial,small-seller,health_beauty
+4181865,BR,sofisticatocalcados,2024-01-18T14:03:36.000Z,2024-02-16T19:54:45.000Z,2026-02-04,plan-escala,tiny-seller,clothing
+7113418,BR,dermond4,2025-12-31T11:09:06.000Z,2026-01-15T14:27:18.000Z,2026-02-04,plan-impulso,tiny-seller,travel
+6280200,BR,pequenosmimos36,2025-05-26T14:30:53.000Z,2025-06-09T16:54:17.000Z,2026-02-04,plan-essencial,small-seller,art
+7071443,BR,useturim,2025-12-16T13:20:07.000Z,2025-12-16T15:04:21.000Z,2026-02-04,plan-essencial,tiny-seller,clothing_accesories
+6900315,BR,wittigco,2025-10-31T15:27:32.000Z,2025-12-04T14:26:03.000Z,2026-02-04,plan-essencial,tiny-seller,art
+5729987,BR,girassolpresentes6,2025-01-21T02:22:55.000Z,2025-06-10T19:04:01.000Z,2026-02-04,plan-essencial,tiny-seller,other
+5218229,BR,majogart,2024-09-14T18:33:06.000Z,2025-11-24T19:22:30.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+6159243,BR,caferiservato,2025-04-28T22:46:12.000Z,2025-11-30T17:17:15.000Z,2026-02-04,plan-essencial,tiny-seller,food_drinks
+6567855,BR,thiagotenis,2025-08-04T23:41:46.000Z,2025-08-12T14:34:11.000Z,2026-02-04,plan-essencial,tiny-seller,other
+7153474,BR,goldjoiasonline,2026-01-10T15:56:21.000Z,2026-01-19T17:54:29.000Z,2026-02-04,plan-essencial,small-seller,jewelry
+7073048,BR,maramusa2,2025-12-16T19:49:50.000Z,2025-12-16T22:50:29.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+1827454,BR,artemispersonalizados,2021-08-18T17:52:49.000Z,2025-07-07T20:03:51.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+6764342,BR,lojadoserrabranca,2025-09-26T13:02:46.000Z,2025-11-27T14:57:22.000Z,2026-02-04,plan-essencial,tiny-seller,not informed
+6951666,BR,suplementamaiss,2025-11-14T17:54:53.000Z,2025-11-25T13:31:00.000Z,2026-02-04,plan-essencial,tiny-seller,health_beauty
+7233004,BR,pedalpartsbr,2026-01-28T14:06:32.000Z,2026-01-28T18:29:16.000Z,2026-02-04,plan-essencial,small-seller,not informed
+7102584,BR,senashopdesign,2025-12-27T15:09:52.000Z,2026-01-12T16:10:05.000Z,2026-02-04,plan-essencial,small-seller,not informed
+7112049,BR,hey151212,2025-12-30T19:22:52.000Z,2026-01-12T01:28:16.000Z,2026-02-04,plan-impulso,small-seller,food_drinks
+6533727,BR,coeurderoi,2025-07-27T03:03:51.000Z,2025-07-30T12:31:13.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+6765181,BR,kacau2,2025-09-26T16:33:01.000Z,2025-09-26T16:48:03.000Z,2026-02-04,plan-essencial,tiny-seller,health_beauty
+6701323,BR,perimetralimports,2025-09-09T18:42:56.000Z,2025-10-07T18:33:44.000Z,2026-02-04,plan-impulso,tiny-seller,cars
+7144497,BR,megumi10,2026-01-08T16:29:37.000Z,2026-01-26T18:06:04.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+972794,BR,prefix1000shop,2019-04-05T18:05:04.000Z,2025-09-11T12:50:53.000Z,2026-02-04,plan-essencial,tiny-seller,industrial
+6857070,BR,blackcatcafe,2025-10-21T04:01:01.000Z,2026-01-12T22:52:51.000Z,2026-02-04,plan-essencial,tiny-seller,not informed
+7237096,BR,ellevecompany,2026-01-29T04:09:02.000Z,2026-02-01T04:41:23.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+7053830,BR,furlandancewear,2025-12-11T15:05:20.000Z,2026-01-15T13:52:43.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+7023720,BR,collabsarsportswear,2025-12-03T12:58:36.000Z,2025-12-12T16:34:30.000Z,2026-02-04,plan-escala,small-seller,clothing
+6654196,BR,lojatailasampaio,2025-08-27T18:51:14.000Z,2025-10-27T13:59:48.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+5665382,BR,pointoutlet5,2025-01-06T12:18:47.000Z,2026-01-06T19:35:46.000Z,2026-02-04,plan-impulso,small-seller,not informed
+6912721,BR,essenza233,2025-11-04T12:02:46.000Z,2025-11-22T11:56:34.000Z,2026-02-04,plan-impulso,tiny-seller,clothing
+5796040,BR,lojafairplaybr,2025-02-04T16:53:43.000Z,2025-12-18T20:53:40.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+7144890,BR,vitrineonline304,2026-01-08T17:31:55.000Z,2026-01-08T20:07:57.000Z,2026-02-04,plan-essencial,small-seller,not informed
+5983561,BR,equilibriummodafitness,2025-03-20T00:32:30.000Z,2025-04-24T22:01:18.000Z,2026-02-04,plan-impulso,tiny-seller,clothing
+6983517,BR,caleb21,2025-11-23T19:06:15.000Z,2025-11-23T19:39:56.000Z,2026-02-04,plan-essencial,small-seller,not informed
+7129744,BR,perfumariaespacoparis,2026-01-05T17:24:18.000Z,2026-01-07T23:54:01.000Z,2026-02-04,plan-essencial,small-seller,health_beauty
+6500539,BR,hernaneyewear,2025-07-18T16:37:17.000Z,2025-11-06T18:06:24.000Z,2026-02-04,plan-impulso,tiny-seller,clothing
+3428253,BR,phmultimarcasmg,2023-07-10T22:21:17.000Z,2023-08-13T16:21:06.000Z,2026-02-04,plan-essencial,struggling-seller,clothing
+4306919,BR,thamybags3,2024-02-16T14:12:03.000Z,2024-09-19T03:17:11.000Z,2026-02-04,plan-comeco,tiny-seller,art
+6218879,BR,clubedapicanhajundiai,2025-05-12T23:29:15.000Z,2025-05-19T21:46:34.000Z,2026-02-04,plan-essencial,tiny-seller,food_drinks
+6775783,BR,amenorlojadomundo,2025-09-29T21:20:09.000Z,2025-10-10T19:42:33.000Z,2026-02-04,plan-impulso,tiny-seller,gifts
+7146932,BR,jprincipaldabrindarolliin,2026-01-08T23:25:40.000Z,2026-01-10T05:12:31.000Z,2026-02-04,plan-essencial,small-seller,not informed
+6627672,BR,sonoboomcolchoes,2025-08-20T21:15:21.000Z,2025-08-20T21:59:11.000Z,2026-02-04,plan-essencial,tiny-seller,home_garden
+6886336,BR,nightmarestore2,2025-10-28T11:58:55.000Z,2026-01-26T16:25:19.000Z,2026-02-04,plan-essencial,tiny-seller,cars
+5944366,BR,emoveis6,2025-03-11T11:50:19.000Z,2025-04-17T15:42:56.000Z,2026-02-04,plan-escala,small-seller,other
+5739229,BR,vatricot,2025-01-22T22:58:34.000Z,2025-01-23T23:59:09.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+6679552,BR,zarbshoes,2025-09-03T15:44:39.000Z,2025-11-27T15:08:56.000Z,2026-02-04,plan-essencial,tiny-seller,not informed
+6917767,BR,solchuva,2025-11-05T15:05:12.000Z,2026-01-25T16:27:03.000Z,2026-02-04,plan-essencial,tiny-seller,other
+6925359,BR,laisfelixelegance,2025-11-07T14:28:56.000Z,2025-11-19T14:01:35.000Z,2026-02-04,plan-essencial,tiny-seller,clothing
+6935073,BR,axeisaude2,2025-11-10T18:29:47.000Z,2025-12-12T16:43:06.000Z,2026-02-04,plan-escala,small-seller,not informed
+4438894,BR,dcftelas,2024-03-16T19:46:15.000Z,2025-07-28T10:45:07.000Z,2026-02-04,plan-essencial,tiny-seller,home_garden
+6790895,BR,santesiteamostra,2025-10-03T12:36:01.000Z,2025-12-03T20:48:02.000Z,2026-02-04,plan-essencial,small-seller,not informed
+7171227,BR,fayaactive,2026-01-14T16:51:55.000Z,2026-01-15T00:55:26.000Z,2026-02-04,plan-essencial,small-seller,clothing
+6847316,BR,lojadonaviraiense,2025-10-18T14:09:21.000Z,2025-11-26T15:57:44.000Z,2026-02-04,plan-essencial,tiny-seller,health_beauty
+7048646,BR,mossoi,2025-12-10T05:01:46.000Z,2025-12-17T03:28:07.000Z,2026-02-04,plan-essencial,tiny-seller,not informed
+7181582,BR,prefix04042019baumcc,2026-01-16T19:17:04.000Z,2026-01-22T20:15:59.000Z,2026-02-04,plan-essencial,small-seller,clothing
+6281679,BR,geline6,2025-05-26T18:41:42.000Z,2025-08-22T23:48:10.000Z,2026-02-04,plan-essencial,tiny-seller,clothing_accesories
+4143699,BR,todaplena4,2024-01-10T01:20:17.000Z,2024-01-17T19:40:44.000Z,2026-02-04,plan-impulso,tiny-seller,clothing
+6656823,BR,triademed,2025-08-28T12:51:46.000Z,2025-11-14T19:39:30.000Z,2026-02-04,plan-essencial,tiny-seller,health_beauty
+7242720,BR,lunicaclub,2026-01-30T13:08:58.000Z,2026-02-02T22:31:29.000Z,2026-02-04,plan-essencial,tiny-seller,erotics
+6873703,BR,lider3dfilamentosepecas,2025-10-24T21:31:21.000Z,2025-11-03T17:31:57.000Z,2026-02-04,plan-essencial,struggling-seller,industrial
+7024363,BR,pocketysnacks,2025-12-03T15:23:06.000Z,2025-12-16T13:50:30.000Z,2026-02-04,plan-impulso,small-seller,food_drinks
+7182341,BR,legacyschool,2026-01-16T22:13:46.000Z,2026-01-19T13:41:19.000Z,2026-02-05,plan-essencial,small-seller,not informed
+4909030,BR,linapapelariacriativa4,2024-07-03T13:15:51.000Z,2025-03-12T20:14:51.000Z,2026-02-05,plan-essencial,tiny-seller,bookstore_graphic
+6370309,BR,espacofitmultimarcas,2025-06-16T18:30:04.000Z,2026-01-19T18:48:33.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+7100655,BR,tudoporcinquentareais,2025-12-26T20:25:55.000Z,2026-01-10T00:00:59.000Z,2026-02-05,plan-essencial,tiny-seller,clothing_accesories
+6800362,BR,tenayabrasil2,2025-10-06T15:07:45.000Z,2025-10-09T18:43:26.000Z,2026-02-05,plan-essencial,small-seller,not informed
+7142446,BR,bemvestida153,2026-01-08T02:16:50.000Z,2026-01-08T02:39:45.000Z,2026-02-05,plan-impulso,tiny-seller,not informed
+6190805,BR,gripcar,2025-05-06T13:40:29.000Z,2026-01-20T17:16:39.000Z,2026-02-05,plan-essencial,small-seller,cars
+5956358,BR,ortopinstrumentalcirurgic,2025-03-13T19:34:00.000Z,2025-03-13T19:44:45.000Z,2026-02-05,plan-essencial,tiny-seller,health_beauty
+5976173,BR,hrmultimarcas01,2025-03-18T17:48:34.000Z,2026-01-21T00:11:56.000Z,2026-02-05,plan-essencial,tiny-seller,clothing_accesories
+6558891,BR,boutiqueursa,2025-08-02T12:25:07.000Z,2025-08-09T14:43:36.000Z,2026-02-05,plan-essencial,struggling-seller,clothing
+5986977,BR,mayswim,2025-03-20T19:51:48.000Z,2025-12-22T14:50:49.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+7235787,BR,los3amigos3,2026-01-28T22:28:47.000Z,2026-02-04T01:28:08.000Z,2026-02-05,plan-essencial,medium-seller,not informed
+7138647,BR,prefix130488,2026-01-07T14:08:40.000Z,2026-01-19T17:23:50.000Z,2026-02-05,plan-escala,tiny-seller,clothing
+5700601,BR,camomiline,2025-01-14T13:05:54.000Z,2025-02-21T12:28:50.000Z,2026-02-05,plan-impulso,small-seller,clothing
+7180330,BR,sejataya5,2026-01-16T14:48:45.000Z,2026-01-23T11:53:22.000Z,2026-02-05,plan-essencial,small-seller,clothing
+5397036,BR,myfit22,2024-10-25T13:07:17.000Z,2024-10-25T16:13:56.000Z,2026-02-05,plan-essencial,tiny-seller,health_beauty
+7041968,BR,jeniffernunesboutique2,2025-12-08T19:48:21.000Z,2025-12-09T16:07:42.000Z,2026-02-05,plan-essencial,small-seller,not informed
+5331252,BR,adrianarufatoconfeccoes,2024-10-11T00:29:31.000Z,2024-10-24T03:07:37.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+7107308,BR,elisangelaterra,2025-12-29T06:09:17.000Z,2025-12-29T08:23:47.000Z,2026-02-05,plan-essencial,tiny-seller,education
+6950759,BR,emporiumcanela6,2025-11-14T13:25:50.000Z,2025-12-02T12:22:28.000Z,2026-02-05,plan-impulso,tiny-seller,not informed
+5775483,BR,sampacreativestudio,2025-01-30T20:57:49.000Z,2025-04-23T20:44:52.000Z,2026-02-05,plan-essencial,struggling-seller,health_beauty
+6851576,BR,lecharmeparfum,2025-10-19T23:10:47.000Z,2025-10-23T16:31:09.000Z,2026-02-05,plan-essencial,small-seller,health_beauty
+1497559,BR,fiolojaa,2021-01-18T12:27:57.000Z,2021-01-20T06:25:22.000Z,2026-02-05,plan-essencial,tiny-seller,other
+5610436,BR,sarjeta,2024-12-18T14:48:00.000Z,2025-03-05T16:31:03.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+6465940,BR,nuvi10,2025-07-10T04:23:03.000Z,2025-11-16T03:52:21.000Z,2026-02-05,plan-essencial,struggling-seller,not informed
+6976519,BR,fundimais,2025-11-21T14:59:17.000Z,2025-11-21T17:37:03.000Z,2026-02-05,plan-essencial,tiny-seller,industrial
+7134385,BR,dfcs2501,2026-01-06T16:35:55.000Z,2026-01-27T17:28:32.000Z,2026-02-05,plan-impulso,tiny-seller,clothing
+2687809,BR,kastroostore,2022-12-24T09:55:28.000Z,2025-08-29T21:06:38.000Z,2026-02-05,plan-essencial,tiny-seller,electronics_it
+6870564,BR,nocturnus,2025-10-24T01:16:41.000Z,2025-12-08T16:18:15.000Z,2026-02-05,plan-essencial,tiny-seller,art
+7174928,BR,erregarments,2026-01-15T12:30:52.000Z,2026-01-23T13:55:52.000Z,2026-02-05,plan-impulso,small-seller,clothing_accesories
+6906729,BR,casadajoga,2025-11-02T21:12:08.000Z,2025-11-08T19:18:28.000Z,2026-02-05,plan-impulso,struggling-seller,clothing
+6671827,BR,femecrown,2025-09-01T18:26:46.000Z,2025-10-06T15:05:56.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+6939856,BR,ninafelina2,2025-11-11T20:27:41.000Z,2025-11-19T18:33:43.000Z,2026-02-05,plan-essencial,tiny-seller,not informed
+7132094,BR,narcisoshops,2026-01-06T00:51:39.000Z,2026-01-06T14:49:54.000Z,2026-02-05,plan-essencial,tiny-seller,electronics_it
+7211958,BR,myllerstore6,2026-01-23T15:03:54.000Z,2026-01-29T17:09:20.000Z,2026-02-05,plan-impulso,small-seller,clothing
+6624900,BR,sribalaji,2025-08-20T05:11:29.000Z,2025-09-11T15:30:31.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+7093990,BR,renovah3,2025-12-23T16:03:29.000Z,2026-01-14T13:07:00.000Z,2026-02-05,plan-essencial,tiny-seller,not informed
+6920787,BR,urbn92,2025-11-06T04:58:10.000Z,2025-11-13T01:20:05.000Z,2026-02-05,plan-impulso,struggling-seller,clothing
+6823198,BR,lamix4,2025-10-12T17:04:09.000Z,2026-01-28T12:53:19.000Z,2026-02-05,plan-comeco,tiny-seller,other
+6233773,BR,invercomp,2025-05-15T19:38:48.000Z,2025-10-24T15:55:47.000Z,2026-02-05,plan-essencial,tiny-seller,industrial
+5463994,BR,bbardo,2024-11-10T19:39:36.000Z,2024-11-25T11:28:02.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+6925853,BR,lojavitofut,2025-11-07T16:46:08.000Z,2025-11-17T14:46:36.000Z,2026-02-05,plan-essencial,tiny-seller,not informed
+7079394,BR,ellabysecrets,2025-12-18T15:06:38.000Z,2025-12-19T10:19:53.000Z,2026-02-05,plan-impulso,small-seller,clothing
+6811627,BR,atlanticowear,2025-10-08T23:20:45.000Z,2025-10-08T23:58:52.000Z,2026-02-05,plan-essencial,tiny-seller,clothing
+6794139,BR,forlife21,2025-10-04T12:35:27.000Z,2025-11-05T00:23:02.000Z,2026-02-05,plan-impulso,tiny-seller,not informed
+7146204,BR,mfartesanato3,2026-01-08T21:01:15.000Z,2026-01-22T17:07:36.000Z,2026-02-05,plan-essencial,small-seller,art
+5692601,BR,vaidecunha,2025-01-12T14:49:57.000Z,2025-02-05T22:32:08.000Z,2026-02-05,plan-impulso,tiny-seller,jewelry
+942423,BR,crisemijoias,2019-02-05T16:06:29.000Z,2026-01-26T16:47:17.000Z,2026-02-05,plan-essencial,small-seller,clothing_accesories
+7073685,BR,hiltex,2025-12-16T22:31:33.000Z,2025-12-20T02:54:25.000Z,2026-02-05,plan-impulso,tiny-seller,industrial
+7179414,BR,monjaultra,2026-01-16T09:20:04.000Z,2026-01-22T10:32:16.000Z,2026-02-05,plan-essencial,tiny-seller,not informed
+2084440,BR,loucaspormodaa,2022-03-18T18:13:31.000Z,2023-01-23T17:46:46.000Z,2026-02-05,plan-impulso,medium-seller,clothing
+4870451,BR,brilhodaluamodaintimaesex,2024-06-24T02:02:07.000Z,2024-07-05T13:30:56.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7166223,BR,dabarraoutlet2,2026-01-13T17:59:06.000Z,2026-01-23T12:08:24.000Z,2026-02-06,plan-impulso,small-seller,clothing
+5865410,BR,useivy,2025-02-19T19:44:12.000Z,2026-01-20T23:02:07.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7209177,BR,clementaum,2026-01-22T21:12:28.000Z,2026-01-31T12:14:13.000Z,2026-02-06,plan-essencial,medium-seller,not informed
+6913785,BR,glamhub4,2025-11-04T16:28:50.000Z,2025-12-16T19:14:54.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6653678,BR,meufinesse,2025-08-27T17:18:21.000Z,2025-10-29T17:24:57.000Z,2026-02-06,plan-impulso,tiny-seller,clothing
+4843275,BR,atelienancisouza,2024-06-17T17:26:15.000Z,2024-06-24T01:46:05.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+4971298,BR,espelhodabelezashop,2024-07-17T21:19:00.000Z,2024-12-10T19:29:07.000Z,2026-02-06,plan-impulso,tiny-seller,health_beauty
+4496633,BR,detudoumpouco976,2024-03-29T20:27:49.000Z,2024-05-27T22:29:26.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6934233,BR,riosexshop4,2025-11-10T15:09:43.000Z,2025-11-11T20:54:02.000Z,2026-02-06,plan-essencial,tiny-seller,erotics
+6612806,BR,riosantocompany,2025-08-17T11:47:02.000Z,2025-09-06T23:24:16.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7062494,BR,ingymodafitness,2025-12-13T21:44:26.000Z,2025-12-26T13:17:31.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6788407,BR,vitaessence2,2025-10-02T18:52:54.000Z,2026-01-14T18:09:47.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7236024,BR,prefix58studio,2026-01-28T23:18:02.000Z,2026-02-03T13:03:49.000Z,2026-02-06,plan-essencial,small-seller,bookstore_graphic
+7238004,BR,aminafit2,2026-01-29T13:28:28.000Z,2026-02-03T22:55:26.000Z,2026-02-06,plan-essencial,small-seller,not informed
+3501545,BR,linaprades2,2023-07-26T20:50:41.000Z,2025-12-27T12:16:21.000Z,2026-02-06,plan-essencial,tiny-seller,jewelry
+7049473,BR,lojaportal5,2025-12-10T14:09:53.000Z,2025-12-17T20:42:15.000Z,2026-02-06,plan-essencial,small-seller,education
+6832464,BR,merchorz,2025-10-14T20:59:47.000Z,2025-11-28T19:16:56.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+5864462,BR,maristore83,2025-02-19T17:11:36.000Z,2026-01-08T02:25:31.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7041483,BR,qubiic,2025-12-08T17:56:16.000Z,2026-01-02T13:53:40.000Z,2026-02-06,plan-impulso,tiny-seller,other
+6799625,BR,beattebr,2025-10-06T12:02:42.000Z,2025-10-07T13:59:44.000Z,2026-02-06,plan-essencial,struggling-seller,clothing
+7149401,BR,micasemijoiasatacado,2026-01-09T15:35:39.000Z,2026-01-19T18:28:02.000Z,2026-02-06,plan-impulso,small-seller,jewelry
+6702443,BR,studioyumi3,2025-09-09T23:04:24.000Z,2025-09-17T20:26:38.000Z,2026-02-06,plan-essencial,tiny-seller,office_supplies
+7227975,BR,lojazebretin,2026-01-27T14:54:37.000Z,2026-02-05T10:38:23.000Z,2026-02-06,plan-impulso,small-seller,not informed
+4053213,BR,amsportstore,2023-12-12T23:34:48.000Z,2023-12-15T18:07:37.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6845551,BR,terravida6,2025-10-17T21:00:14.000Z,2025-11-17T20:21:40.000Z,2026-02-06,plan-impulso,small-seller,not informed
+6764102,BR,britoembalagens2,2025-09-26T11:27:39.000Z,2025-10-08T14:18:47.000Z,2026-02-06,plan-essencial,struggling-seller,other
+6029431,BR,favoritalash,2025-03-30T21:20:29.000Z,2026-02-03T20:20:12.000Z,2026-02-06,plan-essencial,tiny-seller,clothing_accesories
+4589199,BR,pomcia,2024-04-19T19:58:39.000Z,2026-01-19T21:07:13.000Z,2026-02-06,plan-essencial,tiny-seller,clothing_accesories
+6929069,BR,taradona,2025-11-08T17:49:51.000Z,2025-11-15T15:39:57.000Z,2026-02-06,plan-essencial,struggling-seller,jewelry
+3499766,BR,flurb,2023-07-26T16:17:53.000Z,2025-11-14T13:45:42.000Z,2026-02-06,plan-essencial,struggling-seller,home_garden
+7226577,BR,st9tabacaria,2026-01-27T03:21:36.000Z,2026-02-05T12:16:20.000Z,2026-02-06,plan-essencial,small-seller,electronics_it
+7020245,BR,donnacoruja5,2025-12-02T17:35:31.000Z,2025-12-09T19:25:19.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7134833,BR,nuxx4,2026-01-06T17:50:33.000Z,2026-01-22T13:40:13.000Z,2026-02-06,plan-essencial,small-seller,clothing
+7039236,BR,camberry,2025-12-08T00:28:07.000Z,2025-12-09T02:03:29.000Z,2026-02-06,plan-essencial,small-seller,not informed
+6727143,BR,aninhafashion5,2025-09-16T20:36:20.000Z,2025-10-27T17:57:26.000Z,2026-02-06,plan-essencial,struggling-seller,not informed
+6852642,BR,retasports,2025-10-20T11:38:06.000Z,2025-11-26T20:08:43.000Z,2026-02-06,plan-impulso,tiny-seller,not informed
+6483344,BR,jardimdosperfumes3,2025-07-14T19:31:48.000Z,2025-07-22T00:09:34.000Z,2026-02-06,plan-essencial,struggling-seller,health_beauty
+5794665,BR,oiguapa,2025-02-04T12:24:25.000Z,2025-02-19T13:32:46.000Z,2026-02-06,plan-impulso,tiny-seller,clothing
+7243732,BR,bemestarshop17,2026-01-30T17:07:45.000Z,2026-02-04T13:11:02.000Z,2026-02-06,plan-essencial,small-seller,not informed
+6360862,BR,kmasteracessorios,2025-06-13T20:15:21.000Z,2025-06-23T23:42:33.000Z,2026-02-06,plan-impulso,tiny-seller,other
+7009341,BR,garleperfumes,2025-11-30T00:31:29.000Z,2025-12-10T19:55:02.000Z,2026-02-06,plan-essencial,small-seller,health_beauty
+6789080,BR,lojanathacessorios,2025-10-02T21:24:38.000Z,2026-01-03T17:43:23.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+7079067,BR,estilopalmaa,2025-12-18T13:43:54.000Z,2025-12-18T14:25:34.000Z,2026-02-06,plan-essencial,tiny-seller,health_beauty
+5569613,BR,zioncomercial,2024-12-06T16:28:04.000Z,2025-03-14T18:01:07.000Z,2026-02-06,plan-essencial,tiny-seller,industrial
+7030789,BR,oriametista2,2025-12-05T00:56:49.000Z,2026-01-19T01:10:16.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+7090213,BR,growpower,2025-12-22T13:35:20.000Z,2025-12-22T14:34:30.000Z,2026-02-06,plan-escala,small-seller,other
+7090531,BR,leao1109,2025-12-22T15:14:07.000Z,2026-01-14T19:45:56.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+7167009,BR,estiloatenospes3,2026-01-13T19:56:38.000Z,2026-01-22T01:04:43.000Z,2026-02-06,plan-essencial,small-seller,clothing
+7050342,BR,floreessencia,2025-12-10T17:44:16.000Z,2026-01-06T00:27:48.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6936995,BR,bubblerecordsstore,2025-11-11T01:26:10.000Z,2025-11-26T00:29:15.000Z,2026-02-06,plan-essencial,tiny-seller,music_movies
+4343857,BR,madamubrand,2024-02-24T15:11:45.000Z,2024-02-24T19:45:05.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6628603,BR,abugarciabrasil,2025-08-21T00:52:36.000Z,2025-11-12T03:01:58.000Z,2026-02-06,plan-essencial,tiny-seller,sports
+7207703,BR,resilienciamodaas,2026-01-22T16:53:38.000Z,2026-01-30T13:24:11.000Z,2026-02-06,plan-essencial,small-seller,clothing
+6059481,BR,kidsworldmodainfantil,2025-04-06T22:19:46.000Z,2025-04-15T18:20:49.000Z,2026-02-06,plan-impulso,tiny-seller,clothing
+6950286,BR,deparapapelaria,2025-11-14T07:28:33.000Z,2026-01-28T01:59:15.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+6937394,BR,zaiabolsas,2025-11-11T03:55:22.000Z,2025-11-25T12:41:30.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+6590236,BR,promeal2,2025-08-11T13:20:45.000Z,2025-09-15T05:50:13.000Z,2026-02-06,plan-essencial,tiny-seller,food_drinks
+6922198,BR,neonbyhome3,2025-11-06T17:10:12.000Z,2025-11-24T16:13:04.000Z,2026-02-06,plan-essencial,tiny-seller,home_garden
+7161280,BR,lojinhadalu51,2026-01-12T19:06:58.000Z,2026-01-18T19:09:18.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+7062600,BR,inmi2,2025-12-13T22:15:45.000Z,2026-01-09T15:45:06.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+6366433,BR,avelejeira,2025-06-15T18:37:55.000Z,2025-10-13T17:26:43.000Z,2026-02-06,plan-essencial,struggling-seller,home_garden
+6857876,BR,bahari4,2025-10-21T13:32:17.000Z,2025-12-09T15:43:59.000Z,2026-02-06,plan-impulso,small-seller,clothing
+6434041,BR,specterparfum2,2025-07-01T23:51:33.000Z,2025-07-08T21:22:38.000Z,2026-02-06,plan-essencial,tiny-seller,other
+4995286,BR,donacomfortlingerie,2024-07-23T19:11:20.000Z,2024-08-08T17:26:23.000Z,2026-02-06,plan-essencial,tiny-seller,clothing
+5986282,BR,ahmijoiasltda,2025-03-20T17:46:24.000Z,2025-03-21T19:18:16.000Z,2026-02-06,plan-escala,struggling-seller,not informed
+6783845,BR,thrynnutritioncom,2025-10-01T17:58:08.000Z,2026-01-05T14:11:22.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+6757230,BR,jardimvinhos,2025-09-24T17:56:50.000Z,2026-01-07T00:13:08.000Z,2026-02-06,plan-essencial,small-seller,food_drinks
+7053283,BR,imperiodabeleza64,2025-12-11T12:42:51.000Z,2026-01-12T19:17:30.000Z,2026-02-06,plan-essencial,small-seller,health_beauty
+6891776,BR,brasilcaridina,2025-10-29T14:21:10.000Z,2025-11-05T19:13:30.000Z,2026-02-06,plan-essencial,tiny-seller,pets
+7081271,BR,lookbooys,2025-12-18T23:21:26.000Z,2026-01-06T00:16:59.000Z,2026-02-06,plan-essencial,tiny-seller,not informed
+7237648,BR,ariahclub,2026-01-29T12:02:48.000Z,2026-02-03T16:35:59.000Z,2026-02-07,plan-essencial,small-seller,not informed
+7193718,BR,fiuzaleparfum,2026-01-19T21:51:09.000Z,2026-01-20T18:11:55.000Z,2026-02-07,plan-impulso,small-seller,not informed
+4751783,BR,atelierjugo2,2024-05-27T01:50:50.000Z,2024-05-27T03:27:43.000Z,2026-02-07,plan-essencial,tiny-seller,art
+7126476,BR,shineconfrj,2026-01-04T21:39:01.000Z,2026-01-17T15:06:17.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+7080312,BR,tbbeauty3,2025-12-18T19:03:39.000Z,2026-02-06T20:44:29.000Z,2026-02-07,plan-impulso,medium-seller,not informed
+4857626,BR,dropster3,2024-06-20T16:25:50.000Z,2024-08-02T14:04:44.000Z,2026-02-07,plan-essencial,tiny-seller,other
+6966735,BR,higherself2,2025-11-18T23:23:11.000Z,2026-01-18T14:46:59.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+6818472,BR,paduashowroom,2025-10-10T20:51:28.000Z,2025-11-26T22:03:53.000Z,2026-02-07,plan-impulso,tiny-seller,clothing
+6481517,BR,greciabohochic,2025-07-14T13:24:56.000Z,2025-07-22T18:12:30.000Z,2026-02-07,plan-impulso,tiny-seller,clothing
+6655416,BR,studiopoplover,2025-08-27T23:32:54.000Z,2025-09-16T00:58:38.000Z,2026-02-07,plan-essencial,tiny-seller,gifts
+4829151,BR,puroestilomodaintima2,2024-06-13T19:06:40.000Z,2024-06-17T13:47:41.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+2318682,BR,croaestudio,2022-08-03T18:21:17.000Z,2023-08-21T12:34:54.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+6857470,BR,donachelly,2025-10-21T11:38:43.000Z,2025-11-04T16:31:42.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+5356201,BR,carolinistore,2024-10-16T16:44:07.000Z,2024-12-05T18:22:34.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+6406793,BR,estilomarjory,2025-06-25T12:26:04.000Z,2025-07-02T17:11:39.000Z,2026-02-07,plan-essencial,tiny-seller,health_beauty
+6760867,BR,ateliealocasia,2025-09-25T15:42:12.000Z,2025-12-11T11:51:04.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+5722395,BR,candleco6,2025-01-19T13:59:44.000Z,2026-01-16T13:13:35.000Z,2026-02-07,plan-escala,medium-seller,home_garden
+5901978,BR,prefixess11,2025-02-28T01:35:43.000Z,2025-08-28T16:17:39.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+7065814,BR,aurapet6,2025-12-15T00:16:08.000Z,2025-12-15T00:48:42.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+6526292,BR,silfitwear3,2025-07-25T00:21:47.000Z,2025-09-26T01:46:14.000Z,2026-02-07,plan-impulso,struggling-seller,clothing
+6319508,BR,ancoraeditora,2025-06-03T23:08:57.000Z,2025-06-03T23:35:02.000Z,2026-02-07,plan-essencial,tiny-seller,books
+6778991,BR,decrie,2025-09-30T16:50:23.000Z,2025-11-10T13:50:57.000Z,2026-02-07,plan-impulso,tiny-seller,gifts
+6912217,BR,mabiacessorios4,2025-11-04T03:04:22.000Z,2025-11-11T02:07:18.000Z,2026-02-07,plan-essencial,struggling-seller,clothing_accesories
+5435404,BR,joalheriadeouro18k,2024-11-04T01:25:51.000Z,2024-11-15T01:14:16.000Z,2026-02-07,plan-essencial,tiny-seller,jewelry
+5515152,BR,tutulovers2,2024-11-22T18:09:08.000Z,2024-12-02T14:38:28.000Z,2026-02-07,plan-impulso,tiny-seller,clothing
+5887640,BR,dunax,2025-02-25T02:02:06.000Z,2025-03-05T11:30:18.000Z,2026-02-07,plan-impulso,tiny-seller,equipment_machines
+7123411,BR,noxxacessorios,2026-01-03T23:44:51.000Z,2026-01-21T14:52:56.000Z,2026-02-07,plan-essencial,small-seller,not informed
+4065082,BR,giumoraesstore,2023-12-16T20:51:40.000Z,2024-04-08T00:01:37.000Z,2026-02-07,plan-comeco,tiny-seller,clothing_accesories
+7135384,BR,hoodabags,2026-01-06T19:17:20.000Z,2026-01-25T18:01:19.000Z,2026-02-07,plan-impulso,small-seller,clothing_accesories
+4490334,BR,humanittistore,2024-03-28T02:58:31.000Z,2024-04-26T03:12:13.000Z,2026-02-07,plan-essencial,tiny-seller,toys
+7232744,BR,threecordbr,2026-01-28T13:11:21.000Z,2026-02-03T16:35:40.000Z,2026-02-07,plan-essencial,small-seller,clothing
+7017422,BR,juniorimportsbh,2025-12-02T00:10:26.000Z,2025-12-09T01:10:22.000Z,2026-02-07,plan-impulso,tiny-seller,clothing
+6991857,BR,virtu23,2025-11-25T17:52:58.000Z,2025-11-30T21:46:40.000Z,2026-02-07,plan-essencial,tiny-seller,clothing_accesories
+6901959,BR,veronnalj,2025-10-31T23:51:23.000Z,2025-11-28T17:13:42.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+4073314,BR,bebrille,2023-12-19T18:26:21.000Z,2025-12-31T02:38:21.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+7044317,BR,nutridiegomendel,2025-12-09T12:20:45.000Z,2025-12-16T22:06:51.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+5833794,BR,ozreuse,2025-02-12T18:05:21.000Z,2026-01-15T12:23:43.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+6727682,BR,lojadakhety,2025-09-16T22:36:56.000Z,2025-09-23T01:43:39.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+7104274,BR,proecommerce,2025-12-28T02:11:05.000Z,2025-12-28T02:19:45.000Z,2026-02-07,plan-essencial,tiny-seller,health_beauty
+5416986,BR,potteecom2024,2024-10-30T10:56:20.000Z,2024-12-10T18:03:12.000Z,2026-02-07,plan-essencial,tiny-seller,home_garden
+6440223,BR,boutiquefechada,2025-07-03T14:41:59.000Z,2025-07-29T19:21:17.000Z,2026-02-07,plan-essencial,tiny-seller,not informed
+7144418,BR,aguavivashop,2026-01-08T16:12:07.000Z,2026-01-14T22:20:28.000Z,2026-02-07,plan-essencial,small-seller,clothing
+6038654,BR,lojalotusitauna,2025-04-01T17:50:46.000Z,2026-02-05T23:40:45.000Z,2026-02-07,plan-essencial,tiny-seller,clothing
+449311,BR,ericcavestuario,2017-04-06T14:12:00.000Z,2017-04-19T11:23:32.000Z,2026-02-08,plan-essencial,small-seller,clothing
+6957458,BR,s0lr2025,2025-11-16T20:17:23.000Z,2025-11-26T13:11:44.000Z,2026-02-08,plan-essencial,struggling-seller,clothing
+6628755,BR,intimanoite,2025-08-21T01:34:51.000Z,2025-09-24T20:09:15.000Z,2026-02-08,plan-essencial,tiny-seller,clothing
+7138366,BR,viventybrand,2026-01-07T13:06:46.000Z,2026-01-08T18:57:47.000Z,2026-02-08,plan-essencial,tiny-seller,clothing
+6945224,BR,caramelowpet2,2025-11-12T23:36:51.000Z,2025-12-09T00:44:58.000Z,2026-02-08,plan-impulso,small-seller,not informed
+7211865,BR,rmouraoarte,2026-01-23T14:43:08.000Z,2026-01-28T14:24:23.000Z,2026-02-08,plan-essencial,tiny-seller,other
+7044196,BR,bynatmakeup,2025-12-09T11:36:30.000Z,2025-12-13T17:54:25.000Z,2026-02-08,plan-essencial,tiny-seller,health_beauty
+7001221,BR,thaislojamodafeminina,2025-11-27T19:07:51.000Z,2025-12-09T22:51:38.000Z,2026-02-08,plan-impulso,small-seller,not informed
+7240526,BR,acartadossonhos,2026-01-29T21:38:45.000Z,2026-02-02T03:47:28.000Z,2026-02-08,plan-impulso,medium-seller,toys
+6547128,BR,ervamate287,2025-07-30T13:34:34.000Z,2026-01-19T11:28:17.000Z,2026-02-08,plan-impulso,small-seller,food_drinks
+6805635,BR,vanclair,2025-10-07T17:58:43.000Z,2025-10-16T19:13:17.000Z,2026-02-08,plan-impulso,struggling-seller,health_beauty
+7245570,BR,ninaacessorios20,2026-01-31T00:32:48.000Z,2026-02-05T15:12:44.000Z,2026-02-08,plan-essencial,small-seller,clothing_accesories
+5519446,BR,alfaimportados16,2024-11-23T22:37:37.000Z,2024-11-28T00:59:37.000Z,2026-02-08,plan-essencial,tiny-seller,clothing
+7180600,BR,kaempoderada2,2026-01-16T15:54:58.000Z,2026-02-02T18:57:18.000Z,2026-02-08,plan-impulso,small-seller,not informed
+7088300,BR,yssencejoiasaprovadagua,2025-12-21T18:39:20.000Z,2026-01-03T19:57:49.000Z,2026-02-08,plan-essencial,small-seller,jewelry
+7103108,BR,lojapavi,2025-12-27T18:15:46.000Z,2026-01-06T05:21:27.000Z,2026-02-08,plan-essencial,tiny-seller,clothing
+7114026,BR,palcofamily,2025-12-31T17:29:23.000Z,2026-01-06T15:06:29.000Z,2026-02-08,plan-essencial,medium-seller,clothing
+6966193,BR,papelariadaary,2025-11-18T21:12:24.000Z,2026-02-03T20:43:05.000Z,2026-02-08,plan-essencial,tiny-seller,bookstore_graphic
+6547399,BR,nextroad,2025-07-30T14:34:04.000Z,2025-08-26T19:38:01.000Z,2026-02-08,plan-impulso,tiny-seller,not informed
+6903669,BR,newlifeessencias,2025-11-01T18:12:05.000Z,2025-11-23T17:13:36.000Z,2026-02-08,plan-essencial,tiny-seller,not informed
+5560305,BR,camilabeautydourados,2024-12-04T07:51:00.000Z,2024-12-27T19:59:26.000Z,2026-02-08,plan-impulso,tiny-seller,health_beauty
+7166374,BR,taynna102,2026-01-13T18:21:38.000Z,2026-01-21T18:13:54.000Z,2026-02-08,plan-essencial,small-seller,not informed
+7158407,BR,taynacristinasuplementos,2026-01-12T01:51:27.000Z,2026-01-28T12:36:02.000Z,2026-02-08,plan-essencial,small-seller,other
+5543058,BR,volpesollare,2024-11-29T16:10:21.000Z,2024-12-04T19:52:26.000Z,2026-02-08,plan-essencial,struggling-seller,clothing_accesories
+7062324,BR,staccishirt,2025-12-13T20:41:33.000Z,2026-01-27T12:56:11.000Z,2026-02-08,plan-essencial,tiny-seller,not informed
+7031671,BR,bantan2,2025-12-05T12:44:13.000Z,2026-01-06T13:13:29.000Z,2026-02-08,plan-essencial,tiny-seller,clothing
+5860133,BR,jourlejour,2025-02-18T19:16:43.000Z,2025-03-12T19:12:36.000Z,2026-02-08,plan-impulso,tiny-seller,clothing
+6802811,BR,enterinformatica3,2025-10-06T23:42:20.000Z,2026-02-04T14:16:06.000Z,2026-02-09,plan-comeco,tiny-seller,not informed
+7223879,BR,treelifepharmah,2026-01-26T18:30:30.000Z,2026-02-06T20:17:37.000Z,2026-02-09,plan-essencial,medium-seller,not informed
+6881906,BR,expressmedicalstore,2025-10-27T13:53:07.000Z,2025-11-03T22:28:02.000Z,2026-02-09,plan-escala,tiny-seller,not informed
+6964999,BR,ateliethaispaiva,2025-11-18T16:56:11.000Z,2025-12-24T17:07:38.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+5942888,BR,forcademulher,2025-03-10T23:31:31.000Z,2025-04-12T12:29:38.000Z,2026-02-09,plan-essencial,small-seller,clothing
+7028721,BR,trivoclothing,2025-12-04T15:53:18.000Z,2025-12-30T13:54:05.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+7018559,BR,liftnflow,2025-12-02T10:30:24.000Z,2026-02-06T19:10:13.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+5904664,BR,apisommer,2025-02-28T20:10:44.000Z,2025-12-09T20:00:33.000Z,2026-02-09,plan-essencial,tiny-seller,food_drinks
+6833386,BR,bmoltrend,2025-10-15T00:19:55.000Z,2025-11-27T18:33:03.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+7201056,BR,samy57,2026-01-21T11:42:19.000Z,2026-01-27T15:31:49.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+7217094,BR,donabecamodafitness,2026-01-24T21:34:39.000Z,2026-02-03T04:50:13.000Z,2026-02-09,plan-essencial,small-seller,clothing
+7191373,BR,amys3,2026-01-19T15:22:18.000Z,2026-02-05T15:28:44.000Z,2026-02-09,plan-essencial,small-seller,not informed
+4809275,BR,scarpibela,2024-06-09T02:51:22.000Z,2024-08-15T19:33:18.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+5273668,BR,anawernerstore,2024-09-26T22:27:25.000Z,2024-10-16T21:28:02.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+6948545,BR,deluxe151,2025-11-13T20:11:11.000Z,2025-12-10T14:30:34.000Z,2026-02-09,plan-essencial,tiny-seller,jewelry
+6626425,BR,artdomunifroemes,2025-08-20T16:47:16.000Z,2026-01-31T02:31:43.000Z,2026-02-09,plan-essencial,small-seller,clothing
+4622606,BR,lojacacaubeauty,2024-04-27T05:25:54.000Z,2026-01-11T23:46:28.000Z,2026-02-09,plan-essencial,tiny-seller,health_beauty
+6870633,BR,lamezcla2,2025-10-24T01:39:52.000Z,2025-10-31T02:41:49.000Z,2026-02-09,plan-impulso,struggling-seller,clothing
+7230351,BR,acheipeguei5,2026-01-27T21:44:13.000Z,2026-02-02T23:10:57.000Z,2026-02-09,plan-impulso,medium-seller,other
+6974702,BR,pinkpurplebrand2,2025-11-20T23:28:19.000Z,2025-11-26T12:07:59.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+6696910,BR,espacodasublimacao,2025-09-08T18:46:03.000Z,2025-09-08T19:26:21.000Z,2026-02-09,next,tiny-seller,art
+6924816,BR,livenhealth,2025-11-07T11:35:02.000Z,2025-12-22T18:36:22.000Z,2026-02-09,plan-impulso,tiny-seller,not informed
+7232300,BR,brechohigh,2026-01-28T10:53:01.000Z,2026-01-28T11:46:11.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+7174735,BR,claraartesa,2026-01-15T11:13:53.000Z,2026-02-04T18:28:21.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+7131731,BR,mariaspratasesemijoias,2026-01-05T23:36:13.000Z,2026-01-12T16:38:59.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+6969415,BR,debiquinisim,2025-11-19T17:59:38.000Z,2026-01-12T17:34:31.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+2236358,BR,lksemijoiaseacessorios,2022-06-22T13:22:53.000Z,2022-07-08T06:27:39.000Z,2026-02-09,plan-essencial,tiny-seller,clothing_accesories
+6596190,BR,vandaveron,2025-08-12T18:59:56.000Z,2025-08-31T11:22:32.000Z,2026-02-09,plan-essencial,tiny-seller,education
+7180967,BR,shopmalikids,2026-01-16T17:11:51.000Z,2026-02-03T16:48:07.000Z,2026-02-09,plan-impulso,tiny-seller,clothing
+6415348,BR,wsarefrigeracao,2025-06-27T01:36:36.000Z,2025-08-04T01:49:24.000Z,2026-02-09,plan-essencial,tiny-seller,equipment_machines
+7207498,BR,gsparfum3,2026-01-22T16:17:31.000Z,2026-01-22T23:07:19.000Z,2026-02-09,plan-essencial,small-seller,health_beauty
+7055144,BR,alvomen3,2025-12-11T19:45:43.000Z,2025-12-11T20:58:50.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+7140999,BR,colegiodonaclara,2026-01-07T21:11:26.000Z,2026-01-09T13:45:35.000Z,2026-02-09,plan-impulso,tiny-seller,not informed
+6969003,BR,reidoscalcados21,2025-11-19T16:11:42.000Z,2025-12-06T02:26:17.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+7048974,BR,snob7,2025-12-10T11:45:45.000Z,2025-12-12T13:26:47.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+7179895,BR,amarunbrand,2026-01-16T13:18:56.000Z,2026-01-22T13:41:38.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+7109705,BR,artdaloveloja,2025-12-29T22:54:42.000Z,2026-01-14T18:45:55.000Z,2026-02-09,plan-essencial,small-seller,home_garden
+4027293,BR,rodardistribuidoradeautop,2023-12-04T22:31:24.000Z,2024-01-15T17:04:41.000Z,2026-02-09,plan-impulso,tiny-seller,cars
+6648255,BR,gleam72,2025-08-26T13:55:44.000Z,2025-09-22T16:11:18.000Z,2026-02-09,plan-essencial,struggling-seller,home_garden
+7067698,BR,ceralisse,2025-12-15T15:45:34.000Z,2025-12-18T16:59:16.000Z,2026-02-09,plan-impulso,tiny-seller,home_garden
+6850235,BR,ateliedavomaria2,2025-10-19T15:03:41.000Z,2025-11-30T18:59:49.000Z,2026-02-09,plan-essencial,tiny-seller,home_garden
+6027847,BR,lojagglammake,2025-03-30T12:21:07.000Z,2026-01-08T22:13:46.000Z,2026-02-09,plan-essencial,tiny-seller,clothing_accesories
+7053240,BR,mateariats,2025-12-11T12:27:47.000Z,2026-01-15T14:03:08.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+6576791,BR,thea21,2025-08-06T23:32:24.000Z,2025-09-02T16:37:03.000Z,2026-02-09,plan-essencial,tiny-seller,clothing
+7083953,BR,monsterparty,2025-12-19T20:14:42.000Z,2025-12-28T00:24:08.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+6924110,BR,noulcollection,2025-11-07T01:00:41.000Z,2025-11-11T17:57:03.000Z,2026-02-09,plan-impulso,tiny-seller,not informed
+3055349,BR,teste06,2023-04-12T00:09:32.000Z,2023-04-12T00:58:46.000Z,2026-02-09,plan-essencial,tiny-seller,jewelry
+5579001,BR,hizzashoes,2024-12-09T17:39:45.000Z,2024-12-17T01:19:45.000Z,2026-02-09,plan-comeco,tiny-seller,clothing
+7090300,BR,holyfancy,2025-12-22T13:59:07.000Z,2026-01-05T14:19:05.000Z,2026-02-09,plan-essencial,tiny-seller,clothing_accesories
+7280065,BR,penelopedesign3,2026-02-08T02:28:34.000Z,2026-02-08T20:14:35.000Z,2026-02-09,plan-essencial,medium-seller,not informed
+6079894,BR,dbellacosmeticos,2025-04-10T21:40:49.000Z,2026-02-02T20:14:49.000Z,2026-02-09,plan-impulso,tiny-seller,health_beauty
+7144861,BR,caovivio,2026-01-08T17:28:00.000Z,2026-01-08T17:36:26.000Z,2026-02-09,plan-essencial,small-seller,pets
+6997080,BR,gogrow,2025-11-26T19:52:39.000Z,2025-12-03T14:33:34.000Z,2026-02-09,plan-essencial,tiny-seller,health_beauty
+6883327,BR,leticiazanetti,2025-10-27T18:33:43.000Z,2025-12-23T19:01:36.000Z,2026-02-09,plan-impulso,tiny-seller,clothing
+6939612,BR,blishvest,2025-11-11T19:29:39.000Z,2025-11-20T22:56:55.000Z,2026-02-09,plan-essencial,small-seller,not informed
+6156885,BR,lojabronxstreetwear,2025-04-28T15:45:14.000Z,2025-05-02T19:23:51.000Z,2026-02-09,plan-essencial,tiny-seller,not informed
+7082891,BR,cosyco,2025-12-19T14:45:20.000Z,2025-12-19T15:07:23.000Z,2026-02-09,plan-essencial,small-seller,home_garden
+6715512,BR,wgstoree,2025-09-13T15:47:38.000Z,2025-09-29T17:53:43.000Z,2026-02-09,plan-essencial,struggling-seller,not informed
+7172713,BR,maqcenter2,2026-01-14T21:25:25.000Z,2026-01-25T13:43:55.000Z,2026-02-09,plan-impulso,small-seller,not informed
+7020258,BR,dnmstore,2025-12-02T17:38:10.000Z,2025-12-30T23:58:02.000Z,2026-02-09,plan-essencial,tiny-seller,clothing_accesories
+6857674,BR,borfix,2025-10-21T12:46:00.000Z,2026-01-12T19:49:38.000Z,2026-02-09,plan-impulso,tiny-seller,not informed
+7238091,BR,rngarrafadaselambedoresfi,2026-01-29T13:48:44.000Z,2026-02-03T15:24:07.000Z,2026-02-10,plan-essencial,small-seller,health_beauty
+6497139,BR,hovygolf,2025-07-17T18:27:57.000Z,2025-12-01T18:38:48.000Z,2026-02-10,plan-essencial,tiny-seller,clothing
+7172869,BR,vitalnatus,2026-01-14T21:55:05.000Z,2026-01-21T14:43:36.000Z,2026-02-10,plan-impulso,small-seller,health_beauty
+7128522,BR,florence92,2026-01-05T13:21:18.000Z,2026-02-03T20:13:58.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+7022400,BR,slowlife6,2025-12-03T00:50:21.000Z,2025-12-03T01:18:03.000Z,2026-02-10,plan-essencial,tiny-seller,clothing
+7181129,BR,zoomjeans,2026-01-16T17:44:37.000Z,2026-01-19T14:56:10.000Z,2026-02-10,plan-impulso,small-seller,clothing_accesories
+7050414,BR,rmpmotorsport,2025-12-10T17:59:15.000Z,2025-12-11T11:35:05.000Z,2026-02-10,plan-impulso,tiny-seller,not informed
+6346398,BR,useshot,2025-06-10T13:51:09.000Z,2025-07-10T19:47:42.000Z,2026-02-10,plan-essencial,tiny-seller,clothing
+7163367,BR,day161020,2026-01-13T01:37:42.000Z,2026-01-29T13:25:43.000Z,2026-02-10,plan-essencial,tiny-seller,jewelry
+2626573,BR,mfvendas4,2022-12-01T23:40:16.000Z,2022-12-16T17:58:55.000Z,2026-02-10,plan-essencial,tiny-seller,clothing
+6362623,BR,atelierdocha,2025-06-14T11:57:41.000Z,2025-06-23T17:14:33.000Z,2026-02-10,plan-essencial,struggling-seller,food_drinks
+7100534,BR,lojaaquieshow,2025-12-26T19:49:57.000Z,2026-01-05T13:45:55.000Z,2026-02-10,plan-impulso,tiny-seller,clothing
+6725927,BR,becarmell,2025-09-16T16:46:46.000Z,2025-10-08T16:48:28.000Z,2026-02-10,plan-essencial,struggling-seller,clothing
+7129217,BR,hpxformulasexclusivas,2026-01-05T15:47:12.000Z,2026-01-07T12:29:38.000Z,2026-02-10,plan-impulso,small-seller,food_drinks
+6817064,BR,seduzlingerie,2025-10-10T14:00:15.000Z,2025-10-10T19:02:10.000Z,2026-02-10,plan-impulso,tiny-seller,clothing
+6332834,BR,lcstore201,2025-06-06T20:00:23.000Z,2025-08-27T20:39:35.000Z,2026-02-10,plan-impulso,tiny-seller,not informed
+6969499,BR,nxtn,2025-11-19T18:15:01.000Z,2025-11-19T18:20:24.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+7279187,BR,virguladoclub,2026-02-07T21:31:57.000Z,2026-02-07T22:51:44.000Z,2026-02-10,plan-essencial,small-seller,not informed
+6985961,BR,eclairparfums,2025-11-24T13:21:09.000Z,2025-12-10T21:07:07.000Z,2026-02-10,plan-escala,tiny-seller,other
+6863974,BR,importadosgm7,2025-10-22T18:04:05.000Z,2025-11-05T18:43:39.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+7109258,BR,studio952,2025-12-29T20:37:17.000Z,2026-02-04T01:09:15.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+6938888,BR,ohmycloset7,2025-11-11T16:54:58.000Z,2025-11-24T17:55:51.000Z,2026-02-10,plan-essencial,tiny-seller,clothing
+6149998,BR,legalevistos,2025-04-26T16:53:24.000Z,2025-07-10T17:11:35.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+6669097,BR,syzacessorios,2025-08-31T23:27:02.000Z,2025-09-14T21:41:20.000Z,2026-02-10,plan-essencial,tiny-seller,jewelry
+6763759,BR,peaooffshore,2025-09-26T03:50:02.000Z,2025-11-21T10:38:59.000Z,2026-02-10,plan-impulso,tiny-seller,not informed
+4717440,BR,planetanaturalcosmeticosa,2024-05-19T21:41:54.000Z,2024-05-20T18:43:17.000Z,2026-02-10,plan-essencial,tiny-seller,health_beauty
+7050541,BR,pastamaker,2025-12-10T18:26:38.000Z,2026-01-14T12:46:55.000Z,2026-02-10,plan-essencial,tiny-seller,gifts
+6584857,BR,pontotcgcardstore,2025-08-09T03:35:30.000Z,2025-08-19T13:22:08.000Z,2026-02-10,plan-essencial,tiny-seller,toys
+7184968,BR,prefix4olhosotica,2026-01-17T19:08:45.000Z,2026-01-21T21:17:49.000Z,2026-02-10,plan-essencial,tiny-seller,health_beauty
+7106541,BR,itria,2025-12-28T23:31:51.000Z,2026-01-05T16:02:55.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+7204605,BR,nuvemdealgodaodecor,2026-01-21T23:11:34.000Z,2026-01-28T12:09:17.000Z,2026-02-10,plan-impulso,small-seller,home_garden
+6594893,BR,lojaescapline,2025-08-12T14:35:47.000Z,2025-08-25T15:42:36.000Z,2026-02-10,plan-impulso,tiny-seller,industrial
+5644245,BR,avoiceclub,2024-12-30T21:35:44.000Z,2025-09-24T17:00:11.000Z,2026-02-10,plan-essencial,struggling-seller,clothing
+7089823,BR,olune,2025-12-22T09:37:19.000Z,2025-12-27T13:10:20.000Z,2026-02-10,plan-impulso,small-seller,not informed
+6003252,BR,magnattajoias,2025-03-24T22:42:04.000Z,2025-04-02T17:28:14.000Z,2026-02-10,plan-impulso,tiny-seller,jewelry
+6453549,BR,prefix10042026,2025-07-07T14:44:30.000Z,2026-01-20T13:42:45.000Z,2026-02-10,plan-essencial,tiny-seller,clothing
+7135927,BR,usemendstore,2026-01-06T21:05:20.000Z,2026-01-20T19:31:24.000Z,2026-02-10,plan-essencial,small-seller,clothing
+7243056,BR,barretojoiasbr,2026-01-30T14:27:48.000Z,2026-02-09T18:03:16.000Z,2026-02-10,plan-essencial,small-seller,jewelry
+3346574,BR,jerevecosmeticos,2023-06-21T21:03:31.000Z,2023-08-02T15:32:21.000Z,2026-02-10,plan-essencial,tiny-seller,health_beauty
+6369500,BR,technobrain,2025-06-16T15:52:51.000Z,2025-06-23T15:06:04.000Z,2026-02-10,plan-impulso,tiny-seller,electronics_it
+2171495,BR,coreseformasgrafica,2022-05-14T16:55:01.000Z,2026-01-01T15:07:05.000Z,2026-02-10,plan-essencial,tiny-seller,bookstore_graphic
+7019401,BR,cafeleopoldo,2025-12-02T14:30:43.000Z,2026-01-05T13:53:59.000Z,2026-02-10,plan-essencial,tiny-seller,not informed
+4598778,BR,taee,2024-04-22T15:01:30.000Z,2025-12-09T20:52:56.000Z,2026-02-11,plan-essencial,tiny-seller,not informed
+4950314,BR,personalpromo,2024-07-12T17:39:30.000Z,2024-08-09T19:12:48.000Z,2026-02-11,plan-essencial,tiny-seller,food_drinks
+6189507,BR,clothes2house,2025-05-06T01:52:07.000Z,2025-05-06T03:06:35.000Z,2026-02-11,plan-essencial,tiny-seller,not informed
+7103006,BR,acessorioscarola,2025-12-27T17:40:47.000Z,2026-01-11T15:14:43.000Z,2026-02-11,plan-comeco,tiny-seller,not informed
+7068489,BR,king179,2025-12-15T18:37:02.000Z,2026-01-08T13:12:17.000Z,2026-02-11,plan-essencial,small-seller,not informed
+7118410,BR,eternizeifans,2026-01-02T17:56:09.000Z,2026-01-09T12:29:33.000Z,2026-02-11,plan-essencial,tiny-seller,not informed
+7129189,BR,finaromas2,2026-01-05T15:41:26.000Z,2026-01-13T14:02:53.000Z,2026-02-11,plan-essencial,tiny-seller,home_garden
+6459259,BR,neoconnect2,2025-07-08T17:58:13.000Z,2025-10-09T17:39:23.000Z,2026-02-11,plan-escala,tiny-seller,electronics_it
+7239526,BR,lagandaclothes,2026-01-29T18:20:16.000Z,2026-02-10T02:57:17.000Z,2026-02-11,plan-essencial,tiny-seller,not informed
+5869117,BR,astraylab,2025-02-20T16:04:27.000Z,2025-03-07T15:11:42.000Z,2026-02-11,plan-impulso,tiny-seller,books
+7250399,BR,valentinatshirt3,2026-02-01T16:38:22.000Z,2026-02-06T12:28:08.000Z,2026-02-11,plan-escala,medium-seller,not informed
+6831559,BR,sportchique,2025-10-14T17:55:03.000Z,2025-11-23T01:18:30.000Z,2026-02-11,plan-impulso,tiny-seller,clothing
+5185590,BR,kippi3,2024-09-06T20:44:38.000Z,2025-03-14T23:15:59.000Z,2026-02-11,plan-impulso,tiny-seller,home_garden
+7127598,BR,ateliedelicadoseperfeitin3,2026-01-05T02:32:32.000Z,2026-01-06T00:38:55.000Z,2026-02-11,plan-essencial,small-seller,not informed
+6051925,BR,kidsbehappy3,2025-04-04T16:10:37.000Z,2025-07-15T20:26:00.000Z,2026-02-11,plan-essencial,tiny-seller,toys
+6649879,BR,movae3,2025-08-26T19:22:50.000Z,2025-09-12T11:35:33.000Z,2026-02-11,plan-impulso,tiny-seller,clothing
+7249333,BR,sandypresentes3,2026-02-01T04:06:42.000Z,2026-02-09T01:47:14.000Z,2026-02-11,plan-essencial,small-seller,not informed
+7168989,BR,olddragon,2026-01-14T02:31:14.000Z,2026-01-21T19:35:27.000Z,2026-02-11,plan-essencial,medium-seller,books
+7220301,BR,ericarogge2,2026-01-25T21:32:43.000Z,2026-02-02T19:10:23.000Z,2026-02-11,plan-essencial,small-seller,clothing
+7076787,BR,medoc2,2025-12-17T19:29:51.000Z,2026-01-20T17:36:05.000Z,2026-02-11,plan-escala,tiny-seller,food_drinks
+7200419,BR,zaya130,2026-01-21T02:49:15.000Z,2026-02-05T01:12:22.000Z,2026-02-11,plan-impulso,tiny-seller,not informed
+6916685,BR,lenenoir,2025-11-05T05:00:48.000Z,2025-11-12T22:52:51.000Z,2026-02-11,plan-escala,tiny-seller,health_beauty
+4663357,BR,fxsports7,2024-05-07T13:00:54.000Z,2025-11-26T13:18:34.000Z,2026-02-11,plan-essencial,tiny-seller,health_beauty
+5834078,BR,bonelibeautycosmetics,2025-02-12T18:49:50.000Z,2025-03-18T19:11:35.000Z,2026-02-11,plan-essencial,tiny-seller,health_beauty
+5134369,BR,alessfashion2,2024-08-26T00:00:10.000Z,2025-04-01T16:50:27.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+6539656,BR,glassbeautyy,2025-07-28T20:16:31.000Z,2025-11-25T14:40:43.000Z,2026-02-11,plan-essencial,tiny-seller,health_beauty
+5529887,BR,gleiseaguida,2024-11-26T16:23:13.000Z,2024-12-13T17:58:10.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+6584525,BR,padrone2,2025-08-09T00:59:23.000Z,2025-09-06T22:54:02.000Z,2026-02-11,plan-essencial,tiny-seller,health_beauty
+6851418,BR,henkostudio,2025-10-19T22:22:29.000Z,2025-11-07T20:04:19.000Z,2026-02-11,plan-essencial,tiny-seller,other
+6458038,BR,arthidecor2,2025-07-08T13:40:00.000Z,2025-07-15T03:12:15.000Z,2026-02-11,plan-essencial,struggling-seller,home_garden
+5951013,BR,caferivelini,2025-03-12T17:23:32.000Z,2025-11-27T09:23:04.000Z,2026-02-11,plan-essencial,tiny-seller,food_drinks
+5832019,BR,bemmequerobem,2025-02-12T12:26:05.000Z,2025-02-12T20:41:37.000Z,2026-02-11,plan-essencial,struggling-seller,health_beauty
+7208694,BR,ciliosposticosmakebrasil3,2026-01-22T19:39:31.000Z,2026-01-29T12:28:55.000Z,2026-02-11,plan-impulso,medium-seller,not informed
+6896498,BR,essen214,2025-10-30T15:30:45.000Z,2025-11-07T00:03:32.000Z,2026-02-11,plan-essencial,struggling-seller,health_beauty
+1541501,BR,polinatiloja,2021-02-01T23:49:14.000Z,2021-03-01T21:40:54.000Z,2026-02-11,plan-impulso,struggling-seller,health_beauty
+6921059,BR,kazacomigo,2025-11-06T11:41:41.000Z,2025-12-19T15:28:44.000Z,2026-02-11,plan-essencial,small-seller,home_garden
+3972884,BR,woopclub,2023-11-20T01:00:45.000Z,2024-05-22T18:59:32.000Z,2026-02-11,plan-essencial,struggling-seller,clothing_accesories
+7053618,BR,prazersecretoprodutos,2025-12-11T14:12:08.000Z,2025-12-18T01:15:38.000Z,2026-02-11,plan-essencial,tiny-seller,erotics
+5058262,BR,divah,2024-08-07T19:27:35.000Z,2025-12-17T18:36:17.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+6828668,BR,notoriamood,2025-10-13T23:31:10.000Z,2025-10-29T13:43:01.000Z,2026-02-11,plan-comeco,tiny-seller,jewelry
+7089992,BR,cacianokuffel,2025-12-22T12:14:36.000Z,2025-12-30T19:38:03.000Z,2026-02-11,plan-essencial,medium-seller,books
+7181145,BR,tammago,2026-01-16T17:48:00.000Z,2026-01-16T18:00:10.000Z,2026-02-11,plan-impulso,tiny-seller,health_beauty
+6447728,BR,emporiosaudefit,2025-07-05T16:55:50.000Z,2025-07-12T11:41:33.000Z,2026-02-11,plan-essencial,tiny-seller,health_beauty
+3982049,BR,theroute,2023-11-22T13:12:47.000Z,2024-06-26T23:37:53.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+5762274,BR,todatuamaria3,2025-01-28T13:48:36.000Z,2025-03-10T18:37:26.000Z,2026-02-11,plan-impulso,tiny-seller,other
+3608274,BR,wayfourseven,2023-08-20T16:57:58.000Z,2024-10-09T21:35:52.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+6771824,BR,sopy3,2025-09-28T21:31:43.000Z,2025-09-29T14:06:00.000Z,2026-02-11,plan-impulso,small-seller,not informed
+6659170,BR,kaputtcomany,2025-08-28T22:05:22.000Z,2025-09-10T16:46:49.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+7145765,BR,lamourrintimates,2026-01-08T19:43:34.000Z,2026-01-19T13:48:07.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+7081530,BR,fbphone2,2025-12-19T00:49:50.000Z,2026-01-06T20:15:53.000Z,2026-02-11,plan-impulso,tiny-seller,health_beauty
+7098717,BR,artdoben,2025-12-26T04:13:37.000Z,2026-01-02T00:53:17.000Z,2026-02-11,plan-essencial,tiny-seller,art
+5467751,BR,personageekstore,2024-11-11T18:24:45.000Z,2024-11-18T14:22:56.000Z,2026-02-11,plan-essencial,tiny-seller,clothing
+7171851,BR,closetdonnaluiza,2026-01-14T18:30:58.000Z,2026-01-18T18:49:47.000Z,2026-02-11,plan-impulso,small-seller,other
+6998017,BR,bypinkacessorios,2025-11-26T23:25:50.000Z,2025-12-05T22:35:16.000Z,2026-02-11,plan-essencial,tiny-seller,clothing_accesories
+6570438,BR,pickupparts2,2025-08-05T16:55:02.000Z,2026-01-05T17:44:55.000Z,2026-02-11,plan-impulso,tiny-seller,not informed
+6937954,BR,skinessentials2,2025-11-11T12:53:14.000Z,2025-11-17T15:35:04.000Z,2026-02-12,plan-impulso,tiny-seller,health_beauty
+7192536,BR,grahstore5,2026-01-19T18:34:05.000Z,2026-01-23T18:13:45.000Z,2026-02-12,plan-impulso,small-seller,clothing
+6047530,BR,chilloswim,2025-04-03T16:20:13.000Z,2025-08-19T16:24:40.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+7042685,BR,orthovitafarma,2025-12-08T22:39:50.000Z,2026-01-19T17:11:21.000Z,2026-02-12,plan-essencial,tiny-seller,other
+4971854,BR,lojadallasports,2024-07-17T23:09:35.000Z,2025-09-05T16:47:29.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+7223117,BR,usemtl2,2026-01-26T16:12:57.000Z,2026-02-04T02:39:06.000Z,2026-02-12,plan-essencial,tiny-seller,not informed
+7151675,BR,detalheprata2,2026-01-10T00:09:53.000Z,2026-01-31T02:05:24.000Z,2026-02-12,plan-essencial,tiny-seller,jewelry
+7157018,BR,ninacouto2,2026-01-11T18:39:13.000Z,2026-01-20T16:40:25.000Z,2026-02-12,plan-essencial,small-seller,not informed
+7179885,BR,oamorcura2,2026-01-16T13:17:12.000Z,2026-01-29T00:46:16.000Z,2026-02-12,plan-impulso,small-seller,clothing
+3763479,BR,pinkstoremkeup,2023-09-27T00:49:05.000Z,2026-01-30T18:23:15.000Z,2026-02-12,plan-impulso,tiny-seller,health_beauty
+6079843,BR,anapaularojo,2025-04-10T21:30:10.000Z,2025-04-22T21:09:37.000Z,2026-02-12,plan-essencial,tiny-seller,home_garden
+7179709,BR,maniadelacofestas,2026-01-16T12:33:19.000Z,2026-01-22T13:43:05.000Z,2026-02-12,plan-impulso,small-seller,other
+4303995,BR,zigzagloja,2024-02-15T20:30:35.000Z,2024-03-21T17:23:50.000Z,2026-02-12,plan-impulso,tiny-seller,clothing
+6496465,BR,miyuessence2,2025-07-17T16:09:22.000Z,2025-07-17T16:35:31.000Z,2026-02-12,plan-essencial,struggling-seller,health_beauty
+4072905,BR,solintesolucoesinteligent,2023-12-19T16:32:53.000Z,2024-03-01T19:47:59.000Z,2026-02-12,plan-impulso,struggling-seller,industrial
+7142635,BR,lojafielmentefeminina2,2026-01-08T03:09:42.000Z,2026-01-15T18:41:13.000Z,2026-02-12,plan-essencial,medium-seller,not informed
+7131033,BR,zavve,2026-01-05T21:10:54.000Z,2026-01-13T11:49:18.000Z,2026-02-12,plan-essencial,small-seller,not informed
+6974922,BR,topperfumes7,2025-11-21T00:24:01.000Z,2025-12-09T18:35:30.000Z,2026-02-12,plan-essencial,tiny-seller,health_beauty
+7162607,BR,priimesaude,2026-01-12T23:13:26.000Z,2026-02-04T19:58:42.000Z,2026-02-12,plan-essencial,tiny-seller,not informed
+7193536,BR,metruss,2026-01-19T21:22:41.000Z,2026-02-03T00:53:20.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+6839922,BR,mario103,2025-10-16T16:42:44.000Z,2025-10-27T11:33:19.000Z,2026-02-12,plan-essencial,tiny-seller,other
+6883681,BR,ellaactive,2025-10-27T19:38:12.000Z,2026-01-22T13:17:14.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+7233696,BR,scollection3,2026-01-28T16:09:22.000Z,2026-02-10T14:54:09.000Z,2026-02-12,plan-essencial,small-seller,not informed
+5599341,BR,queridaanna,2024-12-15T08:11:35.000Z,2025-08-02T16:28:33.000Z,2026-02-12,plan-essencial,tiny-seller,art
+7155052,BR,noisnapipa,2026-01-11T00:22:23.000Z,2026-01-19T21:53:58.000Z,2026-02-12,plan-impulso,small-seller,food_drinks
+7162724,BR,mhstore76,2026-01-12T23:36:09.000Z,2026-01-22T22:40:28.000Z,2026-02-12,plan-essencial,small-seller,clothing
+3237930,BR,claragouveiagymclothes,2023-05-28T03:10:23.000Z,2023-05-28T13:26:40.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+6904637,BR,needbbqstore,2025-11-02T00:31:22.000Z,2025-11-02T09:21:09.000Z,2026-02-12,plan-essencial,struggling-seller,not informed
+3724678,BR,lunariartsloja,2023-09-18T05:36:11.000Z,2023-10-31T17:05:39.000Z,2026-02-12,plan-comeco,tiny-seller,not informed
+1092254,BR,rafaelababy,2019-12-28T23:50:20.000Z,2026-02-03T02:40:57.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+6037012,BR,elitestreet2,2025-04-01T12:32:35.000Z,2025-05-21T17:40:40.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+6107464,BR,tinahdolls,2025-04-17T01:25:59.000Z,2025-07-20T16:24:42.000Z,2026-02-12,plan-comeco,struggling-seller,clothing
+6949724,BR,fanplanet,2025-11-14T01:10:53.000Z,2026-01-12T02:45:09.000Z,2026-02-12,plan-essencial,tiny-seller,not informed
+7233119,BR,premiumsoles3,2026-01-28T14:27:47.000Z,2026-01-28T17:46:16.000Z,2026-02-12,plan-essencial,small-seller,not informed
+3312766,BR,plantemeusossos2,2023-06-13T23:58:37.000Z,2026-01-20T22:32:41.000Z,2026-02-12,plan-essencial,tiny-seller,art
+6996267,BR,benarashop,2025-11-26T17:05:06.000Z,2025-12-08T01:35:02.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+5802238,BR,helocosmeticos12,2025-02-05T19:45:12.000Z,2025-02-19T15:54:49.000Z,2026-02-12,plan-essencial,tiny-seller,health_beauty
+6794371,BR,bolinhasdeanisatelie,2025-10-04T14:16:09.000Z,2025-10-11T21:45:56.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+5723069,BR,ellanewbeach3,2025-01-19T17:32:32.000Z,2026-01-07T02:14:50.000Z,2026-02-12,plan-impulso,tiny-seller,clothing
+6750038,BR,dska2025,2025-09-22T23:25:22.000Z,2025-10-07T00:48:39.000Z,2026-02-12,plan-impulso,tiny-seller,not informed
+4974464,BR,florestaldasabelhas,2024-07-18T15:56:39.000Z,2026-02-06T22:54:21.000Z,2026-02-12,plan-impulso,tiny-seller,other
+7019210,BR,nandachaves,2025-12-02T13:48:31.000Z,2025-12-02T14:06:22.000Z,2026-02-12,plan-essencial,tiny-seller,not informed
+6802036,BR,euforiamodafeminina,2025-10-06T20:54:17.000Z,2025-10-16T18:40:35.000Z,2026-02-12,plan-impulso,tiny-seller,not informed
+5688483,BR,graudichava,2025-01-11T01:58:20.000Z,2025-01-16T17:28:05.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+6493812,BR,avelaatelie2,2025-07-16T22:28:14.000Z,2025-08-13T11:44:33.000Z,2026-02-12,plan-essencial,tiny-seller,art
+6995662,BR,beaureperfumaria,2025-11-26T14:49:48.000Z,2025-12-02T13:18:24.000Z,2026-02-12,plan-essencial,tiny-seller,health_beauty
+7246984,BR,lojaakl,2026-01-31T15:00:36.000Z,2026-02-09T19:52:18.000Z,2026-02-12,plan-essencial,medium-seller,it
+7145148,BR,mfstore186,2026-01-08T18:10:49.000Z,2026-01-17T22:33:34.000Z,2026-02-12,plan-essencial,tiny-seller,not informed
+6515192,BR,cinecouple2,2025-07-22T19:09:05.000Z,2025-07-30T14:00:47.000Z,2026-02-12,plan-essencial,tiny-seller,home_garden
+2761965,BR,lojamek,2023-01-17T20:50:59.000Z,2025-12-08T14:15:23.000Z,2026-02-12,plan-essencial,tiny-seller,clothing_accesories
+7184970,BR,bobhouseheadshop,2026-01-17T19:09:08.000Z,2026-01-23T16:20:02.000Z,2026-02-12,plan-essencial,tiny-seller,other
+7176908,BR,atak6,2026-01-15T19:04:51.000Z,2026-02-02T17:14:56.000Z,2026-02-12,plan-essencial,small-seller,not informed
+7074448,BR,fgbeautyimpotrs,2025-12-17T02:00:40.000Z,2026-02-09T18:59:55.000Z,2026-02-12,plan-essencial,tiny-seller,health_beauty
+6043164,BR,lamur4,2025-04-02T17:11:20.000Z,2026-01-23T19:54:09.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+5123571,BR,ornatoloja,2024-08-22T22:52:42.000Z,2025-01-02T15:19:38.000Z,2026-02-12,plan-essencial,tiny-seller,home_garden
+7117261,BR,fazioparts,2026-01-02T13:10:13.000Z,2026-01-27T11:58:54.000Z,2026-02-12,plan-impulso,small-seller,not informed
+2321598,BR,princas,2022-08-04T19:59:46.000Z,2022-08-09T19:05:41.000Z,2026-02-12,plan-essencial,tiny-seller,clothing
+6925596,BR,belamela,2025-11-07T15:34:08.000Z,2025-11-14T23:30:39.000Z,2026-02-12,plan-impulso,tiny-seller,health_beauty
+6763009,BR,lojascomfort,2025-09-25T23:44:51.000Z,2025-12-04T17:37:19.000Z,2026-02-12,next,small-seller,not informed
+6911987,BR,uselia5,2025-11-04T01:45:23.000Z,2026-01-12T21:03:15.000Z,2026-02-12,plan-essencial,tiny-seller,not informed
+7114620,BR,bekaredes,2026-01-01T01:01:18.000Z,2026-01-01T01:10:26.000Z,2026-02-12,plan-impulso,small-seller,home_garden
+2101135,BR,tudodepatins,2022-03-30T08:31:55.000Z,2022-04-02T00:01:46.000Z,2026-02-13,plan-essencial,struggling-seller,sports
+6454292,BR,malukmodas3,2025-07-07T17:17:18.000Z,2025-07-07T18:26:06.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+6748096,BR,jlaacessorios,2025-09-22T17:24:50.000Z,2025-10-29T22:19:33.000Z,2026-02-13,plan-essencial,struggling-seller,jewelry
+6995645,BR,byamarale,2025-11-26T14:43:31.000Z,2025-11-27T02:17:21.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+7107516,BR,ninamaniaapliques,2025-12-29T11:58:23.000Z,2025-12-29T12:09:58.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7068733,BR,sabrinacosmetics3,2025-12-15T19:30:38.000Z,2025-12-22T09:36:01.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+1010147,BR,catumbelabr,2019-06-12T01:11:58.000Z,2024-10-07T19:06:55.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+7222307,BR,secaquecedores,2026-01-26T13:26:57.000Z,2026-01-28T20:18:36.000Z,2026-02-13,plan-impulso,small-seller,home_garden
+6356252,BR,nttwstudios,2025-06-12T17:00:20.000Z,2025-12-18T19:54:23.000Z,2026-02-13,plan-impulso,tiny-seller,clothing
+6388402,BR,cynaefordogs,2025-06-20T16:22:51.000Z,2025-06-20T16:34:01.000Z,2026-02-13,plan-essencial,tiny-seller,pets
+3552683,BR,usenrstyle,2023-08-07T13:01:23.000Z,2023-10-17T18:14:37.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+7034726,BR,vegastorex,2025-12-06T12:45:11.000Z,2026-02-11T00:28:41.000Z,2026-02-13,plan-essencial,tiny-seller,art
+7135892,BR,inova161,2026-01-06T20:56:24.000Z,2026-01-07T00:07:58.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7051721,BR,warlion,2025-12-10T22:51:33.000Z,2025-12-15T20:39:22.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7119607,BR,amozparfums,2026-01-02T22:24:55.000Z,2026-01-08T00:11:31.000Z,2026-02-13,plan-impulso,tiny-seller,health_beauty
+7076225,BR,inttimabrazil3,2025-12-17T16:45:33.000Z,2026-01-02T17:59:16.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+6784062,BR,allude,2025-10-01T18:37:38.000Z,2025-10-16T19:54:09.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+6252490,BR,corderohandmade,2025-05-20T01:41:06.000Z,2025-06-10T11:32:49.000Z,2026-02-13,plan-essencial,tiny-seller,home_garden
+1537052,BR,malulojalp,2021-01-29T18:08:31.000Z,2021-03-15T13:43:36.000Z,2026-02-13,plan-impulso,tiny-seller,clothing
+7190574,BR,agios3,2026-01-19T12:44:34.000Z,2026-01-28T23:19:49.000Z,2026-02-13,plan-essencial,tiny-seller,art
+6952765,BR,vellu4,2025-11-14T23:23:20.000Z,2025-11-20T18:53:57.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7181827,BR,farofasoberana,2026-01-16T20:13:20.000Z,2026-01-22T23:45:05.000Z,2026-02-13,plan-essencial,tiny-seller,clothing_accesories
+6769234,BR,sebogutenberg,2025-09-27T21:57:19.000Z,2025-09-27T22:39:14.000Z,2026-02-13,plan-essencial,tiny-seller,books
+6806163,BR,boostnaturalfoods,2025-10-07T19:38:14.000Z,2025-12-20T20:53:44.000Z,2026-02-13,plan-impulso,tiny-seller,food_drinks
+6775666,BR,kairos312,2025-09-29T20:49:49.000Z,2025-10-14T15:21:18.000Z,2026-02-13,plan-essencial,tiny-seller,gifts
+7003804,BR,sofistiqboutique,2025-11-28T13:11:08.000Z,2025-12-01T11:38:10.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7068715,BR,clube17,2025-12-15T19:25:09.000Z,2025-12-30T16:30:53.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+6174134,BR,dfebautoparts,2025-05-02T11:51:44.000Z,2025-05-02T15:20:11.000Z,2026-02-13,plan-escala,tiny-seller,cars
+6789931,BR,lojavariedades163,2025-10-03T00:47:33.000Z,2025-10-03T01:13:25.000Z,2026-02-13,plan-essencial,tiny-seller,pets
+7148031,BR,reinodedonamenina,2026-01-09T04:04:23.000Z,2026-01-17T04:30:17.000Z,2026-02-13,plan-essencial,tiny-seller,health_beauty
+6963773,BR,madeloveartesanato,2025-11-18T12:01:27.000Z,2025-11-26T16:34:10.000Z,2026-02-13,plan-essencial,struggling-seller,not informed
+7297068,BR,lunafly2,2026-02-12T11:27:10.000Z,2026-02-12T22:21:34.000Z,2026-02-13,plan-essencial,small-seller,not informed
+6829292,BR,zeduvin,2025-10-14T01:52:54.000Z,2025-10-23T13:25:13.000Z,2026-02-13,plan-essencial,tiny-seller,food_drinks
+7282454,BR,offclub,2026-02-08T21:57:33.000Z,2026-02-09T00:54:43.000Z,2026-02-13,plan-essencial,medium-seller,clothing
+6980440,BR,morelle3,2025-11-22T18:14:18.000Z,2025-11-23T14:34:14.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7245875,BR,domus84,2026-01-31T02:09:14.000Z,2026-01-31T02:21:57.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+4627550,BR,satiraaef,2024-04-28T20:17:24.000Z,2025-11-07T20:03:07.000Z,2026-02-13,plan-essencial,tiny-seller,home_garden
+6804092,BR,prasairbonita3,2025-10-07T12:05:11.000Z,2025-10-17T21:12:23.000Z,2026-02-13,plan-essencial,tiny-seller,health_beauty
+7244730,BR,powerplaysports4,2026-01-30T20:42:21.000Z,2026-02-05T16:04:45.000Z,2026-02-13,plan-essencial,small-seller,not informed
+6835140,BR,spaceimportados20,2025-10-15T14:27:13.000Z,2026-02-11T23:13:57.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7152280,BR,divonica2,2026-01-10T03:25:53.000Z,2026-01-20T14:06:35.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+5564806,BR,viihcosmeticoss3,2024-12-05T12:05:15.000Z,2025-02-17T23:06:29.000Z,2026-02-13,plan-essencial,tiny-seller,health_beauty
+6499022,BR,jp280909,2025-07-18T02:27:18.000Z,2025-08-01T22:21:16.000Z,2026-02-13,plan-essencial,tiny-seller,home_garden
+6258878,BR,haifacosmeticos3,2025-05-21T12:37:17.000Z,2025-05-29T11:45:05.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+6938871,BR,pelliscalcinhas,2025-11-11T16:50:23.000Z,2025-12-16T10:17:04.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+6964645,BR,casamorais2,2025-11-18T15:29:11.000Z,2025-11-24T15:39:54.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+2788564,BR,griffekids,2023-01-24T21:59:32.000Z,2023-01-24T22:50:05.000Z,2026-02-13,plan-essencial,small-seller,clothing
+6841770,BR,tnslimport,2025-10-16T23:35:26.000Z,2025-10-27T13:23:22.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7241234,BR,lojadrip8,2026-01-30T00:08:29.000Z,2026-02-03T22:54:17.000Z,2026-02-13,plan-essencial,small-seller,not informed
+5046296,BR,mrcollins,2024-08-05T12:48:46.000Z,2025-08-20T19:24:03.000Z,2026-02-13,plan-essencial,tiny-seller,food_drinks
+5236223,BR,ice420,2024-09-18T18:22:50.000Z,2026-02-12T16:01:33.000Z,2026-02-13,plan-essencial,small-seller,clothing_accesories
+7076074,BR,pacbem2,2025-12-17T16:03:04.000Z,2025-12-29T14:50:35.000Z,2026-02-13,plan-impulso,tiny-seller,not informed
+6349859,BR,erlaperfume,2025-06-11T01:47:21.000Z,2025-07-03T01:57:36.000Z,2026-02-13,plan-essencial,tiny-seller,health_beauty
+3026689,BR,lastore035,2023-04-03T22:32:07.000Z,2026-01-15T17:46:48.000Z,2026-02-13,plan-impulso,tiny-seller,not informed
+6899636,BR,cristinaflores2,2025-10-31T11:59:58.000Z,2025-11-18T01:07:14.000Z,2026-02-13,plan-impulso,small-seller,gifts
+6913702,BR,willpeter,2025-11-04T16:05:13.000Z,2025-11-04T18:15:23.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+5734676,BR,aurumcosmeticos3,2025-01-22T00:28:22.000Z,2025-11-24T21:55:11.000Z,2026-02-13,plan-impulso,small-seller,health_beauty
+6481838,BR,casacelebre,2025-07-14T14:37:18.000Z,2026-02-10T00:10:28.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7220558,BR,delirioestudio,2026-01-25T22:44:26.000Z,2026-02-01T20:22:31.000Z,2026-02-13,plan-essencial,small-seller,clothing
+6195530,BR,manoestilo,2025-05-07T10:29:14.000Z,2025-05-07T11:57:41.000Z,2026-02-13,plan-essencial,tiny-seller,clothing
+6937658,BR,lojaterereturbo,2025-11-11T10:34:03.000Z,2025-12-04T17:42:42.000Z,2026-02-13,plan-impulso,tiny-seller,it
+6939564,BR,prefix040515theo,2025-11-11T19:21:23.000Z,2025-11-26T13:19:09.000Z,2026-02-13,plan-essencial,tiny-seller,art
+6846550,BR,gabsworldscents,2025-10-18T02:44:23.000Z,2025-10-29T17:14:25.000Z,2026-02-13,plan-essencial,tiny-seller,health_beauty
+7148859,BR,mywel,2026-01-09T13:34:02.000Z,2026-02-09T20:15:55.000Z,2026-02-13,plan-essencial,tiny-seller,not informed
+7079106,BR,annionprints,2025-12-18T13:52:14.000Z,2025-12-18T14:00:31.000Z,2026-02-14,plan-essencial,tiny-seller,gifts
+7108763,BR,ritualfc,2025-12-29T18:26:16.000Z,2025-12-29T18:40:16.000Z,2026-02-14,plan-impulso,tiny-seller,clothing
+7175297,BR,lojamyavariedades,2026-01-15T13:56:30.000Z,2026-01-20T22:35:45.000Z,2026-02-14,plan-essencial,tiny-seller,clothing_accesories
+7057971,BR,desyrrevestidosdefesta2,2025-12-12T14:34:49.000Z,2026-01-19T18:26:49.000Z,2026-02-14,plan-impulso,tiny-seller,clothing
+6670362,BR,labloomboutique,2025-09-01T12:44:43.000Z,2025-12-10T11:42:25.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+7157659,BR,luvinhadolevel,2026-01-11T22:25:36.000Z,2026-02-04T02:25:03.000Z,2026-02-14,plan-essencial,small-seller,not informed
+7238123,BR,infinitygamez,2026-01-29T13:55:21.000Z,2026-01-29T16:04:03.000Z,2026-02-14,plan-essencial,small-seller,toys
+6872335,BR,saudeativastore,2025-10-24T16:24:26.000Z,2025-11-06T18:32:20.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+7044916,BR,fandom6,2025-12-09T14:39:57.000Z,2025-12-15T16:50:44.000Z,2026-02-14,plan-impulso,tiny-seller,not informed
+7240931,BR,jvgamesdigital,2026-01-29T22:58:55.000Z,2026-02-05T01:30:17.000Z,2026-02-14,plan-essencial,small-seller,toys
+6933649,BR,oyateresina,2025-11-10T12:34:41.000Z,2025-11-11T20:08:38.000Z,2026-02-14,plan-impulso,tiny-seller,clothing
+6570033,BR,bythayz,2025-08-05T15:26:47.000Z,2025-11-05T05:14:41.000Z,2026-02-14,plan-essencial,tiny-seller,clothing
+7114938,BR,anaclaudiabusiness,2026-01-01T13:58:34.000Z,2026-01-01T14:07:28.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+6472901,BR,conceitoatemporal,2025-07-11T19:15:27.000Z,2025-07-17T16:17:23.000Z,2026-02-14,plan-essencial,tiny-seller,clothing
+6782443,BR,cruztype,2025-10-01T12:24:45.000Z,2026-01-16T14:17:33.000Z,2026-02-14,plan-escala,tiny-seller,clothing
+6825801,BR,ststore37,2025-10-13T13:10:15.000Z,2025-10-23T13:01:11.000Z,2026-02-14,plan-essencial,tiny-seller,clothing
+3810713,BR,prefix3dimprj,2023-10-08T17:39:54.000Z,2023-10-31T12:49:27.000Z,2026-02-14,plan-essencial,struggling-seller,other
+6426940,BR,divinaonca,2025-06-30T16:51:51.000Z,2025-10-03T01:15:23.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+7135947,BR,userosachicle,2026-01-06T21:10:03.000Z,2026-01-16T13:50:41.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+4192631,BR,sublimemodas9,2024-01-20T23:12:32.000Z,2025-02-09T23:23:34.000Z,2026-02-14,plan-impulso,tiny-seller,clothing
+6716613,BR,lyvabeauty,2025-09-13T22:52:48.000Z,2026-01-24T20:56:38.000Z,2026-02-14,plan-essencial,tiny-seller,health_beauty
+6977713,BR,wfitwear3,2025-11-21T20:24:55.000Z,2026-01-16T18:41:40.000Z,2026-02-14,plan-impulso,tiny-seller,not informed
+7233843,BR,allegraboutique2,2026-01-28T16:36:35.000Z,2026-01-29T20:43:16.000Z,2026-02-14,plan-essencial,tiny-seller,clothing
+2254277,BR,beehi,2022-07-01T14:44:28.000Z,2022-09-17T07:59:00.000Z,2026-02-14,plan-essencial,struggling-seller,clothing
+7291705,BR,s3tstore,2026-02-11T00:05:54.000Z,2026-02-12T01:49:49.000Z,2026-02-14,plan-impulso,small-seller,other
+1648191,BR,bravuzjoias,2021-04-13T09:28:41.000Z,2024-05-03T17:23:17.000Z,2026-02-14,plan-impulso,tiny-seller,jewelry
+7207895,BR,fanaticosmirassol,2026-01-22T17:24:11.000Z,2026-02-04T12:47:20.000Z,2026-02-14,plan-escala,small-seller,not informed
+7234580,BR,belabecosmeticos2,2026-01-28T18:40:37.000Z,2026-02-07T02:33:54.000Z,2026-02-14,plan-essencial,small-seller,not informed
+7123420,BR,onlypharmapepitideos,2026-01-03T23:46:14.000Z,2026-02-07T14:03:09.000Z,2026-02-14,plan-impulso,small-seller,not informed
+6281383,BR,mercadosex,2025-05-26T17:53:38.000Z,2025-06-05T11:54:02.000Z,2026-02-14,plan-impulso,tiny-seller,erotics
+4714258,BR,coffeenow,2024-05-18T22:46:32.000Z,2026-01-14T17:36:03.000Z,2026-02-14,plan-essencial,tiny-seller,home_garden
+6555719,BR,grappin,2025-08-01T14:28:12.000Z,2025-12-09T14:19:35.000Z,2026-02-14,plan-essencial,tiny-seller,clothing
+7112248,BR,zingaraluaacessorios,2025-12-30T20:26:04.000Z,2026-01-02T21:29:12.000Z,2026-02-14,plan-impulso,tiny-seller,jewelry
+2029874,BR,sapucaiaacessorios,2022-02-05T20:30:05.000Z,2022-04-23T01:17:56.000Z,2026-02-14,plan-essencial,tiny-seller,clothing_accesories
+7217106,BR,sarahmodasslz2,2026-01-24T21:38:57.000Z,2026-01-24T22:00:39.000Z,2026-02-14,plan-essencial,medium-seller,clothing
+6303033,BR,aurie5,2025-05-30T21:44:57.000Z,2025-11-22T17:50:01.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+7133879,BR,ivana871,2026-01-06T14:49:38.000Z,2026-01-20T22:31:24.000Z,2026-02-14,plan-essencial,small-seller,clothing
+6922590,BR,shopbella15,2025-11-06T18:38:35.000Z,2025-11-11T17:22:50.000Z,2026-02-14,plan-essencial,tiny-seller,health_beauty
+5930216,BR,tuliashop,2025-03-07T16:38:47.000Z,2025-04-11T18:16:17.000Z,2026-02-14,plan-impulso,tiny-seller,home_garden
+7208314,BR,flaviabaraky,2026-01-22T18:36:01.000Z,2026-01-22T19:00:04.000Z,2026-02-14,plan-essencial,small-seller,not informed
+7196516,BR,fashionbrasklc,2026-01-20T14:27:52.000Z,2026-02-03T22:22:34.000Z,2026-02-14,plan-essencial,tiny-seller,not informed
+6968397,BR,sigotranquilo5,2025-11-19T13:44:19.000Z,2025-11-27T15:24:45.000Z,2026-02-15,plan-essencial,tiny-seller,clothing_accesories
+6175443,BR,beirutperfumes,2025-05-02T17:40:19.000Z,2025-05-08T00:42:32.000Z,2026-02-15,plan-essencial,tiny-seller,health_beauty
+7083021,BR,tutimmultimarcas,2025-12-19T15:32:59.000Z,2026-01-19T20:46:01.000Z,2026-02-15,plan-essencial,tiny-seller,clothing
+6341488,BR,usecallistore,2025-06-09T13:53:09.000Z,2025-06-17T13:24:19.000Z,2026-02-15,plan-essencial,tiny-seller,clothing
+5967346,BR,benditafe,2025-03-16T20:38:21.000Z,2025-08-05T18:44:36.000Z,2026-02-15,plan-impulso,tiny-seller,other
+6682650,BR,brisalys,2025-09-04T09:33:41.000Z,2025-09-29T16:04:15.000Z,2026-02-15,plan-impulso,tiny-seller,health_beauty
+6675450,BR,megavest5,2025-09-02T16:23:09.000Z,2025-11-13T17:46:03.000Z,2026-02-15,plan-essencial,tiny-seller,not informed
+7249021,BR,vinmiejoiasesemijoias,2026-02-01T01:42:31.000Z,2026-02-04T01:02:38.000Z,2026-02-15,plan-essencial,tiny-seller,not informed
+4656729,BR,blacksentclothing,2024-05-05T22:31:36.000Z,2025-08-16T15:15:59.000Z,2026-02-15,plan-essencial,struggling-seller,clothing
+7275814,BR,nobrerelogios4,2026-02-06T20:58:15.000Z,2026-02-10T21:36:34.000Z,2026-02-15,plan-essencial,small-seller,not informed
+7110826,BR,play11br,2025-12-30T12:04:25.000Z,2025-12-30T12:26:06.000Z,2026-02-15,plan-impulso,tiny-seller,not informed
+7259597,BR,dssemijoias7,2026-02-03T16:23:33.000Z,2026-02-05T22:10:07.000Z,2026-02-15,plan-essencial,small-seller,not informed
+7010181,BR,webeauty8,2025-11-30T13:05:36.000Z,2025-12-09T12:17:29.000Z,2026-02-15,plan-essencial,tiny-seller,health_beauty
+6859249,BR,limaocosmeticos,2025-10-21T18:08:05.000Z,2025-10-21T19:13:17.000Z,2026-02-15,plan-impulso,small-seller,health_beauty
+6817674,BR,t3ufitness,2025-10-10T17:02:37.000Z,2025-10-24T16:32:33.000Z,2026-02-15,plan-essencial,tiny-seller,not informed
+6918700,BR,donmagalhaes,2025-11-05T18:42:34.000Z,2026-01-28T21:30:01.000Z,2026-02-15,plan-essencial,small-seller,not informed
+6692529,BR,ckauce8,2025-09-07T13:30:10.000Z,2025-10-16T00:55:10.000Z,2026-02-15,plan-essencial,tiny-seller,other
+7025484,BR,marceneiroexpresso2,2025-12-03T19:32:01.000Z,2026-02-02T10:30:48.000Z,2026-02-16,plan-escala,tiny-seller,industrial
+2723526,BR,walblastloja,2023-01-06T14:40:40.000Z,2025-09-17T14:36:03.000Z,2026-02-16,plan-impulso,tiny-seller,home_garden
+7040661,BR,hopeecollor,2025-12-08T14:48:25.000Z,2025-12-09T13:58:42.000Z,2026-02-16,plan-essencial,tiny-seller,not informed
+1997137,BR,saura,2022-01-10T14:46:35.000Z,2022-03-04T22:08:58.000Z,2026-02-16,plan-essencial,tiny-seller,clothing
+6852566,BR,equilibrioesportes2,2025-10-20T11:00:15.000Z,2025-11-04T14:01:34.000Z,2026-02-16,plan-escala,tiny-seller,clothing
+6613688,BR,mellomaisondeparfum,2025-08-17T18:09:37.000Z,2025-11-27T02:04:51.000Z,2026-02-16,plan-essencial,tiny-seller,clothing
+6574919,BR,shopninive,2025-08-06T16:31:36.000Z,2025-08-06T17:58:19.000Z,2026-02-16,plan-essencial,tiny-seller,clothing
+7006044,BR,dammagummie,2025-11-28T23:25:30.000Z,2025-11-28T23:51:25.000Z,2026-02-16,plan-essencial,tiny-seller,health_beauty
+6800151,BR,danaka,2025-10-06T14:19:55.000Z,2026-02-02T18:15:22.000Z,2026-02-16,plan-impulso,tiny-seller,not informed
+7213462,BR,aurenfio,2026-01-23T20:29:29.000Z,2026-01-24T23:02:52.000Z,2026-02-16,plan-essencial,tiny-seller,not informed
+7165468,BR,newmixsuplementos,2026-01-13T15:50:35.000Z,2026-01-13T15:56:13.000Z,2026-02-16,plan-impulso,tiny-seller,not informed
+6511510,BR,pontessports,2025-07-21T23:19:04.000Z,2025-07-23T17:39:47.000Z,2026-02-16,plan-comeco,tiny-seller,clothing
+6642445,BR,paolasouzalinesuplementos,2025-08-25T00:53:09.000Z,2026-01-23T18:18:54.000Z,2026-02-16,plan-essencial,tiny-seller,not informed
+6783650,BR,worldofsleep,2025-10-01T17:18:01.000Z,2025-10-23T19:57:23.000Z,2026-02-16,plan-essencial,tiny-seller,home_garden
+6556335,BR,caluciostore,2025-08-01T17:02:30.000Z,2025-08-26T17:33:59.000Z,2026-02-16,plan-essencial,struggling-seller,clothing
+3591901,BR,kundalinijoias,2023-08-16T13:25:55.000Z,2026-01-20T17:57:49.000Z,2026-02-16,plan-essencial,tiny-seller,jewelry
+7026851,BR,jlperfumes6,2025-12-04T00:56:52.000Z,2025-12-04T01:50:03.000Z,2026-02-16,plan-essencial,tiny-seller,other
+6917683,BR,herapaper,2025-11-05T14:46:49.000Z,2026-01-21T22:33:49.000Z,2026-02-16,plan-essencial,tiny-seller,not informed
+6973202,BR,jaguarcouros2,2025-11-20T17:11:20.000Z,2025-11-26T19:30:05.000Z,2026-02-16,plan-impulso,tiny-seller,clothing
+6867676,BR,jlsports96,2025-10-23T14:19:51.000Z,2025-11-06T14:19:06.000Z,2026-02-16,plan-essencial,tiny-seller,sports
+6369229,BR,cehualfabase,2025-06-16T14:55:40.000Z,2025-06-25T17:18:08.000Z,2026-02-16,plan-essencial,tiny-seller,not informed
+6984319,BR,bicsprint2,2025-11-23T22:49:56.000Z,2025-12-02T12:58:32.000Z,2026-02-16,plan-essencial,tiny-seller,other
+7024238,BR,graonutriworld2,2025-12-03T14:55:21.000Z,2025-12-08T16:24:27.000Z,2026-02-16,plan-escala,tiny-seller,food_drinks
+7136534,BR,donaborrachinhapapelaria,2026-01-06T23:11:59.000Z,2026-01-07T19:06:28.000Z,2026-02-16,plan-essencial,tiny-seller,not informed
+6998118,BR,bravva8,2025-11-26T23:46:44.000Z,2025-12-02T14:08:44.000Z,2026-02-17,plan-essencial,tiny-seller,clothing
+6341749,BR,pazcomercioeconfeccaodepe,2025-06-09T14:46:02.000Z,2025-06-25T18:31:30.000Z,2026-02-17,plan-essencial,tiny-seller,not informed
+7201837,BR,purealoe3,2026-01-21T14:40:54.000Z,2026-02-02T18:30:04.000Z,2026-02-17,plan-impulso,small-seller,not informed
+7023694,BR,modafut6,2025-12-03T12:50:58.000Z,2025-12-09T22:34:29.000Z,2026-02-17,plan-impulso,tiny-seller,clothing
+7163343,BR,mohragricola,2026-01-13T01:31:05.000Z,2026-01-18T00:26:14.000Z,2026-02-17,plan-essencial,tiny-seller,industrial
+7289157,BR,lorenahair,2026-02-10T14:48:17.000Z,2026-02-11T22:37:22.000Z,2026-02-17,plan-impulso,small-seller,not informed
+7109142,BR,alestar,2025-12-29T20:05:37.000Z,2026-02-05T15:51:44.000Z,2026-02-17,plan-essencial,small-seller,clothing
+6901181,BR,relojoarialancoltda,2025-10-31T19:26:14.000Z,2025-11-14T16:04:13.000Z,2026-02-17,plan-impulso,struggling-seller,jewelry
+6661875,BR,vistalevity,2025-08-29T16:49:41.000Z,2025-09-10T01:12:45.000Z,2026-02-17,plan-essencial,tiny-seller,clothing
+7262041,BR,mandiacessorios3,2026-02-03T23:29:04.000Z,2026-02-03T23:36:34.000Z,2026-02-17,plan-essencial,small-seller,not informed
+7190743,BR,prishoes3,2026-01-19T13:23:47.000Z,2026-01-21T16:11:47.000Z,2026-02-17,plan-essencial,tiny-seller,not informed
+7272180,BR,evoracalcados3,2026-02-05T23:29:10.000Z,2026-02-11T05:27:44.000Z,2026-02-17,plan-essencial,small-seller,clothing
+6475279,BR,signus6,2025-07-12T13:48:02.000Z,2025-11-22T13:22:18.000Z,2026-02-17,plan-essencial,tiny-seller,clothing
+7187776,BR,vendasolineimportrsaembp,2026-01-18T18:02:15.000Z,2026-01-19T18:24:16.000Z,2026-02-17,plan-impulso,tiny-seller,electronics_it
+6596934,BR,shellbymichelymendonca,2025-08-12T21:44:04.000Z,2025-09-03T21:33:58.000Z,2026-02-17,plan-impulso,tiny-seller,not informed
+6929973,BR,mamboosunglass,2025-11-08T23:18:37.000Z,2025-11-23T02:52:50.000Z,2026-02-17,plan-essencial,tiny-seller,clothing_accesories
+6303279,BR,joozysilvalingeriesexshop,2025-05-30T22:45:20.000Z,2026-01-24T12:01:12.000Z,2026-02-17,plan-essencial,tiny-seller,clothing_accesories
+6463002,BR,guard5,2025-07-09T16:30:40.000Z,2025-07-17T17:29:19.000Z,2026-02-17,plan-essencial,tiny-seller,not informed
+6786991,BR,uselabrune,2025-10-02T14:00:53.000Z,2025-10-30T13:59:36.000Z,2026-02-17,plan-essencial,tiny-seller,clothing_accesories
+6915975,BR,ownerlessstore,2025-11-05T00:36:47.000Z,2026-01-06T14:57:25.000Z,2026-02-17,plan-essencial,tiny-seller,clothing
+5815175,BR,modasfagundes,2025-02-08T16:34:56.000Z,2025-04-29T01:12:26.000Z,2026-02-17,plan-essencial,tiny-seller,not informed
+7133597,BR,miaugictcg,2026-01-06T13:54:22.000Z,2026-01-25T04:00:58.000Z,2026-02-17,plan-essencial,small-seller,not informed
+7227253,BR,brasilidadetextil,2026-01-27T12:22:09.000Z,2026-02-03T21:34:54.000Z,2026-02-18,plan-essencial,small-seller,not informed
+6759319,BR,outletdeouro,2025-09-25T02:00:28.000Z,2026-01-12T14:42:04.000Z,2026-02-18,plan-impulso,tiny-seller,jewelry
+6440861,BR,localizestore3,2025-07-03T17:16:18.000Z,2025-07-15T13:23:17.000Z,2026-02-18,plan-essencial,tiny-seller,health_beauty
+6695278,BR,camelia75,2025-09-08T12:43:23.000Z,2026-01-07T16:08:38.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+7161704,BR,rayssateste,2026-01-12T20:20:50.000Z,2026-01-12T20:30:57.000Z,2026-02-18,plan-essencial,tiny-seller,health_beauty
+7160767,BR,ousecloset2,2026-01-12T17:45:55.000Z,2026-01-12T18:00:21.000Z,2026-02-18,plan-impulso,tiny-seller,not informed
+7160008,BR,serenaeyewear3,2026-01-12T15:13:19.000Z,2026-01-19T02:24:29.000Z,2026-02-18,plan-essencial,tiny-seller,clothing_accesories
+6537908,BR,suprelledermocosmeticos,2025-07-28T14:50:01.000Z,2025-08-04T11:04:52.000Z,2026-02-18,plan-essencial,tiny-seller,health_beauty
+7248723,BR,rjxerox2,2026-01-31T23:50:54.000Z,2026-02-07T18:35:07.000Z,2026-02-18,plan-essencial,tiny-seller,art
+6964290,BR,rafih,2025-11-18T14:04:56.000Z,2026-01-03T18:31:07.000Z,2026-02-18,plan-impulso,tiny-seller,not informed
+6827789,BR,francielafashion,2025-10-13T20:11:40.000Z,2026-01-09T20:40:21.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+6548119,BR,dglequipamentos,2025-07-30T17:06:09.000Z,2025-08-06T20:52:08.000Z,2026-02-18,plan-essencial,tiny-seller,equipment_machines
+7221210,BR,acenastore,2026-01-26T01:48:31.000Z,2026-02-11T00:58:30.000Z,2026-02-18,plan-essencial,small-seller,clothing
+6042423,BR,cantofashion9,2025-04-02T14:26:59.000Z,2025-05-09T11:16:52.000Z,2026-02-18,plan-essencial,struggling-seller,clothing
+6944408,BR,wyda2,2025-11-12T20:25:10.000Z,2026-02-09T13:34:02.000Z,2026-02-18,plan-impulso,tiny-seller,not informed
+5768504,BR,dellustore,2025-01-29T16:12:27.000Z,2025-03-24T17:21:40.000Z,2026-02-18,plan-impulso,tiny-seller,clothing
+5359856,BR,shmodas7,2024-10-17T11:21:31.000Z,2025-05-21T11:16:25.000Z,2026-02-18,plan-impulso,tiny-seller,clothing
+7029540,BR,lexricc,2025-12-04T19:15:42.000Z,2025-12-04T19:18:42.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+7237808,BR,godzformen2,2026-01-29T12:45:33.000Z,2026-02-04T12:36:47.000Z,2026-02-18,plan-essencial,small-seller,health_beauty
+7231407,BR,tiendasubete,2026-01-28T01:16:53.000Z,2026-01-28T03:05:40.000Z,2026-02-18,plan-essencial,small-seller,not informed
+7123021,BR,ovosborato,2026-01-03T21:32:22.000Z,2026-01-03T21:47:57.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+7171870,BR,acatamodafitness,2026-01-14T18:34:37.000Z,2026-01-20T21:13:36.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+6005110,BR,mforcepro,2025-03-25T12:04:00.000Z,2025-04-22T17:55:59.000Z,2026-02-18,plan-essencial,tiny-seller,health_beauty
+6704631,BR,aloelife,2025-09-10T15:43:13.000Z,2025-09-11T15:09:58.000Z,2026-02-18,plan-essencial,struggling-seller,health_beauty
+7208528,BR,estiloman8,2026-01-22T19:09:35.000Z,2026-01-22T19:29:01.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+6629684,BR,t2clickecobags,2025-08-21T12:12:53.000Z,2025-08-27T16:20:25.000Z,2026-02-18,plan-essencial,tiny-seller,clothing
+6702944,BR,nolo2,2025-09-10T01:13:39.000Z,2026-02-05T14:46:51.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+6764617,BR,goupstore5,2025-09-26T14:07:36.000Z,2025-09-26T14:15:56.000Z,2026-02-18,plan-essencial,tiny-seller,clothing_accesories
+7192975,BR,luamarbikinis,2026-01-19T19:49:35.000Z,2026-01-27T18:26:57.000Z,2026-02-18,plan-essencial,small-seller,not informed
+7298015,BR,cissaanderstheorder,2026-02-12T16:04:04.000Z,2026-02-12T22:49:14.000Z,2026-02-18,plan-essencial,medium-seller,bookstore_graphic
+7236831,BR,acbeauty12,2026-01-29T02:20:23.000Z,2026-02-07T20:29:05.000Z,2026-02-18,plan-essencial,small-seller,not informed
+6199822,BR,tipikus,2025-05-08T00:27:10.000Z,2025-09-15T19:05:39.000Z,2026-02-18,plan-essencial,tiny-seller,food_drinks
+7065275,BR,daju39,2025-12-14T21:28:32.000Z,2026-01-07T23:45:49.000Z,2026-02-18,plan-essencial,tiny-seller,clothing
+7193703,BR,prefixdbs16,2026-01-19T21:48:40.000Z,2026-01-26T20:39:27.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+7168886,BR,primustime,2026-01-14T02:01:01.000Z,2026-01-19T21:11:04.000Z,2026-02-18,plan-impulso,tiny-seller,jewelry
+6419908,BR,spintennisacademy,2025-06-28T12:28:24.000Z,2025-07-10T11:36:08.000Z,2026-02-18,plan-essencial,tiny-seller,sports
+7237539,BR,moonsecret,2026-01-29T11:21:31.000Z,2026-01-31T21:13:48.000Z,2026-02-18,plan-essencial,small-seller,clothing
+6705967,BR,anahshop,2025-09-10T20:42:11.000Z,2025-10-13T15:45:52.000Z,2026-02-18,plan-essencial,tiny-seller,clothing
+6946646,BR,bloomybrecho,2025-11-13T12:33:52.000Z,2025-11-27T19:44:47.000Z,2026-02-18,plan-essencial,tiny-seller,clothing
+7171923,BR,florabela6,2026-01-14T18:46:07.000Z,2026-01-27T16:15:18.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+6600647,BR,estatercosmeticos,2025-08-13T18:58:02.000Z,2025-09-15T13:52:49.000Z,2026-02-18,plan-essencial,tiny-seller,health_beauty
+7168841,BR,mlzstore2,2026-01-14T01:50:03.000Z,2026-01-31T23:37:26.000Z,2026-02-18,plan-essencial,tiny-seller,not informed
+7081321,BR,conttsfitnesswear,2025-12-18T23:37:47.000Z,2025-12-24T23:47:58.000Z,2026-02-18,plan-impulso,tiny-seller,clothing
+6321409,BR,reverseskateshop2,2025-06-04T12:36:07.000Z,2025-08-08T15:50:13.000Z,2026-02-18,plan-essencial,tiny-seller,clothing
+6634777,BR,paulagregorio,2025-08-22T15:36:52.000Z,2025-12-04T15:43:03.000Z,2026-02-18,plan-escala,tiny-seller,clothing_accesories
+7030988,BR,btcsuplementos,2025-12-05T02:01:25.000Z,2025-12-22T10:25:06.000Z,2026-02-18,plan-essencial,tiny-seller,other
+7004586,BR,watermello,2025-11-28T16:49:06.000Z,2026-01-05T20:13:33.000Z,2026-02-19,plan-impulso,tiny-seller,pets
+6604143,BR,nastorecalcados,2025-08-14T16:30:36.000Z,2025-08-26T13:46:55.000Z,2026-02-19,plan-essencial,tiny-seller,clothing_accesories
+5538049,BR,aldeabarefoot2,2024-11-28T12:03:58.000Z,2024-12-10T18:31:20.000Z,2026-02-19,plan-impulso,tiny-seller,clothing
+6951943,BR,viviscraminacessorios,2025-11-14T19:09:23.000Z,2025-12-22T17:52:45.000Z,2026-02-19,plan-escala,tiny-seller,jewelry
+7014499,BR,cruzeiroesportes,2025-12-01T14:27:00.000Z,2025-12-23T19:35:17.000Z,2026-02-19,plan-impulso,tiny-seller,not informed
+7137939,BR,becarparts,2026-01-07T10:23:36.000Z,2026-01-13T22:50:31.000Z,2026-02-19,plan-impulso,tiny-seller,cars
+5786401,BR,nvelasartesanais,2025-02-02T17:23:43.000Z,2025-02-02T21:10:04.000Z,2026-02-19,plan-essencial,tiny-seller,home_garden
+7003066,BR,napuracalma,2025-11-28T03:15:36.000Z,2026-01-28T14:23:09.000Z,2026-02-19,plan-essencial,tiny-seller,not informed
+6976629,BR,olehporhelo,2025-11-21T15:27:57.000Z,2025-11-21T15:37:08.000Z,2026-02-19,plan-essencial,tiny-seller,clothing_accesories
+6915770,BR,jogabonito14,2025-11-04T23:52:12.000Z,2025-11-05T00:15:52.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+1341819,BR,claudiapavanscrapbook,2020-09-10T01:52:43.000Z,2025-12-07T17:30:22.000Z,2026-02-19,plan-essencial,tiny-seller,education
+7246838,BR,celinneboutiquee4,2026-01-31T14:16:25.000Z,2026-02-04T18:48:52.000Z,2026-02-19,plan-essencial,medium-seller,not informed
+6758124,BR,mulherdeluxo10,2025-09-24T21:09:42.000Z,2025-10-06T18:51:09.000Z,2026-02-19,plan-impulso,small-seller,clothing
+5255299,BR,baserosamodafitnessepraia,2024-09-23T13:04:10.000Z,2025-03-28T23:21:45.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+7088775,BR,alquimia2021,2025-12-21T21:38:36.000Z,2026-01-06T17:16:09.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+7034534,BR,pantheongeekstore,2025-12-06T07:29:12.000Z,2025-12-17T12:37:52.000Z,2026-02-19,plan-essencial,tiny-seller,toys
+7111018,BR,camisastimao,2025-12-30T13:30:15.000Z,2026-01-06T14:49:42.000Z,2026-02-19,plan-essencial,tiny-seller,sports
+7224679,BR,orla20,2026-01-26T20:46:05.000Z,2026-02-05T15:58:53.000Z,2026-02-19,plan-impulso,small-seller,not informed
+7148907,BR,avyafitwear,2026-01-09T13:45:40.000Z,2026-01-09T14:15:55.000Z,2026-02-19,plan-essencial,small-seller,clothing_accesories
+6957429,BR,benditavela2,2025-11-16T20:08:26.000Z,2026-01-11T10:58:25.000Z,2026-02-19,plan-impulso,tiny-seller,not informed
+7068875,BR,saroniparfum2,2025-12-15T19:55:30.000Z,2026-01-12T17:47:29.000Z,2026-02-19,plan-essencial,tiny-seller,health_beauty
+7197503,BR,loreahacoinox,2026-01-20T17:20:10.000Z,2026-01-26T18:04:56.000Z,2026-02-19,plan-impulso,tiny-seller,not informed
+7164275,BR,steelfish,2026-01-13T11:01:33.000Z,2026-01-29T20:08:03.000Z,2026-02-19,plan-impulso,small-seller,not informed
+7048366,BR,amabazar2,2025-12-10T02:43:03.000Z,2025-12-17T19:00:51.000Z,2026-02-19,plan-impulso,tiny-seller,other
+6542158,BR,casagavia,2025-07-29T12:14:16.000Z,2026-01-04T21:19:40.000Z,2026-02-19,plan-essencial,tiny-seller,home_garden
+2302427,BR,vitoriastoreaju,2022-07-26T13:30:13.000Z,2022-08-30T18:44:26.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+7164391,BR,miribel1475963,2026-01-13T12:04:53.000Z,2026-01-20T14:13:34.000Z,2026-02-19,plan-essencial,small-seller,health_beauty
+5503589,BR,luadecristal777,2024-11-20T02:11:15.000Z,2025-01-07T17:50:11.000Z,2026-02-19,plan-essencial,small-seller,other
+6799422,BR,autopecasgw2,2025-10-06T08:50:49.000Z,2025-10-07T10:42:38.000Z,2026-02-19,plan-escala,tiny-seller,cars
+7169175,BR,musponline,2026-01-14T03:33:11.000Z,2026-01-24T13:00:27.000Z,2026-02-19,plan-essencial,tiny-seller,not informed
+7073508,BR,usesatvs,2025-12-16T21:43:34.000Z,2026-01-02T23:15:53.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+6573043,BR,vdbt,2025-08-06T01:53:17.000Z,2025-08-06T02:08:13.000Z,2026-02-19,plan-escala,small-seller,clothing
+4732617,BR,fitlifeeloja,2024-05-22T19:36:13.000Z,2026-02-08T15:43:04.000Z,2026-02-19,plan-escala,small-seller,clothing
+7207692,BR,elithiloja,2026-01-22T16:52:04.000Z,2026-01-23T13:34:27.000Z,2026-02-19,plan-impulso,tiny-seller,jewelry
+7158862,BR,readbloom,2026-01-12T04:49:06.000Z,2026-01-29T02:04:06.000Z,2026-02-19,plan-essencial,tiny-seller,books
+7185870,BR,secretshot,2026-01-17T23:58:53.000Z,2026-02-03T11:29:22.000Z,2026-02-19,plan-essencial,tiny-seller,erotics
+6407569,BR,chinelokasper,2025-06-25T15:05:30.000Z,2025-07-03T19:22:55.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+7140419,BR,brendamodas6,2026-01-07T19:22:37.000Z,2026-01-08T15:29:34.000Z,2026-02-19,plan-impulso,tiny-seller,not informed
+6281416,BR,clubedoscanalhas,2025-05-26T17:58:19.000Z,2025-09-03T17:01:31.000Z,2026-02-19,plan-essencial,tiny-seller,clothing
+5843690,BR,joiasmonstro,2025-02-14T20:09:54.000Z,2025-02-19T21:28:55.000Z,2026-02-20,plan-essencial,tiny-seller,jewelry
+7146469,BR,noharawood2,2026-01-08T21:56:49.000Z,2026-01-20T22:32:18.000Z,2026-02-20,plan-essencial,tiny-seller,art
+6812557,BR,chosenoutfit,2025-10-09T04:52:35.000Z,2026-01-20T17:08:17.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+6652224,BR,quivas,2025-08-27T11:06:18.000Z,2025-09-11T14:41:02.000Z,2026-02-20,plan-essencial,tiny-seller,health_beauty
+1753925,BR,qlindamix,2021-06-24T12:13:50.000Z,2022-03-08T13:50:26.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+7146203,BR,espelhodaguaacessorios,2026-01-08T21:01:03.000Z,2026-02-14T13:28:21.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+7032166,BR,kelmebrasil,2025-12-05T15:03:32.000Z,2026-02-03T20:25:47.000Z,2026-02-20,plan-escala,tiny-seller,not informed
+5476291,BR,abmltda,2024-11-13T16:07:00.000Z,2025-01-30T11:43:54.000Z,2026-02-20,plan-essencial,struggling-seller,home_garden
+7161946,BR,blanxcompany,2026-01-12T21:05:30.000Z,2026-01-19T12:31:44.000Z,2026-02-20,plan-impulso,tiny-seller,clothing
+7083698,BR,parfumeclub2,2025-12-19T19:04:14.000Z,2025-12-26T14:36:49.000Z,2026-02-20,plan-impulso,tiny-seller,health_beauty
+7082298,BR,kalannrojeans2,2025-12-19T11:04:37.000Z,2026-01-05T22:15:31.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+6725479,BR,editoraplato,2025-09-16T15:06:12.000Z,2025-10-29T20:06:52.000Z,2026-02-20,plan-impulso,tiny-seller,not informed
+6713208,BR,cairofitness,2025-09-12T19:16:29.000Z,2025-09-12T19:24:49.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+6803413,BR,firmahealth,2025-10-07T02:12:31.000Z,2026-02-19T21:31:14.000Z,2026-02-20,plan-escala,medium-seller,health_beauty
+5780142,BR,olhame,2025-01-31T20:38:51.000Z,2025-02-12T15:02:02.000Z,2026-02-20,plan-impulso,tiny-seller,health_beauty
+6858093,BR,blucarimbos,2025-10-21T14:17:50.000Z,2026-01-20T14:42:13.000Z,2026-02-20,plan-essencial,tiny-seller,office_supplies
+7098589,BR,lysa2,2025-12-26T02:32:53.000Z,2025-12-26T02:49:16.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+7024982,BR,fastimpressos,2025-12-03T17:44:19.000Z,2026-02-04T18:41:10.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+6250961,BR,maqservicos,2025-05-19T21:00:13.000Z,2025-07-17T17:50:40.000Z,2026-02-20,plan-essencial,tiny-seller,home_garden
+7040239,BR,novaautoparts,2025-12-08T12:42:14.000Z,2025-12-19T17:21:54.000Z,2026-02-20,plan-essencial,tiny-seller,cars
+7148732,BR,lixamaisfacil,2026-01-09T13:02:42.000Z,2026-01-14T21:43:52.000Z,2026-02-20,plan-essencial,tiny-seller,equipment_machines
+5134186,BR,criativamixbrinquedoscomb,2024-08-25T23:11:00.000Z,2024-09-01T14:35:43.000Z,2026-02-20,plan-impulso,tiny-seller,toys
+2747355,BR,brazilianbeachwear2,2023-01-13T06:26:29.000Z,2023-03-13T16:09:17.000Z,2026-02-20,plan-impulso,tiny-seller,clothing
+7052454,BR,peonystore3,2025-12-11T01:59:08.000Z,2026-01-21T16:55:16.000Z,2026-02-20,plan-impulso,tiny-seller,clothing
+6266438,BR,sophiacosmeticos11,2025-05-22T20:27:11.000Z,2025-08-04T14:24:39.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+5612125,BR,bodyjoy,2024-12-18T22:13:14.000Z,2025-02-25T01:20:34.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+6552485,BR,blessetiquetas,2025-07-31T17:46:42.000Z,2025-08-22T16:32:04.000Z,2026-02-20,plan-impulso,struggling-seller,other
+7125437,BR,vieiraecommerce3,2026-01-04T17:13:59.000Z,2026-01-04T17:22:04.000Z,2026-02-20,plan-essencial,small-seller,jewelry
+4701633,BR,liaconcept2,2024-05-16T00:18:27.000Z,2024-10-21T14:31:11.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+6946989,BR,novopapaixing,2025-11-13T14:03:46.000Z,2025-11-15T14:54:20.000Z,2026-02-20,plan-impulso,tiny-seller,not informed
+6969986,BR,joaoegames,2025-11-19T19:58:22.000Z,2025-12-03T17:31:01.000Z,2026-02-20,plan-impulso,tiny-seller,not informed
+2794304,BR,clickmultishop2,2023-01-26T00:29:19.000Z,2025-12-10T20:35:55.000Z,2026-02-20,plan-essencial,tiny-seller,food_drinks
+5675641,BR,pexxe2,2025-01-08T13:37:39.000Z,2026-01-26T12:50:34.000Z,2026-02-20,plan-impulso,tiny-seller,clothing
+6705195,BR,valhall,2025-09-10T17:52:08.000Z,2025-09-19T13:15:44.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+6697731,BR,charmellecalcados,2025-09-08T21:46:19.000Z,2025-09-08T23:14:58.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+7148308,BR,peledourada,2026-01-09T09:01:15.000Z,2026-01-09T21:25:21.000Z,2026-02-20,plan-essencial,tiny-seller,health_beauty
+2685183,BR,mpaiva,2022-12-22T20:45:18.000Z,2024-09-12T12:16:02.000Z,2026-02-20,plan-essencial,tiny-seller,clothing
+7026781,BR,chigstreetwear2,2025-12-04T00:38:05.000Z,2025-12-09T23:22:34.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+6965052,BR,huntermann,2025-11-18T17:08:58.000Z,2025-12-19T18:34:26.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+7129021,BR,oddiesupply,2026-01-05T15:10:23.000Z,2026-02-03T18:53:19.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+4587756,BR,useliberta2,2024-04-19T14:24:05.000Z,2024-07-02T13:19:56.000Z,2026-02-20,plan-essencial,tiny-seller,clothing_accesories
+7157762,BR,sainteconcept,2026-01-11T22:54:21.000Z,2026-02-10T21:49:17.000Z,2026-02-20,plan-essencial,small-seller,not informed
+6506883,BR,skinmass,2025-07-20T20:52:08.000Z,2025-09-03T21:57:28.000Z,2026-02-20,plan-essencial,tiny-seller,health_beauty
+6345960,BR,isisfestas,2025-06-10T12:03:31.000Z,2025-06-18T11:27:28.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+7254927,BR,naylimmodas,2026-02-02T18:09:06.000Z,2026-02-05T17:37:11.000Z,2026-02-20,plan-essencial,tiny-seller,not informed
+5782784,BR,lojastart18,2025-02-01T16:01:57.000Z,2025-02-23T19:54:03.000Z,2026-02-20,plan-impulso,small-seller,not informed
+5279156,BR,luzza9,2024-09-28T13:23:11.000Z,2024-10-14T12:02:57.000Z,2026-02-20,plan-essencial,tiny-seller,art
+6491363,BR,faroperfumes3,2025-07-16T14:17:19.000Z,2025-07-23T21:13:52.000Z,2026-02-21,plan-impulso,tiny-seller,health_beauty
+3901257,BR,anisilver,2023-10-31T03:56:13.000Z,2026-01-12T22:28:31.000Z,2026-02-21,plan-essencial,tiny-seller,jewelry
+5811998,BR,seubikinicg,2025-02-07T19:24:37.000Z,2025-05-09T12:23:08.000Z,2026-02-21,plan-essencial,tiny-seller,clothing
+7233211,BR,patriaforte,2026-01-28T14:40:28.000Z,2026-02-10T11:55:05.000Z,2026-02-21,plan-essencial,small-seller,not informed
+5666806,BR,carbono144,2025-01-06T17:27:45.000Z,2025-01-06T19:39:12.000Z,2026-02-21,plan-impulso,tiny-seller,clothing
+6796511,BR,lojasmottabrasil,2025-10-05T05:04:10.000Z,2025-12-12T11:39:04.000Z,2026-02-21,plan-essencial,tiny-seller,other
+4815986,BR,centraldoqueijo3,2024-06-10T21:42:09.000Z,2024-06-28T12:46:53.000Z,2026-02-21,plan-essencial,tiny-seller,food_drinks
+6620323,BR,wsequipamentos3,2025-08-19T11:49:51.000Z,2025-10-16T14:06:07.000Z,2026-02-21,plan-impulso,tiny-seller,equipment_machines
+7220649,BR,lojacaffeine,2026-01-25T23:12:55.000Z,2026-02-01T19:06:54.000Z,2026-02-21,plan-impulso,medium-seller,not informed
+6781297,BR,soulmateshop2,2025-10-01T00:48:02.000Z,2025-11-15T14:09:41.000Z,2026-02-21,plan-essencial,tiny-seller,not informed
+5853433,BR,armazemdapesca2,2025-02-17T15:28:49.000Z,2025-03-04T21:28:42.000Z,2026-02-21,plan-impulso,tiny-seller,sports
+6518602,BR,pradinhas2,2025-07-23T14:43:08.000Z,2025-08-08T14:06:31.000Z,2026-02-21,plan-essencial,tiny-seller,not informed
+7228419,BR,vengaming,2026-01-27T16:17:34.000Z,2026-02-02T16:59:33.000Z,2026-02-21,plan-essencial,tiny-seller,not informed
+7110014,BR,like67,2025-12-30T00:42:39.000Z,2025-12-30T01:03:19.000Z,2026-02-21,plan-impulso,tiny-seller,not informed
+6774749,BR,ametis2,2025-09-29T17:45:46.000Z,2025-11-29T20:19:39.000Z,2026-02-21,plan-essencial,tiny-seller,jewelry
+6766614,BR,iluatan2,2025-09-26T23:13:31.000Z,2025-11-10T20:03:27.000Z,2026-02-21,plan-essencial,tiny-seller,jewelry
+7192630,BR,dhorum,2026-01-19T18:48:09.000Z,2026-01-27T13:53:05.000Z,2026-02-21,plan-impulso,small-seller,clothing
+6855723,BR,stylecompany15,2025-10-20T22:36:48.000Z,2025-11-04T15:21:05.000Z,2026-02-21,plan-impulso,struggling-seller,clothing
+5552506,BR,nathfashion2,2024-12-02T15:59:58.000Z,2025-02-03T19:31:25.000Z,2026-02-21,plan-essencial,tiny-seller,clothing
+6579177,BR,beonvegan,2025-08-07T17:02:59.000Z,2025-08-18T18:06:26.000Z,2026-02-21,plan-impulso,tiny-seller,health_beauty
+7243363,BR,auren42,2026-01-30T15:39:35.000Z,2026-01-30T15:47:26.000Z,2026-02-21,plan-essencial,small-seller,clothing
+2601918,BR,olimposp,2022-11-22T18:48:14.000Z,2025-01-13T19:35:54.000Z,2026-02-21,plan-essencial,tiny-seller,sports
+6020397,BR,ficonereis,2025-03-28T13:19:14.000Z,2025-04-07T14:29:35.000Z,2026-02-21,plan-essencial,tiny-seller,home_garden
+7250718,BR,amandamol,2026-02-01T18:05:35.000Z,2026-02-08T21:20:22.000Z,2026-02-21,plan-essencial,small-seller,not informed
+7233885,BR,ttmodas11,2026-01-28T16:42:32.000Z,2026-02-12T21:24:15.000Z,2026-02-21,plan-impulso,small-seller,not informed
+838821,BR,babygut,2018-07-06T15:25:34.000Z,2026-01-07T13:05:37.000Z,2026-02-21,plan-impulso,tiny-seller,clothing
+7017023,BR,diowferbordados,2025-12-01T22:54:13.000Z,2025-12-15T02:03:45.000Z,2026-02-21,plan-impulso,tiny-seller,not informed
+7196873,BR,lcprecofixo3,2026-01-20T15:32:03.000Z,2026-01-27T19:07:32.000Z,2026-02-21,plan-impulso,small-seller,health_beauty
+6548359,BR,brendacsemijoias,2025-07-30T17:52:27.000Z,2025-10-09T17:23:03.000Z,2026-02-21,plan-essencial,tiny-seller,jewelry
+7159459,BR,jfconfeccoes7,2026-01-12T13:19:32.000Z,2026-01-19T12:00:58.000Z,2026-02-21,plan-essencial,tiny-seller,not informed
+6976374,BR,narasexshop4,2025-11-21T14:17:32.000Z,2025-11-21T14:23:34.000Z,2026-02-21,plan-essencial,tiny-seller,erotics
+6868572,BR,vibeeletronicaoficial,2025-10-23T17:38:44.000Z,2025-10-23T21:10:12.000Z,2026-02-21,plan-impulso,tiny-seller,it
+6962103,BR,sotemnobrasil3,2025-11-17T22:34:02.000Z,2025-11-25T16:23:30.000Z,2026-02-21,plan-impulso,tiny-seller,clothing
+4731338,BR,cachacapocodapedralojaonl,2024-05-22T16:10:03.000Z,2025-05-08T12:26:30.000Z,2026-02-22,plan-essencial,tiny-seller,food_drinks
+7138765,BR,lifesensenutrition,2026-01-07T14:26:56.000Z,2026-02-04T03:07:59.000Z,2026-02-22,plan-essencial,small-seller,not informed
+4761949,BR,wwwbellanailscombr,2024-05-28T22:56:59.000Z,2024-09-09T01:25:32.000Z,2026-02-22,plan-essencial,tiny-seller,health_beauty
+7282513,BR,artigodegrife061,2026-02-08T22:15:11.000Z,2026-02-18T00:04:16.000Z,2026-02-22,plan-essencial,small-seller,not informed
+4058632,BR,artcultura,2023-12-14T16:16:33.000Z,2023-12-14T17:24:33.000Z,2026-02-22,plan-essencial,tiny-seller,art
+6996172,BR,armz2025,2025-11-26T16:45:44.000Z,2026-01-22T14:25:47.000Z,2026-02-22,plan-escala,tiny-seller,other
+7174097,BR,essenciaelementar2,2026-01-15T02:24:38.000Z,2026-01-20T02:32:54.000Z,2026-02-22,plan-essencial,tiny-seller,other
+7139822,BR,zairyn,2026-01-07T17:41:09.000Z,2026-01-19T13:36:45.000Z,2026-02-22,plan-impulso,small-seller,not informed
+7167956,BR,spitzlandstore,2026-01-13T22:47:58.000Z,2026-01-25T02:25:56.000Z,2026-02-22,plan-essencial,tiny-seller,clothing_accesories
+7168043,BR,numisliber,2026-01-13T23:04:01.000Z,2026-01-31T15:53:15.000Z,2026-02-22,plan-essencial,tiny-seller,not informed
+6438658,BR,ninagym,2025-07-03T00:34:24.000Z,2025-07-22T01:01:40.000Z,2026-02-22,plan-essencial,tiny-seller,clothing
+5276350,BR,rmvestecraque,2024-09-27T16:41:07.000Z,2024-09-27T17:44:15.000Z,2026-02-22,plan-essencial,tiny-seller,clothing
+7147423,BR,glowacessorios21,2026-01-09T01:03:41.000Z,2026-01-23T17:53:56.000Z,2026-02-22,plan-essencial,tiny-seller,jewelry
+7307230,BR,useciliosoficial,2026-02-15T16:21:01.000Z,2026-02-17T21:11:33.000Z,2026-02-22,plan-impulso,medium-seller,not informed
+6337820,BR,lojastudio10,2025-06-08T13:09:29.000Z,2025-07-15T22:10:53.000Z,2026-02-22,plan-essencial,tiny-seller,toys
+7186723,BR,prizeace,2026-01-18T11:27:23.000Z,2026-01-25T10:12:32.000Z,2026-02-22,plan-essencial,tiny-seller,clothing_accesories
+6831486,BR,treinarefitwear,2025-10-14T17:40:08.000Z,2025-10-29T15:22:37.000Z,2026-02-22,plan-essencial,tiny-seller,clothing
+7248214,BR,sexyshopmooca,2026-01-31T21:05:12.000Z,2026-02-09T16:03:29.000Z,2026-02-22,plan-impulso,small-seller,erotics
+7217942,BR,alphatec21,2026-01-25T02:21:14.000Z,2026-01-26T19:42:47.000Z,2026-02-22,plan-essencial,medium-seller,not informed
+6548694,BR,resiliencestore9,2025-07-30T18:56:34.000Z,2025-09-11T14:36:27.000Z,2026-02-22,plan-essencial,tiny-seller,clothing
+6154092,BR,meliponariodapaz,2025-04-27T21:15:04.000Z,2025-08-20T00:03:20.000Z,2026-02-22,plan-essencial,tiny-seller,art
+7149682,BR,helinhadecor,2026-01-09T16:38:37.000Z,2026-02-09T15:25:36.000Z,2026-02-22,plan-essencial,tiny-seller,art
+7107588,BR,braxpinsmania,2025-12-29T12:27:12.000Z,2026-01-05T20:57:34.000Z,2026-02-22,plan-essencial,tiny-seller,clothing_accesories
+7253261,BR,rayanecarmosemijoias,2026-02-02T12:26:27.000Z,2026-02-07T13:01:43.000Z,2026-02-22,plan-impulso,tiny-seller,jewelry
+7006966,BR,senhorpapel,2025-11-29T09:54:03.000Z,2025-12-08T03:22:55.000Z,2026-02-22,plan-essencial,tiny-seller,home_garden
+6714685,BR,orcspace,2025-09-13T04:05:16.000Z,2025-10-08T14:52:56.000Z,2026-02-22,plan-essencial,tiny-seller,toys
+7286073,BR,markstudio,2026-02-09T19:06:09.000Z,2026-02-09T23:48:09.000Z,2026-02-22,plan-impulso,small-seller,not informed
+7287078,BR,etherwear2,2026-02-09T22:46:24.000Z,2026-02-12T19:17:09.000Z,2026-02-23,plan-essencial,small-seller,not informed
+6148594,BR,ghcparfum,2025-04-26T03:16:23.000Z,2025-05-28T11:47:24.000Z,2026-02-23,plan-impulso,tiny-seller,health_beauty
+6475587,BR,hyperepublic,2025-07-12T15:31:40.000Z,2025-08-04T20:35:05.000Z,2026-02-23,plan-essencial,tiny-seller,clothing_accesories
+6294985,BR,essenceboutique7,2025-05-29T02:58:49.000Z,2025-11-17T17:40:43.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+6907441,BR,decorhaus3d,2025-11-03T00:36:26.000Z,2025-12-05T05:19:18.000Z,2026-02-23,plan-essencial,struggling-seller,not informed
+7229794,BR,aiyu2,2026-01-27T20:01:03.000Z,2026-02-09T14:58:57.000Z,2026-02-23,plan-impulso,tiny-seller,not informed
+6912831,BR,riiva2,2025-11-04T12:43:07.000Z,2026-01-24T17:23:17.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+5716040,BR,asycosmetics2,2025-01-17T17:18:16.000Z,2025-01-28T13:11:53.000Z,2026-02-23,plan-essencial,tiny-seller,health_beauty
+7170340,BR,amoralight,2026-01-14T14:00:03.000Z,2026-02-08T16:27:44.000Z,2026-02-23,plan-essencial,tiny-seller,not informed
+3652085,BR,biinhaferreira,2023-08-30T19:18:30.000Z,2023-11-30T21:39:51.000Z,2026-02-23,plan-impulso,tiny-seller,clothing
+6808976,BR,cmfashionshop,2025-10-08T13:26:19.000Z,2025-12-05T22:17:13.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+7254400,BR,bkoutlet3,2026-02-02T16:32:22.000Z,2026-02-02T19:09:43.000Z,2026-02-23,plan-essencial,tiny-seller,not informed
+7195902,BR,thaizlins,2026-01-20T12:11:28.000Z,2026-02-21T17:36:16.000Z,2026-02-23,plan-impulso,tiny-seller,not informed
+7016059,BR,whipetit,2025-12-01T19:36:34.000Z,2026-01-23T21:39:13.000Z,2026-02-23,plan-essencial,tiny-seller,not informed
+5806453,BR,amoveleira2,2025-02-06T17:41:35.000Z,2025-02-06T19:07:13.000Z,2026-02-23,plan-essencial,struggling-seller,home_garden
+6324727,BR,zaviesemijoias,2025-06-04T23:15:00.000Z,2025-07-11T20:59:47.000Z,2026-02-23,plan-essencial,tiny-seller,jewelry
+6939601,BR,vistamodacolore,2025-11-11T19:28:04.000Z,2025-12-10T18:50:19.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+1460009,BR,arkcreator,2020-12-13T02:53:42.000Z,2026-02-15T22:38:33.000Z,2026-02-23,plan-essencial,tiny-seller,clothing_accesories
+7133163,BR,hannacare,2026-01-06T11:53:09.000Z,2026-02-10T13:22:48.000Z,2026-02-23,plan-essencial,tiny-seller,not informed
+7172622,BR,mintvinil,2026-01-14T21:07:50.000Z,2026-01-26T14:26:14.000Z,2026-02-23,plan-impulso,tiny-seller,music_movies
+6954468,BR,encantodefios4,2025-11-15T18:29:05.000Z,2025-11-28T00:56:33.000Z,2026-02-23,plan-essencial,struggling-seller,art
+6973019,BR,ncmultimarcas19,2025-11-20T16:24:24.000Z,2026-01-12T17:50:39.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+4940594,BR,jaquefestas3,2024-07-10T15:21:56.000Z,2024-07-10T19:36:27.000Z,2026-02-23,plan-comeco,tiny-seller,art
+6900497,BR,revriders,2025-10-31T16:27:16.000Z,2025-10-31T16:36:35.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+7177023,BR,zizakids2,2026-01-15T19:23:57.000Z,2026-01-29T19:18:34.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+6375433,BR,mariabotina,2025-06-17T18:28:55.000Z,2025-06-26T22:57:58.000Z,2026-02-23,plan-impulso,struggling-seller,clothing
+6161043,BR,marisfitwear,2025-04-29T12:01:44.000Z,2025-11-03T15:31:22.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+4657942,BR,biquinibykatty,2024-05-06T04:52:48.000Z,2026-02-03T17:09:02.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+4993790,BR,alltherage,2024-07-23T14:33:11.000Z,2025-08-23T16:30:44.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+6849074,BR,retrobal,2025-10-19T00:05:41.000Z,2025-11-04T20:21:14.000Z,2026-02-23,plan-essencial,tiny-seller,not informed
+4949750,BR,fenomenofut,2024-07-12T15:23:31.000Z,2024-08-03T16:48:55.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+6899912,BR,whitepdv,2025-10-31T13:38:03.000Z,2026-01-12T13:35:42.000Z,2026-02-23,plan-essencial,tiny-seller,it
+6865824,BR,shopmyca,2025-10-23T00:17:35.000Z,2025-11-14T17:58:04.000Z,2026-02-23,plan-impulso,struggling-seller,not informed
+6846183,BR,vibeathletic,2025-10-18T00:17:48.000Z,2025-12-02T20:07:44.000Z,2026-02-23,plan-impulso,small-seller,not informed
+7286287,BR,arabesque1,2026-02-09T19:52:01.000Z,2026-02-18T00:25:39.000Z,2026-02-23,plan-essencial,small-seller,not informed
+7078655,BR,useoceanstore,2025-12-18T10:35:22.000Z,2026-01-09T14:15:09.000Z,2026-02-23,plan-essencial,tiny-seller,jewelry
+4422089,BR,allvox,2024-03-13T01:41:15.000Z,2026-02-12T21:22:22.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+6859341,BR,zionfitwear,2025-10-21T18:27:39.000Z,2025-10-29T19:01:28.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+7170068,BR,descolaboutique,2026-01-14T13:01:20.000Z,2026-01-28T12:20:38.000Z,2026-02-23,plan-essencial,tiny-seller,clothing
+6852180,BR,adeliecreativestore,2025-10-20T02:32:05.000Z,2025-12-09T18:12:36.000Z,2026-02-23,plan-essencial,tiny-seller,not informed
+6980580,BR,portellagracianoservicosd,2025-11-22T19:03:37.000Z,2025-12-01T17:23:15.000Z,2026-02-23,plan-essencial,tiny-seller,toys
+1493963,BR,bemquereracessorios,2021-01-15T17:18:15.000Z,2025-02-19T17:17:06.000Z,2026-02-23,plan-essencial,tiny-seller,jewelry
+7094444,BR,pontodopodologo2,2025-12-23T18:41:06.000Z,2026-01-06T19:57:53.000Z,2026-02-23,plan-essencial,tiny-seller,health_beauty
+7105761,BR,foryou292,2025-12-28T18:58:01.000Z,2026-01-06T23:46:29.000Z,2026-02-23,plan-impulso,tiny-seller,it
+7234716,BR,tulipacapas2,2026-01-28T18:59:01.000Z,2026-02-17T18:53:52.000Z,2026-02-23,plan-essencial,small-seller,not informed
+6917301,BR,lojamariaperegrina,2025-11-05T13:18:41.000Z,2026-01-26T12:52:34.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+6776504,BR,gaelcosmetics,2025-09-30T00:03:15.000Z,2025-10-07T11:07:28.000Z,2026-02-24,plan-impulso,struggling-seller,clothing
+7305157,BR,gioylab,2026-02-14T18:45:37.000Z,2026-02-21T23:35:24.000Z,2026-02-24,plan-essencial,small-seller,toys
+7236800,BR,pattysalles2,2026-01-29T02:12:55.000Z,2026-02-04T00:30:05.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+6787282,BR,dgstoreparts,2025-10-02T15:05:30.000Z,2026-01-07T16:05:26.000Z,2026-02-24,plan-impulso,tiny-seller,not informed
+7263228,BR,dourattaouro2,2026-02-04T04:33:11.000Z,2026-02-19T16:18:33.000Z,2026-02-24,plan-essencial,medium-seller,clothing
+5132459,BR,foxcriative,2024-08-25T15:31:24.000Z,2024-09-06T18:16:24.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6812676,BR,rohsampaiomultimarcas,2025-10-09T09:12:43.000Z,2025-10-26T16:32:49.000Z,2026-02-24,plan-essencial,tiny-seller,clothing_accesories
+5787747,BR,commongoods,2025-02-02T23:29:33.000Z,2025-06-10T12:26:46.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6811989,BR,suzanaatelier2,2025-10-09T00:46:23.000Z,2025-10-09T10:28:45.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+7068678,BR,embramexfood,2025-12-15T19:17:50.000Z,2026-02-19T12:14:08.000Z,2026-02-24,plan-escala,tiny-seller,not informed
+6488748,BR,quemarrabrand,2025-07-15T21:15:18.000Z,2025-09-13T01:34:34.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+1139909,BR,skulleditora2,2020-03-31T01:51:51.000Z,2026-01-07T05:12:00.000Z,2026-02-24,plan-essencial,tiny-seller,books
+5273134,BR,elpatrao,2024-09-26T20:27:20.000Z,2024-11-11T16:47:53.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6911415,BR,clubeazular,2025-11-03T23:37:52.000Z,2025-11-12T01:41:43.000Z,2026-02-24,plan-impulso,tiny-seller,clothing
+5138767,BR,bloomstorers,2024-08-26T22:58:46.000Z,2024-08-29T06:30:53.000Z,2026-02-24,plan-impulso,tiny-seller,clothing
+6341024,BR,casaluzitana,2025-06-09T11:41:13.000Z,2025-08-04T21:03:11.000Z,2026-02-24,plan-impulso,tiny-seller,food_drinks
+7004601,BR,usetoron,2025-11-28T16:52:12.000Z,2025-12-12T22:31:51.000Z,2026-02-24,plan-essencial,tiny-seller,health_beauty
+6900682,BR,gcepapeis,2025-10-31T17:17:02.000Z,2025-12-04T16:08:08.000Z,2026-02-24,plan-escala,tiny-seller,office_supplies
+3861200,BR,dicaroline,2023-10-20T23:19:39.000Z,2024-09-24T22:04:14.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+4278536,BR,yusaribags,2024-02-09T01:52:30.000Z,2024-02-11T22:48:27.000Z,2026-02-24,plan-essencial,tiny-seller,art
+6269165,BR,exclusivamodaintima25,2025-05-23T14:06:38.000Z,2025-12-02T20:11:28.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6654628,BR,chiccheirosa4,2025-08-27T20:18:43.000Z,2025-09-05T12:24:05.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+6629691,BR,laarekids,2025-08-21T12:15:06.000Z,2025-08-21T12:55:32.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+7148686,BR,todachicstore72,2026-01-09T12:50:53.000Z,2026-01-20T16:32:59.000Z,2026-02-24,plan-escala,small-seller,not informed
+5763747,BR,bohana,2025-01-28T18:01:16.000Z,2025-01-28T18:53:08.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6775793,BR,mundinhokids8,2025-09-29T21:23:53.000Z,2025-10-01T17:29:40.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+4626435,BR,trigger2,2024-04-28T14:57:41.000Z,2024-06-10T16:23:55.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+7076023,BR,paolacoutoacessorios2,2025-12-17T15:48:28.000Z,2026-01-20T18:41:01.000Z,2026-02-24,plan-impulso,tiny-seller,jewelry
+2941396,BR,afatyatelie,2023-03-11T22:53:03.000Z,2024-09-12T13:50:50.000Z,2026-02-24,plan-essencial,tiny-seller,home_garden
+7175274,BR,inlealstore,2026-01-15T13:51:47.000Z,2026-01-16T18:55:29.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+7069644,BR,eccresgate,2025-12-15T23:00:32.000Z,2026-01-22T21:39:22.000Z,2026-02-24,plan-essencial,tiny-seller,digital
+6443929,BR,soradermocosmeticos,2025-07-04T13:14:36.000Z,2026-01-09T19:08:45.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+7268235,BR,bycarolita,2026-02-05T03:52:16.000Z,2026-02-18T05:05:24.000Z,2026-02-24,plan-essencial,small-seller,not informed
+6862177,BR,umcoracaodedorama,2025-10-22T11:35:59.000Z,2025-11-03T17:06:11.000Z,2026-02-24,plan-impulso,tiny-seller,not informed
+7015973,BR,zapecopas,2025-12-01T19:20:16.000Z,2026-01-21T15:38:16.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6236746,BR,caroli9,2025-05-16T13:02:26.000Z,2025-05-22T21:24:40.000Z,2026-02-24,plan-essencial,tiny-seller,health_beauty
+7254555,BR,dmimports73,2026-02-02T17:05:05.000Z,2026-02-04T20:23:52.000Z,2026-02-24,plan-essencial,small-seller,not informed
+7028282,BR,monyslim,2025-12-04T13:59:20.000Z,2025-12-06T01:35:31.000Z,2026-02-24,plan-essencial,tiny-seller,health_beauty
+5903539,BR,bonecadeaco2,2025-02-28T15:43:38.000Z,2025-03-08T20:31:54.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+7208961,BR,dressfitness6,2026-01-22T20:28:00.000Z,2026-01-23T15:05:12.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+6930236,BR,quintaldasestrelasstore,2025-11-09T01:02:31.000Z,2025-11-11T22:02:27.000Z,2026-02-24,plan-essencial,tiny-seller,clothing
+6796862,BR,prefix983218541,2025-10-05T13:31:56.000Z,2025-10-14T21:54:23.000Z,2026-02-24,plan-essencial,tiny-seller,food_drinks
+6703887,BR,charlotebeautyimports,2025-09-10T12:45:51.000Z,2025-11-18T12:35:32.000Z,2026-02-24,plan-essencial,tiny-seller,health_beauty
+6047783,BR,passiochristiatelie,2025-04-03T17:14:20.000Z,2025-04-13T01:28:02.000Z,2026-02-24,plan-essencial,tiny-seller,home_garden
+6669230,BR,extremestoreparts,2025-09-01T00:00:47.000Z,2025-12-11T13:14:02.000Z,2026-02-24,plan-impulso,tiny-seller,cars
+7041540,BR,easyfitclub,2025-12-08T18:12:22.000Z,2025-12-14T14:51:39.000Z,2026-02-24,plan-essencial,tiny-seller,not informed
+7233694,BR,multishop603,2026-01-28T16:09:04.000Z,2026-01-28T16:14:53.000Z,2026-02-25,plan-essencial,small-seller,not informed
+5920215,BR,yllaconcept2,2025-03-05T11:54:23.000Z,2025-05-30T14:04:03.000Z,2026-02-25,plan-impulso,tiny-seller,not informed
+6761066,BR,moradaessencial,2025-09-25T16:34:35.000Z,2025-10-09T13:32:57.000Z,2026-02-25,plan-escala,tiny-seller,home_garden
+7256999,BR,talmaetalpet,2026-02-03T00:16:41.000Z,2026-02-09T14:26:35.000Z,2026-02-25,plan-impulso,small-seller,not informed
+6326796,BR,useelionai,2025-06-05T13:55:26.000Z,2025-11-26T16:56:14.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+7274621,BR,lojapetdeluz,2026-02-06T16:17:58.000Z,2026-02-17T13:56:18.000Z,2026-02-25,plan-essencial,small-seller,not informed
+6882201,BR,mundialnutrition,2025-10-27T14:58:28.000Z,2025-12-18T14:33:15.000Z,2026-02-25,plan-essencial,tiny-seller,health_beauty
+7094692,BR,lojaanae,2025-12-23T20:23:32.000Z,2026-01-18T23:58:11.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+7108111,BR,cammada,2025-12-29T15:06:39.000Z,2025-12-29T15:12:24.000Z,2026-02-25,plan-impulso,tiny-seller,health_beauty
+4758729,BR,lojinhadajana7,2024-05-28T13:27:34.000Z,2026-02-19T22:59:28.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+6839830,BR,pijamadazzzz,2025-10-16T16:23:47.000Z,2026-01-22T21:46:21.000Z,2026-02-25,plan-essencial,small-seller,clothing
+6921304,BR,donaonca66,2025-11-06T13:11:33.000Z,2025-11-21T17:55:28.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+6990102,BR,jusfit2,2025-11-25T11:04:09.000Z,2025-12-29T15:54:45.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+6671515,BR,racechipbrasil,2025-09-01T17:25:24.000Z,2025-10-10T12:44:22.000Z,2026-02-25,plan-essencial,tiny-seller,cars
+5957716,BR,pasentials2,2025-03-14T00:35:30.000Z,2025-09-07T01:20:08.000Z,2026-02-25,plan-essencial,tiny-seller,other
+2912321,BR,boxconceito2,2023-03-02T20:14:04.000Z,2023-03-14T18:39:28.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+6913250,BR,villagecondotti,2025-11-04T14:20:19.000Z,2026-01-16T13:04:53.000Z,2026-02-25,plan-impulso,tiny-seller,clothing
+2899288,BR,hosuplementosefitness,2023-02-27T10:14:13.000Z,2025-07-24T01:27:52.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+6902358,BR,prefix7pratas2,2025-11-01T02:44:17.000Z,2025-12-10T01:51:23.000Z,2026-02-25,plan-essencial,tiny-seller,jewelry
+5739597,BR,rivus4,2025-01-23T00:22:01.000Z,2025-02-28T23:25:28.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+6835464,BR,cm1l2612,2025-10-15T15:40:28.000Z,2025-10-15T15:49:58.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+7053267,BR,laumond,2025-12-11T12:37:16.000Z,2025-12-25T10:45:46.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+6738326,BR,emporiodasessencias4,2025-09-19T15:19:17.000Z,2025-09-22T14:33:15.000Z,2026-02-25,plan-impulso,small-seller,art
+7081531,BR,lovekids20,2025-12-19T00:50:03.000Z,2025-12-28T16:42:41.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+7198884,BR,primewellnessaf,2026-01-20T21:16:02.000Z,2026-01-22T12:57:48.000Z,2026-02-25,plan-impulso,small-seller,clothing_accesories
+7166671,BR,aurafitnes,2026-01-13T19:06:02.000Z,2026-02-03T13:52:33.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+5203644,BR,jaquemodaevariedades,2024-09-11T12:44:14.000Z,2024-09-21T19:18:28.000Z,2026-02-25,plan-impulso,tiny-seller,toys
+6863920,BR,trisonhopijamas,2025-10-22T17:54:18.000Z,2025-11-24T12:48:10.000Z,2026-02-25,plan-impulso,tiny-seller,not informed
+7207700,BR,ninefour3,2026-01-22T16:53:21.000Z,2026-02-21T15:58:31.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+6387687,BR,varieshop106,2025-06-20T13:02:10.000Z,2025-07-14T17:21:49.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+6050146,BR,montessoriando2,2025-04-04T01:27:34.000Z,2025-04-19T20:26:25.000Z,2026-02-25,plan-impulso,tiny-seller,sports
+7220046,BR,cebolaroxa3d,2026-01-25T20:27:12.000Z,2026-02-02T19:29:35.000Z,2026-02-25,plan-essencial,small-seller,not informed
+7020722,BR,deslock,2025-12-02T19:03:09.000Z,2026-01-29T21:35:58.000Z,2026-02-25,plan-essencial,tiny-seller,not informed
+3877856,BR,gatoxadrezmodakids,2023-10-25T03:31:56.000Z,2024-08-15T17:37:06.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+5804178,BR,licespijamas,2025-02-06T02:37:51.000Z,2025-02-27T02:23:51.000Z,2026-02-25,plan-essencial,tiny-seller,clothing
+7113181,BR,lolitababy3,2025-12-31T03:36:08.000Z,2026-01-19T18:33:41.000Z,2026-02-25,plan-impulso,tiny-seller,clothing
+5721868,BR,dpspratas,2025-01-19T04:22:44.000Z,2025-05-15T17:57:29.000Z,2026-02-26,plan-essencial,tiny-seller,clothing_accesories
+5665925,BR,camilamoldesderoupas,2025-01-06T14:31:33.000Z,2025-02-24T18:03:38.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+7264824,BR,gingabr2,2026-02-04T15:49:45.000Z,2026-02-04T15:58:07.000Z,2026-02-26,plan-essencial,small-seller,not informed
+6866213,BR,wlstore66,2025-10-23T02:02:19.000Z,2025-12-16T20:20:17.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+7208759,BR,catalogooutletweb,2026-01-22T19:50:47.000Z,2026-02-06T14:39:31.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+2692127,BR,silvia93,2022-12-26T21:45:56.000Z,2025-12-19T16:58:52.000Z,2026-02-26,plan-essencial,tiny-seller,pets
+7295344,BR,newbaby11,2026-02-11T21:07:04.000Z,2026-02-17T22:43:39.000Z,2026-02-26,plan-impulso,small-seller,clothing
+6977598,BR,minielolab,2025-11-21T19:52:24.000Z,2025-12-05T19:40:36.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6997015,BR,simetriaboutique,2025-11-26T19:40:39.000Z,2025-12-02T16:05:15.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+1046754,BR,legadomultimarcas,2019-08-30T12:35:10.000Z,2025-08-05T18:14:46.000Z,2026-02-26,plan-impulso,tiny-seller,clothing
+6687146,BR,ducativitoria,2025-09-05T14:24:34.000Z,2025-12-04T20:07:34.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+7239934,BR,havis2,2026-01-29T19:34:03.000Z,2026-02-04T20:07:52.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+2166717,BR,usezafirapratas,2022-05-12T13:30:13.000Z,2026-01-14T21:57:22.000Z,2026-02-26,plan-essencial,tiny-seller,clothing_accesories
+2998137,BR,frascosv3combr,2023-03-27T12:45:10.000Z,2023-05-03T14:12:56.000Z,2026-02-26,plan-essencial,tiny-seller,music_movies
+6071655,BR,ateliebibliaseveus,2025-04-09T12:10:55.000Z,2025-04-14T16:38:52.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+7205486,BR,mfitnessoficial,2026-01-22T02:39:04.000Z,2026-01-30T02:52:17.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+6730623,BR,esexstore,2025-09-17T17:25:41.000Z,2025-10-07T16:52:55.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6873206,BR,royjoias,2025-10-24T19:23:19.000Z,2025-10-30T12:26:46.000Z,2026-02-26,plan-impulso,tiny-seller,jewelry
+6778230,BR,belissimamake14,2025-09-30T14:15:10.000Z,2025-10-20T23:51:09.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6805811,BR,hidracomcomponentes,2025-10-07T18:30:10.000Z,2025-10-08T13:11:39.000Z,2026-02-26,plan-impulso,tiny-seller,cars
+7206329,BR,casadasdovs,2026-01-22T12:23:50.000Z,2026-01-28T17:02:48.000Z,2026-02-26,plan-impulso,tiny-seller,home_garden
+3158627,BR,finelinebeachwear,2023-05-09T13:08:49.000Z,2025-08-20T23:31:24.000Z,2026-02-26,plan-comeco,tiny-seller,clothing
+7016039,BR,primereefbrasil,2025-12-01T19:31:36.000Z,2025-12-11T13:43:01.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+3899154,BR,floweclothing,2023-10-30T18:56:24.000Z,2025-09-05T09:48:24.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+7181587,BR,peita10store,2026-01-16T19:18:21.000Z,2026-01-16T19:30:17.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+7025354,BR,moluskabrasil4,2025-12-03T19:01:42.000Z,2025-12-12T23:36:17.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+6992942,BR,closetdamanumoda2,2025-11-25T21:38:08.000Z,2026-01-16T11:11:23.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+6992731,BR,symmetricaldm,2025-11-25T20:49:01.000Z,2025-12-16T20:47:43.000Z,2026-02-26,plan-impulso,tiny-seller,clothing
+5402080,BR,emesemijoias2,2024-10-26T19:07:35.000Z,2024-11-01T18:43:39.000Z,2026-02-26,plan-essencial,tiny-seller,jewelry
+6260658,BR,elainemodas37,2025-05-21T18:14:24.000Z,2025-05-29T15:07:47.000Z,2026-02-26,plan-impulso,small-seller,not informed
+6839040,BR,maliciadospescalcados,2025-10-16T13:09:56.000Z,2025-12-26T19:28:38.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+7184958,BR,menordaspratas,2026-01-17T19:05:49.000Z,2026-01-25T02:54:29.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+5884678,BR,manare,2025-02-24T16:47:45.000Z,2025-03-05T18:01:22.000Z,2026-02-26,plan-impulso,tiny-seller,clothing
+7232778,BR,fazendainspira,2026-01-28T13:21:59.000Z,2026-02-04T13:59:54.000Z,2026-02-26,plan-escala,large-seller,other
+6991125,BR,siteharianyalmeida,2025-11-25T15:17:49.000Z,2025-11-25T15:24:33.000Z,2026-02-26,plan-impulso,small-seller,health_beauty
+7236785,BR,usesereia4,2026-01-29T02:09:32.000Z,2026-02-04T21:28:24.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6840739,BR,sejaluzartigosreligiosos,2025-10-16T19:37:47.000Z,2025-12-01T18:11:27.000Z,2026-02-26,plan-impulso,tiny-seller,not informed
+1819548,BR,zarcobr,2021-08-12T20:05:17.000Z,2021-10-26T09:00:39.000Z,2026-02-26,plan-essencial,tiny-seller,other
+6944451,BR,amandamarquescloset2,2025-11-12T20:37:11.000Z,2025-11-19T19:56:26.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6328867,BR,reviero,2025-06-05T20:52:22.000Z,2026-01-21T22:28:02.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6549180,BR,lopesemagrecedores,2025-07-30T20:37:28.000Z,2025-11-11T13:26:52.000Z,2026-02-26,plan-essencial,tiny-seller,health_beauty
+7345057,BR,useanas4,2026-02-25T01:54:03.000Z,2026-02-25T16:30:15.000Z,2026-02-26,plan-essencial,medium-seller,not informed
+5085453,BR,caggini,2024-08-14T10:34:31.000Z,2025-11-17T19:08:22.000Z,2026-02-26,plan-impulso,tiny-seller,clothing
+6183647,BR,kaclloset2,2025-05-05T00:01:43.000Z,2025-09-23T02:49:09.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+6854723,BR,opio5,2025-10-20T18:56:56.000Z,2025-10-27T13:37:56.000Z,2026-02-26,plan-essencial,tiny-seller,clothing
+7098929,BR,prefixusm,2025-12-26T10:59:47.000Z,2026-01-27T13:00:35.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+7262272,BR,sanbarto,2026-02-04T00:10:48.000Z,2026-02-17T13:41:30.000Z,2026-02-26,plan-impulso,small-seller,not informed
+5180258,BR,chiluhandcraft,2024-09-05T16:36:34.000Z,2024-09-12T16:00:50.000Z,2026-02-26,plan-essencial,tiny-seller,home_garden
+6579746,BR,saladadefritas,2025-08-07T18:55:48.000Z,2025-08-25T14:53:17.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+6794991,BR,micla,2025-10-04T18:01:41.000Z,2025-11-04T16:55:26.000Z,2026-02-26,plan-impulso,tiny-seller,not informed
+6914843,BR,minhasegundapele2,2025-11-04T20:18:04.000Z,2025-12-29T16:14:32.000Z,2026-02-26,plan-essencial,tiny-seller,not informed
+7002445,BR,sostiqs,2025-11-27T23:56:09.000Z,2026-02-24T15:21:32.000Z,2026-02-26,next,small-seller,clothing
+7242934,BR,jlvestuario3,2026-01-30T14:03:06.000Z,2026-02-11T15:38:02.000Z,2026-02-27,plan-essencial,tiny-seller,clothing
+1883368,BR,ginevraboutique,2021-09-24T13:17:56.000Z,2021-09-29T20:54:21.000Z,2026-02-27,plan-impulso,tiny-seller,clothing
+6859895,BR,bmdhometech,2025-10-21T20:08:02.000Z,2025-11-21T23:54:49.000Z,2026-02-27,plan-impulso,tiny-seller,industrial
+6895617,BR,novawear10,2025-10-30T11:36:14.000Z,2025-10-31T19:09:38.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+6716404,BR,glamvierejoias,2025-09-13T21:35:05.000Z,2025-10-02T22:34:28.000Z,2026-02-27,plan-impulso,tiny-seller,jewelry
+3897323,BR,oticalemarie,2023-10-30T12:05:37.000Z,2023-10-30T18:08:37.000Z,2026-02-27,plan-impulso,tiny-seller,electronics_it
+6794010,BR,ongamespc2,2025-10-04T10:52:10.000Z,2025-10-07T13:49:36.000Z,2026-02-27,plan-essencial,tiny-seller,toys
+7193220,BR,dorosgrill,2026-01-19T20:28:00.000Z,2026-01-19T21:14:22.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7234013,BR,acessorioscandor,2026-01-28T17:04:40.000Z,2026-02-16T23:53:14.000Z,2026-02-27,plan-essencial,tiny-seller,clothing_accesories
+570069,BR,bronksshop,2017-09-13T01:47:04.000Z,2026-02-06T01:54:08.000Z,2026-02-27,plan-impulso,tiny-seller,clothing
+7256630,BR,paiolonshop,2026-02-02T23:06:37.000Z,2026-02-10T13:43:41.000Z,2026-02-27,plan-essencial,tiny-seller,other
+5398925,BR,valemixxhome2,2024-10-25T20:25:44.000Z,2024-11-02T04:15:52.000Z,2026-02-27,plan-essencial,tiny-seller,other
+7171911,BR,primekidspremium,2026-01-14T18:42:37.000Z,2026-02-07T20:46:43.000Z,2026-02-27,plan-essencial,tiny-seller,clothing
+7301391,BR,gardenslingerie,2026-02-13T13:29:59.000Z,2026-02-22T01:23:12.000Z,2026-02-27,plan-impulso,small-seller,clothing
+7222212,BR,zensacao,2026-01-26T13:02:56.000Z,2026-01-26T13:13:33.000Z,2026-02-27,plan-essencial,tiny-seller,health_beauty
+7159828,BR,dualuz,2026-01-12T14:41:21.000Z,2026-01-16T13:56:32.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7128366,BR,amajoias4,2026-01-05T12:36:35.000Z,2026-01-15T18:35:50.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7099292,BR,vest102,2025-12-26T13:58:16.000Z,2025-12-27T13:48:55.000Z,2026-02-27,plan-essencial,tiny-seller,sports
+6158532,BR,icestore37,2025-04-28T20:29:39.000Z,2026-02-23T14:31:53.000Z,2026-02-27,plan-essencial,tiny-seller,clothing
+7138842,BR,hopusco,2026-01-07T14:42:11.000Z,2026-01-13T12:44:42.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7212512,BR,dlimacosmeticos2,2026-01-23T17:01:42.000Z,2026-01-27T19:14:56.000Z,2026-02-27,plan-impulso,tiny-seller,not informed
+6970003,BR,auraluz5,2025-11-19T20:01:22.000Z,2026-02-23T20:31:12.000Z,2026-02-27,next,small-seller,home_garden
+7074236,BR,jezahparfum,2025-12-17T00:58:18.000Z,2025-12-17T01:33:20.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+6630053,BR,catshoes4,2025-08-21T13:47:50.000Z,2026-01-15T01:18:04.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+6749904,BR,emilianeperuzzoaromasedec,2025-09-22T23:01:28.000Z,2025-10-02T13:02:03.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7248016,BR,pretaomultimarcas,2026-01-31T20:02:50.000Z,2026-02-02T21:08:53.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7310256,BR,amorardesexshop,2026-02-16T16:16:54.000Z,2026-02-23T20:41:20.000Z,2026-02-27,plan-essencial,small-seller,erotics
+7064885,BR,mestredoslogotipos,2025-12-14T19:34:46.000Z,2026-02-26T18:58:49.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+6737737,BR,edenred,2025-09-19T12:39:28.000Z,2025-09-19T15:27:30.000Z,2026-02-27,plan-impulso,tiny-seller,office_supplies
+3067287,BR,tsgtheslotgeek,2023-04-14T22:49:39.000Z,2025-12-20T16:47:18.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+4334683,BR,ffaz2,2024-02-22T14:04:58.000Z,2024-05-09T19:31:23.000Z,2026-02-27,plan-essencial,tiny-seller,other
+7173445,BR,warmimodas2,2026-01-14T23:51:08.000Z,2026-02-24T18:15:32.000Z,2026-02-27,plan-impulso,tiny-seller,not informed
+7174139,BR,essenciafeminina134,2026-01-15T02:38:47.000Z,2026-02-02T10:06:42.000Z,2026-02-27,plan-impulso,tiny-seller,not informed
+6676701,BR,escafandroeditora,2025-09-02T20:19:48.000Z,2025-10-03T18:11:43.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+3871081,BR,marianamangueiraacessorio,2023-10-23T20:36:42.000Z,2024-07-05T18:29:37.000Z,2026-02-27,plan-impulso,tiny-seller,clothing_accesories
+7004870,BR,coroagraca,2025-11-28T18:00:00.000Z,2025-11-28T23:02:05.000Z,2026-02-27,plan-essencial,tiny-seller,clothing
+7072467,BR,vedeverdade,2025-12-16T17:35:09.000Z,2025-12-16T17:52:25.000Z,2026-02-27,plan-impulso,tiny-seller,health_beauty
+7107768,BR,moscolab,2025-12-29T13:31:13.000Z,2025-12-30T18:27:13.000Z,2026-02-27,plan-essencial,tiny-seller,health_beauty
+6758159,BR,carnedosdeuses,2025-09-24T21:18:32.000Z,2025-10-07T18:39:01.000Z,2026-02-27,plan-essencial,tiny-seller,other
+7181343,BR,jovenskids,2026-01-16T18:24:29.000Z,2026-01-23T15:04:10.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+6724567,BR,usebravemodafitness,2025-09-16T11:14:35.000Z,2025-09-16T12:50:44.000Z,2026-02-27,plan-essencial,tiny-seller,clothing
+6614609,BR,offonly,2025-08-17T23:12:57.000Z,2025-10-29T18:37:33.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7176128,BR,hibryswear,2026-01-15T16:42:20.000Z,2026-01-24T16:56:24.000Z,2026-02-27,plan-essencial,tiny-seller,clothing_accesories
+5046748,BR,lkcroccity,2024-08-05T14:43:24.000Z,2024-12-02T10:44:02.000Z,2026-02-27,plan-essencial,tiny-seller,clothing
+2109076,BR,swahfit,2022-04-05T01:34:28.000Z,2024-07-16T20:27:34.000Z,2026-02-27,plan-impulso,tiny-seller,clothing
+6847447,BR,yoomiskin,2025-10-18T14:54:24.000Z,2025-11-27T17:41:55.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7150664,BR,salistore3,2026-01-09T19:55:29.000Z,2026-01-31T15:03:29.000Z,2026-02-27,plan-impulso,tiny-seller,not informed
+4019865,BR,saboresdavovoprodutosarte,2023-12-02T15:00:24.000Z,2025-09-30T17:38:25.000Z,2026-02-27,plan-essencial,tiny-seller,food_drinks
+6758240,BR,gatunoloja,2025-09-24T21:37:02.000Z,2025-09-24T21:49:45.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7176623,BR,motofaixxa,2026-01-15T18:15:20.000Z,2026-02-13T18:00:30.000Z,2026-02-27,plan-essencial,tiny-seller,not informed
+7053221,BR,gabrieladiamantino,2025-12-11T12:22:31.000Z,2026-01-14T14:20:25.000Z,2026-02-27,plan-essencial,tiny-seller,health_beauty
+4473874,BR,aurafragrancias,2024-03-24T18:28:04.000Z,2024-04-24T21:07:25.000Z,2026-02-27,plan-essencial,tiny-seller,health_beauty
+7169237,BR,clconcept,2026-01-14T04:04:14.000Z,2026-01-20T05:32:29.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+6677029,BR,thedropparfums,2025-09-02T21:30:40.000Z,2025-10-24T13:24:45.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+7004893,BR,dolcelua,2025-11-28T18:06:53.000Z,2025-12-07T23:50:36.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+7170105,BR,casadosmantos10,2026-01-14T13:11:38.000Z,2026-01-19T19:05:22.000Z,2026-02-28,plan-essencial,tiny-seller,sports
+6981406,BR,aconea,2025-11-22T23:35:05.000Z,2025-11-22T23:46:59.000Z,2026-02-28,plan-essencial,tiny-seller,home_garden
+6725623,BR,usebekaa,2025-09-16T15:39:15.000Z,2025-10-13T14:36:25.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+6800086,BR,wtcases2,2025-10-06T14:07:43.000Z,2025-11-21T02:10:55.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+5351908,BR,aryellaclosett,2024-10-15T19:20:35.000Z,2024-11-28T02:30:24.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+7032717,BR,edpetup,2025-12-05T17:42:39.000Z,2025-12-05T18:02:13.000Z,2026-02-28,plan-essencial,tiny-seller,pets
+5874526,BR,magcenter,2025-02-21T18:58:44.000Z,2025-03-05T11:02:41.000Z,2026-02-28,plan-essencial,tiny-seller,health_beauty
+7237814,BR,aurae9,2026-01-29T12:47:05.000Z,2026-02-03T23:35:22.000Z,2026-02-28,plan-essencial,tiny-seller,jewelry
+6758269,BR,usepardus,2025-09-24T21:47:33.000Z,2025-10-02T02:30:40.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+4234024,BR,santobonsai,2024-01-29T23:33:54.000Z,2025-05-27T14:10:21.000Z,2026-02-28,plan-impulso,tiny-seller,other
+6873794,BR,vscautopecas,2025-10-24T21:57:40.000Z,2026-01-22T15:03:36.000Z,2026-02-28,plan-escala,tiny-seller,not informed
+5310116,BR,artedoceu3,2024-10-06T02:23:31.000Z,2024-11-22T17:36:39.000Z,2026-02-28,plan-essencial,tiny-seller,food_drinks
+7097666,BR,qjiminternacional,2025-12-25T19:20:57.000Z,2025-12-26T16:08:52.000Z,2026-02-28,plan-impulso,tiny-seller,food_drinks
+6101274,BR,pure17,2025-04-15T20:35:36.000Z,2025-07-29T14:45:57.000Z,2026-02-28,plan-essencial,tiny-seller,food_drinks
+5833062,BR,zenperfumaria,2025-02-12T15:53:16.000Z,2025-02-19T13:53:18.000Z,2026-02-28,plan-essencial,tiny-seller,health_beauty
+6466360,BR,criattolab,2025-07-10T12:06:33.000Z,2025-11-19T20:16:24.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+7220134,BR,akstore71,2026-01-25T20:49:00.000Z,2026-02-03T12:42:30.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+6752749,BR,vitorewanessacasamento,2025-09-23T17:32:16.000Z,2025-10-13T19:53:27.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+6630362,BR,romanholidistribuidora2,2025-08-21T14:52:51.000Z,2025-08-26T15:20:10.000Z,2026-02-28,plan-essencial,tiny-seller,health_beauty
+7275448,BR,jiujimigasclub,2026-02-06T19:21:13.000Z,2026-02-18T17:52:11.000Z,2026-02-28,plan-essencial,small-seller,clothing
+7160765,BR,lesence2,2026-01-12T17:45:39.000Z,2026-01-19T11:20:12.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+7302267,BR,gatodiego,2026-02-13T17:31:21.000Z,2026-02-18T14:05:00.000Z,2026-02-28,plan-impulso,small-seller,not informed
+6494072,BR,cbvittasuplementos,2025-07-16T23:23:18.000Z,2025-09-12T19:52:31.000Z,2026-02-28,plan-essencial,tiny-seller,health_beauty
+7297356,BR,tesivegames,2026-02-12T13:21:36.000Z,2026-02-24T19:44:13.000Z,2026-02-28,plan-impulso,small-seller,not informed
+7259323,BR,mojo11,2026-02-03T15:28:48.000Z,2026-02-10T22:35:10.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+5996902,BR,outfitimports065,2025-03-23T15:51:44.000Z,2025-04-30T23:39:59.000Z,2026-02-28,plan-impulso,tiny-seller,clothing_accesories
+7225571,BR,essencialami,2026-01-26T23:24:36.000Z,2026-02-09T23:19:44.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+6815923,BR,santtissima,2025-10-10T00:50:08.000Z,2025-12-12T03:24:16.000Z,2026-02-28,plan-essencial,tiny-seller,clothing
+7253803,BR,fungipharm,2026-02-02T14:33:27.000Z,2026-02-06T11:05:28.000Z,2026-02-28,plan-essencial,tiny-seller,not informed
+7186845,BR,torpbeer2,2026-01-18T13:09:14.000Z,2026-01-19T23:56:04.000Z,2026-02-28,plan-essencial,tiny-seller,equipment_machines
+7189381,BR,kidijoy,2026-01-19T01:26:52.000Z,2026-01-19T01:46:58.000Z,2026-02-28,plan-essencial,tiny-seller,other
+6424549,BR,thevineco,2025-06-29T23:31:01.000Z,2025-07-04T15:04:58.000Z,2026-02-28,plan-impulso,tiny-seller,jewelry
+7311090,BR,usebelaboutique2,2026-02-16T19:42:26.000Z,2026-02-25T21:18:37.000Z,2026-02-28,plan-essencial,small-seller,not informed
+6478694,BR,popfan,2025-07-13T16:28:07.000Z,2025-08-13T04:09:20.000Z,2026-02-28,plan-essencial,tiny-seller,toys
+7031983,BR,kadahsemijoias,2025-12-05T14:06:36.000Z,2025-12-14T13:03:05.000Z,2026-02-28,plan-essencial,tiny-seller,clothing_accesories
+6754756,BR,lojavoz3,2025-09-24T00:52:07.000Z,2026-01-28T12:14:24.000Z,2026-02-28,plan-essencial,tiny-seller,not informed

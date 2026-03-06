@@ -28,7 +28,7 @@ data/
 1. Coloque as bases nas pastas correspondentes
 2. Execute no terminal:
    ```bash
-   cd /Users/renatovieira/Documents/cursor/DashLCY/scripts
+   cd scripts   # a partir da raiz do projeto DashLCY
    python3 generate_dashboard.py
    ```
 3. Abra o `index.html` no navegador
